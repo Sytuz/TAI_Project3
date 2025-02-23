@@ -1,80 +1,103 @@
-#include <iostream>
-#include <fstream>
-#include <unordered_map>
-#include <cmath>
-#include <vector>
+#include "FCMModel.h"
+#include <sstream>
+#include <unordered_set>
 
 using namespace std;
 
-// hash table (unordered_map) to store occurrences
-unordered_map<string, unordered_map<char, int>> frequencyTable;
-unordered_map<string, int> contextCount;
+FCMModel::FCMModel(): k(3), alpha(0.1), alphabetSize(0) {}  // default
+FCMModel::FCMModel(int k, double alpha): k(k), alpha(alpha), alphabetSize(0) {}
 
-// read the text file
-string readFile(const string &filename){
-    ifstream inputFile(filename);
-    if (!inputFile.is_open()) {
-        cerr << "Error opening file: " << filename << endl;
-        exit(1);
-    }
-
-    string text((istreambuf_iterator<char>(inputFile)), istreambuf_iterator<char>());
-
-    inputFile.close();
-    return text;
+int getAlphabetSize(const string &text){
+    unordered_set<char> uniqueChars(text.begin(), text.end());
+    return uniqueChars.size();
 }
 
-// build frequency model
-void buildFrequencyModel(const string &text, int k){
-    for(size_t i = k; i < text.length(); i++){
+void FCMModel::buildModel(const string &text){
+    frequencyTable.clear();
+    contextCount.clear();
+
+    alphabetSize = getAlphabetSize(text);
+
+    for(size_t i = k; i < text.length(); ++i){
         string context = text.substr(i-k, k);
         char symbol = text[i];
 
         frequencyTable[context][symbol]++;
         contextCount[context]++;
     }
+
+    generateProbabilityTable();
 }
 
-// estimate probability
-double getProbability(const string &context, char symbol, double alpha, int alphaSize){
-    int count = frequencyTable[context][symbol];
-    int total = contextCount[context];
+double FCMModel::getProbability(const string &context, char symbol) const{
+    auto contextI = frequencyTable.find(context);
+    if(contextI == frequencyTable.end()){
+        return 1.0/alphabetSize;  // if no context is found --> smoothed uniform probability
+    }
 
-    return (count + alpha) / (total + alpha * alphaSize);
+    auto symbolI = contextI->second.find(symbol);
+    int count = (symbolI != contextI->second.end() ? symbolI->second : 0);
+    int totalCount = contextCount.at(context);
+
+    return (count + alpha) / (totalCount + alpha * alphabetSize);  // smoothing
 }
 
-// compute the average information content
-double computeAverageInformationContent(const string &text, int k, double alpha){
-    double H = 0.0;
-    int alphabetSize = 256;  // ASCII characters
-    int n = text.length() - k;
+void FCMModel::generateProbabilityTable(){
+    probabilityTable.clear();
 
-    for (size_t i = k; i < text.length(); i++){
+    for(const auto &contextPair : frequencyTable){
+        const string &context = contextPair.first;
+        int totalCount = contextCount[context];
+
+        for (const auto &symbolPair : contextPair.second){
+            char symbol = symbolPair.first;
+            int count = symbolPair.second;
+
+            probabilityTable[context][symbol] = (count + alpha) / (totalCount + alpha * alphabetSize);
+        }
+    }
+}
+
+// uses Shannon entropy (average information content per symbol)
+double FCMModel::computeAverageInformationContent(const string &text) const{
+    if(text.length() <= static_cast<size_t>(k)){
+        return 0.0;
+    }
+
+    double totalInformation = 0.0;
+    int symbolCount = 0;
+
+    for(size_t i = k; i < text.length(); i++){
         string context = text.substr(i-k, k);
         char symbol = text[i];
 
-        double p = getProbability(context, symbol, alpha, alphabetSize);
-        H += log2(p);
+        double probability = getProbability(context, symbol);
+        totalInformation += -log2(probability);  // information content of each symbol
+        symbolCount++;
     }
 
-    return -H / n;
+    return totalInformation / symbolCount;
 }
 
-int main(int argc, char *argv[]){
-    if (argc != 6) {
-        cerr << "Usage: ./fcm input.txt -k <order> -a <alpha>" << endl;
-        return 1;
+// char FCMModel::predict(const string &context) const{
+//     // TODO
+// }
+
+// void FCMModel::exportModel(const string &filename){
+//     // TODO
+// }
+
+// void FCMModel::importModel(const string &filename){
+//     // TODO
+// }
+
+string readFile(const string &filename){
+    ifstream file(filename);
+    if(!file){
+        throw runtime_error("The file " + filename + " could not be opened!");
     }
 
-    string filename = argv[1];
-    int k = stoi(argv[3]);
-    double alpha = stod(argv[5]);
-
-    string text = readFile(filename);
-    buildFrequencyModel(text, k);
-
-    double entropy = computeAverageInformationContent(text, k, alpha);
-    cout << "Average Information Content: " << entropy << " bps" << endl;
-
-    return 0;
+    stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
 }
