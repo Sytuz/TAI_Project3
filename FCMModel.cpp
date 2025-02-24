@@ -58,11 +58,11 @@ void FCMModel::clearModel(){
 
 void FCMModel::lockModel(){
     generateProbabilityTable();
-    locked = 1;
+    locked = true;
 }
 
 void FCMModel::unlockModel(){
-    locked = 0;
+    locked = false;
 }
 
 int FCMModel::getAlphabetSize() const {
