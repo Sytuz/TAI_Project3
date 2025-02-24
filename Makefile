@@ -3,16 +3,22 @@ CXX      = g++
 CXXFLAGS = -Wall -std=c++17
 
 # List source files and automatically generate object file names
-SOURCES  = main.cpp FCMModel.cpp
-OBJECTS  = $(SOURCES:.cpp=.o)
-TARGET   = testprogram.out
+SOURCES_FCM  = fcm.cpp FCMModel.cpp
+SOURCES_GEN  = generator.cpp FCMModel.cpp
+OBJECTS_FCM  = $(SOURCES_FCM:.cpp=.o)
+OBJECTS_GEN  = $(SOURCES_GEN:.cpp=.o)
+TARGET_FCM   = fcm
+TARGET_GEN   = generator
 
-# Default target to build the executable
-all: clean $(TARGET)
+# Default target to build both executables
+all: $(TARGET_FCM) $(TARGET_GEN)
 
-# Link object files into the final executable
-$(TARGET): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJECTS)
+# Link object files into the final executables
+$(TARGET_FCM): $(OBJECTS_FCM)
+	$(CXX) $(CXXFLAGS) -o $(TARGET_FCM) $(OBJECTS_FCM)
+
+$(TARGET_GEN): $(OBJECTS_GEN)
+	$(CXX) $(CXXFLAGS) -o $(TARGET_GEN) $(OBJECTS_GEN)
 
 # Rule for compiling .cpp files into .o files
 %.o: %.cpp
@@ -20,4 +26,4 @@ $(TARGET): $(OBJECTS)
 
 # Clean up generated files
 clean:
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f $(TARGET_FCM) $(TARGET_GEN) $(OBJECTS_FCM) $(OBJECTS_GEN)

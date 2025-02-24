@@ -1,120 +1,60 @@
 #include "FCMModel.h"
-#include <sstream>
-#include <unordered_set>
+#include <iostream>
+#include <string>
+#include <cstdlib>
 
 using namespace std;
 
-FCMModel::FCMModel(): k(3), alpha(0.1), alphabetSize(0) {}  // default
-FCMModel::FCMModel(int k, double alpha): k(k), alpha(alpha), alphabetSize(0) {}
-
-int getAlphabetSize(const string &text){
-    unordered_set<char> uniqueChars(text.begin(), text.end());
-    return uniqueChars.size();
+void printError() {
+    cout << "Enter: ./fcm <input_file> -k <context_size> -a <alpha> -o <output_model.json>\n";
+    cout << "Example: ./fcm sequences/sequence1.txt -k 3 -a 0.01 -o model.json\n";
 }
 
-void FCMModel::learn(const string &text){
-    frequencyTable.clear();
-    contextCount.clear();
-
-    alphabetSize = getAlphabetSize(text);
-
-    for(std::size_t i = k; i < text.length(); ++i){
-        string context = text.substr(i-k, k);
-        char symbol = text[i];
-
-        frequencyTable[context][symbol]++;
-        contextCount[context]++;
+int main(int argc, char* argv[]) {
+    if (argc != 8) {
+        printError();
+        return 1;
     }
 
-    generateProbabilityTable();
-}
+    string inputFile = argv[1];
+    int k = 3;  // default context size
+    double alpha = 0.1;  // default alpha
+    string outputFile;
 
-double FCMModel::getProbability(const string &context, char symbol) const{
-    auto contextI = frequencyTable.find(context);
-    if(contextI == frequencyTable.end()){
-        return 1.0/alphabetSize;  // if no context is found --> smoothed uniform probability
-    }
-
-    auto symbolI = contextI->second.find(symbol);
-    int count = (symbolI != contextI->second.end() ? symbolI->second : 0);
-    int totalCount = contextCount.at(context);
-
-    return (count + alpha) / (totalCount + alpha * alphabetSize);  // smoothing
-}
-
-void FCMModel::generateProbabilityTable(){
-    probabilityTable.clear();
-
-    for(const auto &contextPair : frequencyTable){
-        const string &context = contextPair.first;
-        int totalCount = contextCount[context];
-
-        for (const auto &symbolPair : contextPair.second){
-            char symbol = symbolPair.first;
-            int count = symbolPair.second;
-
-            probabilityTable[context][symbol] = (count + alpha) / (totalCount + alpha * alphabetSize);
+    for (int i = 2; i < argc; i += 2) {
+        string arg = argv[i];
+        if (arg == "-k") {
+            k = atoi(argv[i + 1]);
+        } else if (arg == "-a") {
+            alpha = atof(argv[i + 1]);
+        } else if (arg == "-o") {
+            outputFile = argv[i + 1];
         }
     }
-}
 
-// uses Shannon entropy (average information content per symbol)
-double FCMModel::computeAverageInformationContent(const string &text) const{
-    if(text.length() <= static_cast<size_t>(k)){
-        return 0.0;
+    try {
+        FCMModel model(k, alpha);
+        string text = readFile(inputFile);
+        model.learn(text);
+        
+        // Lock the model before export
+        model.lockModel();
+        
+        // Calculate and display information content
+        double avgInfoCont = model.computeAverageInformationContent(text);
+        cout << "\nAnalysis Results for " << inputFile << ":\n";
+        cout << "Context Size (k): " << k << "\n";
+        cout << "Alpha: " << alpha << "\n";
+        cout << "Average Information Content: " << avgInfoCont << " bits per symbol\n";
+        
+        // Export the model
+        model.exportModel(outputFile);
+        cout << "\nModel exported to: " << outputFile << "\n";
+
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+        return 1;
     }
 
-    double totalInformation = 0.0;
-    int symbolCount = 0;
-
-    for(size_t i = k; i < text.length(); i++){
-        string context = text.substr(i-k, k);
-        char symbol = text[i];
-
-        double probability = getProbability(context, symbol);
-        totalInformation += -log2(probability);  // information content of each symbol
-        symbolCount++;
-    }
-
-    return totalInformation / symbolCount;
-}
-
-char FCMModel::predict(const string &context) const{
-    // Use the probability table to predict the next symbol
-    double maxProbability = 0.0;
-    char predictedSymbol = '\0';
-
-    for(const auto &symbolPair : probabilityTable.at(context)){
-        char symbol = symbolPair.first;
-        double probability = symbolPair.second;
-
-        if(probability > maxProbability){
-            maxProbability = probability;
-            predictedSymbol = symbol;
-        }
-    }
-}
-
-void FCMModel::exportModel(const string &filename){
-    // Export the model to a JSON file
-    // The JSON file should contain the following fields:
-    // - k: The order of the model (length of the context).
-    // - alpha: The smoothing parameter.
-    // - alphabetSize: The size of the alphabet.
-    // - 
-}
-
-// void FCMModel::importModel(const string &filename){
-//     // TODO
-// }
-
-string readFile(const string &filename){
-    ifstream file(filename);
-    if(!file){
-        throw runtime_error("The file " + filename + " could not be opened!");
-    }
-
-    stringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
+    return 0;
 }

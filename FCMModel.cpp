@@ -133,22 +133,73 @@ double FCMModel::computeAverageInformationContent(const std::string &text) const
     return totalInformation / symbolCount;
 }
 
-char FCMModel::predict(const std::string &context) const{
-    // Use the probability table to predict the next symbol
-    double maxProbability = 0.0;
-    char predictedSymbol = '\0';
+//? Old code - generates the most probable symbol only (so the same one every time)
+// char FCMModel::predict(const std::string &context) const {
+//     // First check if the context exists in the probability table
+//     auto contextIt = probabilityTable.find(context);
+//     if (contextIt == probabilityTable.end()) {
+//         // If context doesn't exist, return most common character or a default
+//         if (!alphabet.empty()) {
+//             return *alphabet.begin();  // Return first character in alphabet as fallback
+//         }
+//         return ' ';  // Default fallback
+//     }
 
-    for(const auto &symbolPair : probabilityTable.at(context)){
-        char symbol = symbolPair.first;
-        double probability = symbolPair.second;
+//     double maxProbability = 0.0;
+//     char predictedSymbol = '\0';
 
-        if(probability > maxProbability){
-            maxProbability = probability;
-            predictedSymbol = symbol;
+//     for (const auto &symbolPair : contextIt->second) {
+//         char symbol = symbolPair.first;
+//         double probability = symbolPair.second;
+
+//         if (probability > maxProbability) {
+//             maxProbability = probability;
+//             predictedSymbol = symbol;
+//         }
+//     }
+
+//     // If we couldn't find a prediction (shouldn't happen with proper smoothing)
+//     if (predictedSymbol == '\0' && !alphabet.empty()) {
+//         return *alphabet.begin();
+//     }
+
+//     return predictedSymbol;
+// }
+
+char FCMModel::predict(const std::string &context) const {
+    // First check if the context exists in the probability table
+    auto contextIt = probabilityTable.find(context);
+    if (contextIt == probabilityTable.end()) {
+        // If context doesn't exist, return random character from alphabet
+        if (!alphabet.empty()) {
+            auto it = alphabet.begin();
+            std::advance(it, rand() % alphabet.size());
+            return *it;
+        }
+        return ' ';  // Default fallback
+    }
+
+    // Calculate cumulative probabilities for weighted random selection
+    std::vector<std::pair<char, double>> cumulativeProbabilities;
+    double sum = 0.0;
+
+    for (const auto &symbolPair : contextIt->second) {
+        sum += symbolPair.second;
+        cumulativeProbabilities.push_back({symbolPair.first, sum});
+    }
+
+    // Generate random number between 0 and total probability
+    double random = static_cast<double>(rand()) / RAND_MAX * sum;
+
+    // Find the corresponding symbol using binary search
+    for (const auto &pair : cumulativeProbabilities) {
+        if (random <= pair.second) {
+            return pair.first;
         }
     }
 
-    return predictedSymbol;
+    // Fallback (shouldn't reach here with proper smoothing)
+    return !alphabet.empty() ? *alphabet.begin() : ' ';
 }
 
 string FCMModel::predict(const std::string &context, int n) const{
@@ -235,4 +286,4 @@ void FCMModel::importModel(const std::string &filename){
     }
 
     contextCount = modelJson["contextCount"];
- }
+}

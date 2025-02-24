@@ -81,6 +81,12 @@ public:
      */
     void exportModel(const std::string &filename);
 
+    /**
+     * @brief Gets the order of the model (context size).
+     * @return The context size k.
+     */
+    int getK() const { return k; }
+
 private:
     int k;
     double alpha;
