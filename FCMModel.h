@@ -26,10 +26,25 @@ public:
     FCMModel(int k, double alpha);
 
     /**
-     * @brief Builds the model by analyzing the given text.
-     * @param text The input text to build the model from.
+     * @brief Learns from the given text by updating the model.
+     * @param text The input text to learn from.
      */
-    void buildModel(const std::string &text);
+    void learn(const std::string &text);
+
+    /**
+     * @brief Locks the model to prevent further learning.
+     */
+    void lockModel();
+    
+    /**
+     * @brief Unlocks the model to allow further learning.
+     */
+    void unlockModel();
+
+    /**
+     * @brief Clears the model by resetting all the tables.
+     */
+    void clearModel();
 
     /**
      * @brief Computes the average information content of the given text based on the model.
@@ -44,6 +59,14 @@ public:
      * @return The predicted symbol.
      */
     char predict(const std::string &context) const;
+
+    /**
+     * @brief Predicts the next n symbols in the given context based on the model.
+     * @param context The context string to predict the next symbols for.
+     * @param n The number of symbols to predict.
+     * @return The predicted symbols.
+     */
+    std::string predict(const std::string &context, int n) const;
     
     /**
      * @brief Imports a model from the given file.
@@ -61,6 +84,7 @@ private:
     int k;
     double alpha;
     int alphabetSize;
+    int locked;
     std::unordered_map<std::string, std::unordered_map<char, int>> frequencyTable;
     std::unordered_map<std::string, std::unordered_map<char, float>> probabilityTable;
     std::unordered_map<std::string, int> contextCount;

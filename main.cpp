@@ -1,7 +1,7 @@
 #include "FCMModel.h"
 // #include <iostream>
 // #include <string>
-// #include <cstdlib>
+#include <cstdlib>
 
 using namespace std;
 
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     try {
         FCMModel model(k, alpha);
         string text = readFile(inputFile);
-        model.buildModel(text);
+        model.learn(text);
 
         double avgInfoCont = model.computeAverageInformationContent(text);
         

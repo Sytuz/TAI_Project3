@@ -12,13 +12,13 @@ int getAlphabetSize(const string &text){
     return uniqueChars.size();
 }
 
-void FCMModel::buildModel(const string &text){
+void FCMModel::learn(const string &text){
     frequencyTable.clear();
     contextCount.clear();
 
     alphabetSize = getAlphabetSize(text);
 
-    for(size_t i = k; i < text.length(); ++i){
+    for(std::size_t i = k; i < text.length(); ++i){
         string context = text.substr(i-k, k);
         char symbol = text[i];
 
@@ -79,13 +79,30 @@ double FCMModel::computeAverageInformationContent(const string &text) const{
     return totalInformation / symbolCount;
 }
 
-// char FCMModel::predict(const string &context) const{
-//     // TODO
-// }
+char FCMModel::predict(const string &context) const{
+    // Use the probability table to predict the next symbol
+    double maxProbability = 0.0;
+    char predictedSymbol = '\0';
 
-// void FCMModel::exportModel(const string &filename){
-//     // TODO
-// }
+    for(const auto &symbolPair : probabilityTable.at(context)){
+        char symbol = symbolPair.first;
+        double probability = symbolPair.second;
+
+        if(probability > maxProbability){
+            maxProbability = probability;
+            predictedSymbol = symbol;
+        }
+    }
+}
+
+void FCMModel::exportModel(const string &filename){
+    // Export the model to a JSON file
+    // The JSON file should contain the following fields:
+    // - k: The order of the model (length of the context).
+    // - alpha: The smoothing parameter.
+    // - alphabetSize: The size of the alphabet.
+    // - 
+}
 
 // void FCMModel::importModel(const string &filename){
 //     // TODO
