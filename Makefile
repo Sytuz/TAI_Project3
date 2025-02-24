@@ -8,7 +8,7 @@ OBJECTS  = $(SOURCES:.cpp=.o)
 TARGET   = testprogram.out
 
 # Default target to build the executable
-all: $(TARGET)
+all: clean $(TARGET)
 
 # Link object files into the final executable
 $(TARGET): $(OBJECTS)
