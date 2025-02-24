@@ -7,8 +7,8 @@ using namespace std;
 using json = nlohmann::json;
 
 // JSON for serialization
-FCMModel::FCMModel(): k(3), alpha(0.1), alphabetSize(0) {}  // default
-FCMModel::FCMModel(int k, double alpha): k(k), alpha(alpha), alphabetSize(0) {}
+FCMModel::FCMModel(): k(3), alpha(0.1) {}  // default
+FCMModel::FCMModel(int k, double alpha): k(k), alpha(alpha) {}
 
 // Helper functions
 int getAlphabetSize(const std::string &text){
@@ -29,16 +29,14 @@ string readFile(const std::string &filename){
 
 // Class methods
 void FCMModel::learn(const std::string &text){
+    if (locked) return;
 
-    if(locked){
-        return;
-    }
-
-    alphabetSize = getAlphabetSize(text);
-
-    for(std::size_t i = k; i < text.length(); ++i){
-        std::string context = text.substr(i-k, k);
+    for (std::size_t i = k; i < text.length(); ++i) {
+        std::string context = text.substr(i - k, k);
         char symbol = text[i];
+
+        // Add new characters to the alphabet dynamically
+        alphabet.insert(symbol);
 
         frequencyTable[context][symbol]++;
         contextCount[context]++;
@@ -46,6 +44,7 @@ void FCMModel::learn(const std::string &text){
 
     generateProbabilityTable();
 }
+
 
 void FCMModel::clearModel(){
     if (locked) {
@@ -66,6 +65,10 @@ void FCMModel::unlockModel(){
     locked = 0;
 }
 
+int FCMModel::getAlphabetSize() const {
+    return alphabet.size();
+}
+
 double FCMModel::getProbability(const std::string &context, char symbol) const {
     if (locked) {
         auto contextI = probabilityTable.find(context);
@@ -75,18 +78,21 @@ double FCMModel::getProbability(const std::string &context, char symbol) const {
                 return symbolI->second;
             }
         }
-        return 1.0 / alphabetSize;
+        return 1.0 / getAlphabetSize();
     }
 
     auto contextI = frequencyTable.find(context);
     if (contextI == frequencyTable.end()) {
-        return 1.0 / alphabetSize;
+        return 1.0 / getAlphabetSize();
     }
 
-    int count = contextI->second.at(symbol);
+    auto symbolI = contextI->second.find(symbol);
+    int count = (symbolI != contextI->second.end() ? symbolI->second : 0);
     int totalCount = contextCount.at(context);
+    //int count = contextI->second.at(symbol);
+    //int totalCount = contextCount.at(context);
 
-    return (count + alpha) / (totalCount + alpha * alphabetSize);
+    return (count + alpha) / (totalCount + alpha * getAlphabetSize());
 }
 
 void FCMModel::generateProbabilityTable(){
@@ -100,7 +106,7 @@ void FCMModel::generateProbabilityTable(){
             char symbol = symbolPair.first;
             int count = symbolPair.second;
 
-            probabilityTable[context][symbol] = (count + alpha) / (totalCount + alpha * alphabetSize);
+            probabilityTable[context][symbol] = (count + alpha) / (totalCount + alpha * getAlphabetSize());
         }
     }
 }
@@ -119,6 +125,7 @@ double FCMModel::computeAverageInformationContent(const std::string &text) const
         char symbol = text[i];
 
         double probability = getProbability(context, symbol);
+        //std::cout << "Probability: " << probability << std::endl;
         totalInformation += -std::log2(static_cast<float>(probability));  // information content of each symbol
         symbolCount++;
     }
@@ -160,7 +167,7 @@ void FCMModel::exportModel(const std::string &filename){
     // The JSON file should contain the following fields:
     // - k: The order of the model (length of the context).
     // - alpha: The smoothing parameter.
-    // - alphabetSize: The size of the alphabet.
+    // - alphabet: The alphabet.
     // - frequencyTable: The frequency table.
     // - probabilityTable: The probability table.
     // - contextCount: The context count.
@@ -175,7 +182,7 @@ void FCMModel::exportModel(const std::string &filename){
     json modelJson;
     modelJson["k"] = k;
     modelJson["alpha"] = alpha;
-    modelJson["alphabetSize"] = alphabetSize;
+    modelJson["alphabet"] = alphabet;
     modelJson["locked"] = locked;
 
     for(const auto &contextPair : frequencyTable){
@@ -199,7 +206,7 @@ void FCMModel::importModel(const std::string &filename){
     // The JSON file should contain the following fields:
     // - k: The order of the model (length of the context).
     // - alpha: The smoothing parameter.
-    // - alphabetSize: The size of the alphabet.
+    // - alphabet: The alphabet.
     // - frequencyTable: The frequency table.
     // - probabilityTable: The probability table.
     // - contextCount: The context count.
@@ -210,7 +217,7 @@ void FCMModel::importModel(const std::string &filename){
 
     k = modelJson["k"];
     alpha = modelJson["alpha"];
-    alphabetSize = modelJson["alphabetSize"];
+    alphabet = modelJson["alphabet"];
     locked = modelJson["locked"];
 
     frequencyTable.clear();

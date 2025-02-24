@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <vector>
+#include <set>
 
 /**
  * @class FCMModel
@@ -83,11 +84,16 @@ public:
 private:
     int k;
     double alpha;
-    int alphabetSize;
-    int locked;
+    bool locked;
     std::unordered_map<std::string, std::unordered_map<char, int>> frequencyTable;
     std::unordered_map<std::string, std::unordered_map<char, float>> probabilityTable;
     std::unordered_map<std::string, int> contextCount;
+    std::set<char> alphabet; // Dynamic alphabet set
+    
+    /**
+     * @brief Returns the size of the alphabet.
+     */
+    int getAlphabetSize() const;
 
     /**
      * @brief Computes the probability of a symbol given a context.
