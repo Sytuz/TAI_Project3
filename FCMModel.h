@@ -59,7 +59,7 @@ public:
      * @param context The context string to predict the next symbol for.
      * @return The predicted symbol.
      */
-    char predict(const std::string &context) const;
+    std::string predict(const std::string &context) const;
 
     /**
      * @brief Predicts the next n symbols in the given context based on the model.
@@ -80,6 +80,14 @@ public:
      * @param filename The name of the file to export the model to.
      */
     void exportModel(const std::string &filename);
+    // The JSON file should contain the following fields:
+    // - k: The order of the model (length of the context).
+    // - alpha: The smoothing parameter.
+    // - alphabet: The alphabet.
+    // - frequencyTable: The frequency table.
+    // - probabilityTable: The probability table.
+    // - contextCount: The context count.
+    // - locked: Whether the model is locked or not.
 
     /**
      * @brief Gets the order of the model (context size).
@@ -91,10 +99,10 @@ private:
     int k;
     double alpha;
     bool locked;
-    std::unordered_map<std::string, std::unordered_map<char, int>> frequencyTable;
-    std::unordered_map<std::string, std::unordered_map<char, float>> probabilityTable;
+    std::unordered_map<std::string, std::unordered_map<std::string, int>> frequencyTable;
+    std::unordered_map<std::string, std::unordered_map<std::string, float>> probabilityTable;
     std::unordered_map<std::string, int> contextCount;
-    std::set<char> alphabet; // Dynamic alphabet set
+    std::set<std::string> alphabet; // Dynamic alphabet set
     
     /**
      * @brief Returns the size of the alphabet.
@@ -107,12 +115,19 @@ private:
      * @param symbol The symbol to compute the probability for.
      * @return The probability of the symbol given the context.
      */
-    double getProbability(const std::string &context, char symbol) const;
+    double getProbability(const std::string &context, const std::string &symbol) const;
     
     /**
      * @brief Generates the probability table based on the frequency table.
      */
     void generateProbabilityTable();
+
+    /**
+     * @brief Splits the given text into UTF-8 characters.
+     * @param text The input text to split.
+     * @return A vector of UTF-8 characters.
+     */
+    std::vector<std::string> splitIntoUTF8Characters(const std::string &text) const;
 };
 
 std::string readFile(const std::string &filename);

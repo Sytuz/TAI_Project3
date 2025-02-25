@@ -16,7 +16,7 @@ int getAlphabetSize(const std::string &text){
     return uniqueChars.size();
 }
 
-string readFile(const std::string &filename){
+/* string readFile(const std::string &filename){
     ifstream file(filename);
     if(!file){
         throw runtime_error("The file " + filename + " could not be opened!");
@@ -25,20 +25,82 @@ string readFile(const std::string &filename){
     stringstream buffer;
     buffer << file.rdbuf();
     return buffer.str();
+} */
+
+/* string readFile(const std::string &filename){
+    ifstream file(filename);
+    if(!file){
+        throw runtime_error("The file " + filename + " could not be opened!");
+    }
+
+    stringstream buffer;
+    buffer << file.rdbuf();
+
+    cout << "Read " << buffer.str().length() << " characters from " << filename << endl;
+
+    return buffer.str();
+} */
+
+std::string readFile(const std::string &filename) {
+    std::ifstream file(filename, std::ios::binary); // Open in binary mode
+    if (!file) {
+        throw std::runtime_error("The file " + filename + " could not be opened!");
+    }
+
+    std::ostringstream buffer;
+    buffer << file.rdbuf();
+    
+    std::string content = buffer.str();
+    std::cout << "Read " << content.length() << " characters from " << filename << std::endl;
+
+    return content;
 }
 
 // Class methods
 void FCMModel::learn(const std::string &text){
     if (locked) return;
 
-    for (std::size_t i = k; i < text.length(); ++i) {
-        std::string context = text.substr(i - k, k);
-        char symbol = text[i];
-
+    // We need to ensure we're working with complete UTF-8 characters
+    std::vector<std::string> characters;
+    
+    // First, split the text into proper UTF-8 characters
+    for (size_t i = 0; i < text.length(); /* incremented in the loop */) {
+        int charLen = 1;
+        
+        // Determine UTF-8 character length based on first byte
+        unsigned char firstByte = static_cast<unsigned char>(text[i]);
+        if ((firstByte & 0x80) == 0) {
+            charLen = 1;  // ASCII character
+        } else if ((firstByte & 0xE0) == 0xC0) {
+            charLen = 2;  // 2-byte UTF-8
+        } else if ((firstByte & 0xF0) == 0xE0) {
+            charLen = 3;  // 3-byte UTF-8
+        } else if ((firstByte & 0xF8) == 0xF0) {
+            charLen = 4;  // 4-byte UTF-8
+        }
+        
+        // Check if we have a complete character
+        if (i + charLen <= text.length()) {
+            characters.push_back(text.substr(i, charLen));
+        }
+        
+        i += charLen;
+    }
+    
+    // Now process the characters
+    for (size_t i = k; i < characters.size(); ++i) {
+        std::string context;
+        for (size_t j = i - k; j < i; ++j) {
+            context += characters[j];
+        }
+        
+        std::string symbol = characters[i];
+        
         // Add new characters to the alphabet dynamically
-        alphabet.insert(symbol);
-
-        frequencyTable[context][symbol]++;
+        // Note: we're now storing full UTF-8 characters in the alphabet
+        alphabet.insert(symbol);  // This might need adjustment based on your alphabet definition
+        
+        frequencyTable[context][symbol]++;  // This might need adjustment based on how you store frequencies
         contextCount[context]++;
     }
 
@@ -69,7 +131,7 @@ int FCMModel::getAlphabetSize() const {
     return alphabet.size();
 }
 
-double FCMModel::getProbability(const std::string &context, char symbol) const {
+double FCMModel::getProbability(const std::string &context, const std::string &symbol) const {
     if (locked) {
         auto contextI = probabilityTable.find(context);
         if (contextI != probabilityTable.end()) {
@@ -89,8 +151,6 @@ double FCMModel::getProbability(const std::string &context, char symbol) const {
     auto symbolI = contextI->second.find(symbol);
     int count = (symbolI != contextI->second.end() ? symbolI->second : 0);
     int totalCount = contextCount.at(context);
-    //int count = contextI->second.at(symbol);
-    //int totalCount = contextCount.at(context);
 
     return (count + alpha) / (totalCount + alpha * getAlphabetSize());
 }
@@ -103,7 +163,7 @@ void FCMModel::generateProbabilityTable(){
         int totalCount = contextCount[context];
 
         for (const auto &symbolPair : contextPair.second){
-            char symbol = symbolPair.first;
+            const std::string &symbol = symbolPair.first;
             int count = symbolPair.second;
 
             probabilityTable[context][symbol] = (count + alpha) / (totalCount + alpha * getAlphabetSize());
@@ -113,19 +173,25 @@ void FCMModel::generateProbabilityTable(){
 
 // uses Shannon entropy (average information content per symbol)
 double FCMModel::computeAverageInformationContent(const std::string &text) const{
-    if(text.length() <= static_cast<std::size_t>(k)){
+    // First split the text into UTF-8 characters
+    std::vector<std::string> characters = splitIntoUTF8Characters(text);
+    
+    if(characters.size() <= static_cast<std::size_t>(k)){
         return 0.0;
     }
 
     double totalInformation = 0.0;
     int symbolCount = 0;
 
-    for(std::size_t i = k; i < text.length(); i++){
-        std::string context = text.substr(i-k, k);
-        char symbol = text[i];
+    for(std::size_t i = k; i < characters.size(); i++){
+        std::string context;
+        for(std::size_t j = i - k; j < i; j++){
+            context += characters[j];
+        }
+        
+        std::string symbol = characters[i];
 
         double probability = getProbability(context, symbol);
-        //std::cout << "Probability: " << probability << std::endl;
         totalInformation += -std::log2(static_cast<float>(probability));  // information content of each symbol
         symbolCount++;
     }
@@ -133,40 +199,7 @@ double FCMModel::computeAverageInformationContent(const std::string &text) const
     return totalInformation / symbolCount;
 }
 
-//? Old code - generates the most probable symbol only (so the same one every time)
-// char FCMModel::predict(const std::string &context) const {
-//     // First check if the context exists in the probability table
-//     auto contextIt = probabilityTable.find(context);
-//     if (contextIt == probabilityTable.end()) {
-//         // If context doesn't exist, return most common character or a default
-//         if (!alphabet.empty()) {
-//             return *alphabet.begin();  // Return first character in alphabet as fallback
-//         }
-//         return ' ';  // Default fallback
-//     }
-
-//     double maxProbability = 0.0;
-//     char predictedSymbol = '\0';
-
-//     for (const auto &symbolPair : contextIt->second) {
-//         char symbol = symbolPair.first;
-//         double probability = symbolPair.second;
-
-//         if (probability > maxProbability) {
-//             maxProbability = probability;
-//             predictedSymbol = symbol;
-//         }
-//     }
-
-//     // If we couldn't find a prediction (shouldn't happen with proper smoothing)
-//     if (predictedSymbol == '\0' && !alphabet.empty()) {
-//         return *alphabet.begin();
-//     }
-
-//     return predictedSymbol;
-// }
-
-char FCMModel::predict(const std::string &context) const {
+std::string FCMModel::predict(const std::string &context) const {
     // First check if the context exists in the probability table
     auto contextIt = probabilityTable.find(context);
     if (contextIt == probabilityTable.end()) {
@@ -176,11 +209,11 @@ char FCMModel::predict(const std::string &context) const {
             std::advance(it, rand() % alphabet.size());
             return *it;
         }
-        return ' ';  // Default fallback
+        return " ";  // Default fallback
     }
 
     // Calculate cumulative probabilities for weighted random selection
-    std::vector<std::pair<char, double>> cumulativeProbabilities;
+    std::vector<std::pair<std::string, double>> cumulativeProbabilities;
     double sum = 0.0;
 
     for (const auto &symbolPair : contextIt->second) {
@@ -199,35 +232,53 @@ char FCMModel::predict(const std::string &context) const {
     }
 
     // Fallback (shouldn't reach here with proper smoothing)
-    return !alphabet.empty() ? *alphabet.begin() : ' ';
+    return !alphabet.empty() ? *alphabet.begin() : " ";
 }
 
-string FCMModel::predict(const std::string &context, int n) const{
-    std::string prediction = context;
+std::string FCMModel::predict(const std::string &initialContext, int n) const{
+    // First split the initial context into UTF-8 characters
+    std::vector<std::string> contextChars = splitIntoUTF8Characters(initialContext);
+    
+    // Ensure we have enough characters for the context
+    if (contextChars.size() < static_cast<size_t>(k)) {
+        // Handle error or pad with spaces
+        while (contextChars.size() < static_cast<size_t>(k)) {
+            contextChars.insert(contextChars.begin(), " ");
+        }
+    }
+    
+    // Take the last k characters as our starting context
+    std::string rollingContext;
+    for (size_t i = contextChars.size() - k; i < contextChars.size(); i++) {
+        rollingContext += contextChars[i];
+    }
+    
+    std::string prediction = rollingContext;
+    std::string result = prediction;
 
     for(int i = 0; i < n; i++){
-        char symbol = predict(prediction);
-        prediction += symbol;
+        std::string nextSymbol = predict(rollingContext);
+        result += nextSymbol;
+        
+        // Update the rolling context by removing the first character and adding the new one
+        std::vector<std::string> contextChars = splitIntoUTF8Characters(rollingContext);
+        rollingContext = "";
+        
+        // Skip the first character and add all others plus the new symbol
+        for (size_t j = 1; j < contextChars.size(); j++) {
+            rollingContext += contextChars[j];
+        }
+        rollingContext += nextSymbol;
     }
 
-    return prediction;
+    return result;
 }
 
-void FCMModel::exportModel(const std::string &filename){
-    // Export the model to a JSON file
-    // The JSON file should contain the following fields:
-    // - k: The order of the model (length of the context).
-    // - alpha: The smoothing parameter.
-    // - alphabet: The alphabet.
-    // - frequencyTable: The frequency table.
-    // - probabilityTable: The probability table.
-    // - contextCount: The context count.
-    // - locked: Whether the model is locked or not.
-
-    // Create the file if it does not exist
-    ofstream file(filename);
+void FCMModel::exportModel(const std::string &filename) {
+    // Open file in binary mode to ensure exact byte writing.
+    std::ofstream file(filename, std::ios::binary);
     if(!file){
-        throw runtime_error("The file " + filename + " could not be opened!");
+        throw std::runtime_error("The file " + filename + " could not be opened!");
     }
 
     json modelJson;
@@ -248,21 +299,12 @@ void FCMModel::exportModel(const std::string &filename){
 
     modelJson["contextCount"] = contextCount;
 
-    file << modelJson.dump(4);
-    file.close();
+    // Dump JSON with indent of 4 spaces and write to file
+    file << modelJson.dump(4, ' ', true) << std::endl;
+    // No need to explicitly call close(); destructor will flush and close.
 }
 
-void FCMModel::importModel(const std::string &filename){
-    // Import the model from a JSON file
-    // The JSON file should contain the following fields:
-    // - k: The order of the model (length of the context).
-    // - alpha: The smoothing parameter.
-    // - alphabet: The alphabet.
-    // - frequencyTable: The frequency table.
-    // - probabilityTable: The probability table.
-    // - contextCount: The context count.
-    // - locked: Whether the model is locked or not.
-
+void FCMModel::importModel(const std::string &filename){    
     std::string modelJsonString = readFile(filename);
     json modelJson = json::parse(modelJsonString);
 
@@ -286,4 +328,34 @@ void FCMModel::importModel(const std::string &filename){
     }
 
     contextCount = modelJson["contextCount"];
+}
+
+// Helper method to split a string into UTF-8 characters
+std::vector<std::string> FCMModel::splitIntoUTF8Characters(const std::string &text) const {
+    std::vector<std::string> characters;
+    
+    for (size_t i = 0; i < text.length(); /* incremented in the loop */) {
+        int charLen = 1;
+        
+        // Determine UTF-8 character length based on first byte
+        unsigned char firstByte = static_cast<unsigned char>(text[i]);
+        if ((firstByte & 0x80) == 0) {
+            charLen = 1;  // ASCII character
+        } else if ((firstByte & 0xE0) == 0xC0) {
+            charLen = 2;  // 2-byte UTF-8
+        } else if ((firstByte & 0xF0) == 0xE0) {
+            charLen = 3;  // 3-byte UTF-8
+        } else if ((firstByte & 0xF8) == 0xF0) {
+            charLen = 4;  // 4-byte UTF-8
+        }
+        
+        // Check if we have a complete character
+        if (i + charLen <= text.length()) {
+            characters.push_back(text.substr(i, charLen));
+        }
+        
+        i += charLen;
+    }
+    
+    return characters;
 }

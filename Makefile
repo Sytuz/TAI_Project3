@@ -11,7 +11,7 @@ TARGET_FCM   = fcm
 TARGET_GEN   = generator
 
 # Default target to build both executables
-all: $(TARGET_FCM) $(TARGET_GEN)
+all: clean $(TARGET_FCM) $(TARGET_GEN)
 
 # Link object files into the final executables
 $(TARGET_FCM): $(OBJECTS_FCM)
