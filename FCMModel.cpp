@@ -16,31 +16,6 @@ int getAlphabetSize(const std::string &text){
     return uniqueChars.size();
 }
 
-/* string readFile(const std::string &filename){
-    ifstream file(filename);
-    if(!file){
-        throw runtime_error("The file " + filename + " could not be opened!");
-    }
-
-    stringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
-} */
-
-/* string readFile(const std::string &filename){
-    ifstream file(filename);
-    if(!file){
-        throw runtime_error("The file " + filename + " could not be opened!");
-    }
-
-    stringstream buffer;
-    buffer << file.rdbuf();
-
-    cout << "Read " << buffer.str().length() << " characters from " << filename << endl;
-
-    return buffer.str();
-} */
-
 std::string readFile(const std::string &filename) {
     std::ifstream file(filename, std::ios::binary); // Open in binary mode
     if (!file) {
@@ -56,57 +31,81 @@ std::string readFile(const std::string &filename) {
     return content;
 }
 
-// Class methods
-void FCMModel::learn(const std::string &text){
-    if (locked) return;
+bool FCMModel::isModelEmpty() const {
+    return frequencyTable.empty() && probabilityTable.empty();
+}
 
-    // We need to ensure we're working with complete UTF-8 characters
-    std::vector<std::string> characters;
-    
-    // First, split the text into proper UTF-8 characters
-    for (size_t i = 0; i < text.length(); /* incremented in the loop */) {
-        int charLen = 1;
-        
-        // Determine UTF-8 character length based on first byte
-        unsigned char firstByte = static_cast<unsigned char>(text[i]);
-        if ((firstByte & 0x80) == 0) {
-            charLen = 1;  // ASCII character
-        } else if ((firstByte & 0xE0) == 0xC0) {
-            charLen = 2;  // 2-byte UTF-8
-        } else if ((firstByte & 0xF0) == 0xE0) {
-            charLen = 3;  // 3-byte UTF-8
-        } else if ((firstByte & 0xF8) == 0xF0) {
-            charLen = 4;  // 4-byte UTF-8
-        }
-        
-        // Check if we have a complete character
-        if (i + charLen <= text.length()) {
-            characters.push_back(text.substr(i, charLen));
-        }
-        
-        i += charLen;
+std::size_t FCMModel::getContextCount() const {
+    return frequencyTable.size();
+}
+
+std::size_t FCMModel::getTotalTransitionCount() const {
+    std::size_t total = 0;
+    for (const auto &contextPair : contextCount) {
+        total += contextPair.second;
+    }
+    return total;
+}
+
+// Class methods
+void FCMModel::learn(const std::string &text) {
+    if (locked) {
+        std::cout << "Cannot learn: model is locked" << std::endl;
+        return;  // Early return if locked - consider throwing an exception instead
     }
     
-    // Now process the characters
-    for (size_t i = k; i < characters.size(); ++i) {
+    if (text.empty()) {
+        std::cout << "Cannot learn: input text is empty" << std::endl;
+        return;  // Early return if text is empty
+    }
+    
+    std::cout << "Learning from text of length: " << text.length() << " characters..." << std::endl;
+    
+    // Split text into UTF-8 characters
+    std::vector<std::string> characters = splitIntoUTF8Characters(text);
+    std::cout << "Split into " << characters.size() << " UTF-8 characters" << std::endl;
+    
+    // We need at least k+1 characters to create a context and a following symbol
+    if (characters.size() <= static_cast<std::size_t>(k)) {
+        std::cout << "Text too short for model order k=" << k << std::endl;
+        return;
+    }
+    
+    int contextProcessed = 0;
+    
+    // Process each sequence of k characters to predict the next one
+    for (std::size_t i = 0; i <= characters.size() - k - 1; ++i) {
+        // Build context from k consecutive characters
         std::string context;
-        for (size_t j = i - k; j < i; ++j) {
+        for (std::size_t j = i; j < i + k; ++j) {
             context += characters[j];
         }
         
-        std::string symbol = characters[i];
+        // The next character after the context
+        std::string symbol = characters[i + k];
         
-        // Add new characters to the alphabet dynamically
-        // Note: we're now storing full UTF-8 characters in the alphabet
-        alphabet.insert(symbol);  // This might need adjustment based on your alphabet definition
+        // Add to alphabet
+        alphabet.insert(symbol);
         
-        frequencyTable[context][symbol]++;  // This might need adjustment based on how you store frequencies
+        // Update frequency tables
+        frequencyTable[context][symbol]++;
         contextCount[context]++;
+        
+        contextProcessed++;
+        
+        // Optional: add progress indicator for large texts
+        if (contextProcessed % 10000 == 0) {
+            std::cout << "Processed " << contextProcessed << " contexts..." << std::endl;
+        }
     }
-
+    
+    std::cout << "Learning complete. Processed " << contextProcessed << " contexts." << std::endl;
+    std::cout << "Model now contains " << frequencyTable.size() << " unique contexts." << std::endl;
+    std::cout << "Alphabet size: " << alphabet.size() << " unique symbols." << std::endl;
+    
+    // Generate probability table after learning
     generateProbabilityTable();
 }
-
 
 void FCMModel::clearModel(){
     if (locked) {
@@ -155,20 +154,42 @@ double FCMModel::getProbability(const std::string &context, const std::string &s
     return (count + alpha) / (totalCount + alpha * getAlphabetSize());
 }
 
-void FCMModel::generateProbabilityTable(){
+void FCMModel::generateProbabilityTable() {
+    std::cout << "Generating probability table..." << std::endl;
+    
     probabilityTable.clear();
-
-    for(const auto &contextPair : frequencyTable){
+    
+    // If the model is empty, there's nothing to do
+    if (frequencyTable.empty()) {
+        std::cout << "Frequency table is empty, no probabilities to calculate." << std::endl;
+        return;
+    }
+    
+    int contextCount = 0;
+    
+    for (const auto &contextPair : frequencyTable) {
         const std::string &context = contextPair.first;
-        int totalCount = contextCount[context];
-
-        for (const auto &symbolPair : contextPair.second){
+        int totalCount = this->contextCount[context];
+        
+        if (totalCount <= 0) {
+            std::cout << "Warning: Context '" << context << "' has zero or negative count." << std::endl;
+            continue;
+        }
+        
+        // Calculate probability for each symbol in this context
+        for (const auto &symbolPair : contextPair.second) {
             const std::string &symbol = symbolPair.first;
             int count = symbolPair.second;
-
-            probabilityTable[context][symbol] = (count + alpha) / (totalCount + alpha * getAlphabetSize());
+            
+            // Apply Laplace smoothing
+            double probability = (count + alpha) / (totalCount + alpha * getAlphabetSize());
+            probabilityTable[context][symbol] = probability;
         }
+        
+        contextCount++;
     }
+    
+    std::cout << "Probability table generated for " << contextCount << " contexts." << std::endl;
 }
 
 // uses Shannon entropy (average information content per symbol)
@@ -235,42 +256,60 @@ std::string FCMModel::predict(const std::string &context) const {
     return !alphabet.empty() ? *alphabet.begin() : " ";
 }
 
-std::string FCMModel::predict(const std::string &initialContext, int n) const{
+std::string FCMModel::predict(const std::string &initialContext, int n) const {
+    std::cout << "Starting prediction with context: '" << initialContext << "'" << std::endl;
+    
     // First split the initial context into UTF-8 characters
     std::vector<std::string> contextChars = splitIntoUTF8Characters(initialContext);
+    std::cout << "Context has " << contextChars.size() << " characters, model k=" << k << std::endl;
     
-    // Ensure we have enough characters for the context
-    if (contextChars.size() < static_cast<size_t>(k)) {
-        // Handle error or pad with spaces
+    // Ensure we have exactly k characters for the context
+    if (contextChars.size() > static_cast<std::size_t>(k)) {
+        // If we have more than k, take only the last k
+        std::vector<std::string> tempChars;
+        for (std::size_t i = contextChars.size() - k; i < contextChars.size(); i++) {
+            tempChars.push_back(contextChars[i]);
+        }
+        contextChars = tempChars;
+        std::cout << "Trimmed context to last " << k << " characters" << std::endl;
+    } else if (contextChars.size() < static_cast<size_t>(k)) {
+        // If we have fewer than k, pad with spaces
         while (contextChars.size() < static_cast<size_t>(k)) {
             contextChars.insert(contextChars.begin(), " ");
         }
+        std::cout << "Padded context to " << k << " characters" << std::endl;
     }
     
-    // Take the last k characters as our starting context
+    // Rebuild context string from the adjusted character array
     std::string rollingContext;
-    for (size_t i = contextChars.size() - k; i < contextChars.size(); i++) {
-        rollingContext += contextChars[i];
+    for (const auto& c : contextChars) {
+        rollingContext += c;
     }
     
-    std::string prediction = rollingContext;
-    std::string result = prediction;
-
-    for(int i = 0; i < n; i++){
+    std::cout << "Using rolling context: '" << rollingContext << "'" << std::endl;
+    
+    // Initialize result as empty - we'll only return the predicted characters, not the context
+    std::string result = "";
+    
+    // Generate n new characters
+    for (int i = 0; i < n; i++) {
+        // Predict next symbol based on current context
         std::string nextSymbol = predict(rollingContext);
         result += nextSymbol;
         
-        // Update the rolling context by removing the first character and adding the new one
-        std::vector<std::string> contextChars = splitIntoUTF8Characters(rollingContext);
-        rollingContext = "";
+        // Update rolling context by removing first character and adding the new one
+        std::vector<std::string> updatedChars = splitIntoUTF8Characters(rollingContext);
+        rollingContext.clear();
         
-        // Skip the first character and add all others plus the new symbol
-        for (size_t j = 1; j < contextChars.size(); j++) {
-            rollingContext += contextChars[j];
+        // Skip the first UTF-8 character and add all others
+        for (size_t j = 1; j < updatedChars.size(); j++) {
+            rollingContext += updatedChars[j];
         }
+        // Add the new symbol
         rollingContext += nextSymbol;
     }
-
+    
+    std::cout << "Predicted " << n << " characters: '" << result << "'" << std::endl;
     return result;
 }
 
@@ -334,7 +373,7 @@ void FCMModel::importModel(const std::string &filename){
 std::vector<std::string> FCMModel::splitIntoUTF8Characters(const std::string &text) const {
     std::vector<std::string> characters;
     
-    for (size_t i = 0; i < text.length(); /* incremented in the loop */) {
+    for (std::size_t i = 0; i < text.length(); /* incremented in the loop */) {
         int charLen = 1;
         
         // Determine UTF-8 character length based on first byte
@@ -358,4 +397,31 @@ std::vector<std::string> FCMModel::splitIntoUTF8Characters(const std::string &te
     }
     
     return characters;
+}
+
+void FCMModel::printModelSummary() const {
+    std::cout << "=== FCM Model Summary ===" << std::endl;
+    std::cout << "Order (k): " << k << std::endl;
+    std::cout << "Smoothing (alpha): " << alpha << std::endl;
+    std::cout << "Model is " << (locked ? "locked" : "unlocked") << std::endl;
+    std::cout << "Alphabet size: " << alphabet.size() << " unique symbols" << std::endl;
+    std::cout << "Contexts: " << frequencyTable.size() << " unique contexts" << std::endl;
+    std::cout << "Total transitions: " << getTotalTransitionCount() << std::endl;
+    
+    // Print some example contexts if available
+    if (!frequencyTable.empty()) {
+        std::cout << "\nExample contexts:" << std::endl;
+        int count = 0;
+        for (const auto &contextPair : frequencyTable) {
+            if (count >= 5) break; // Limit to 5 examples
+            
+            std::cout << "Context '" << contextPair.first << "' -> ";
+            for (const auto &symbolPair : contextPair.second) {
+                std::cout << "'" << symbolPair.first << "'(" << symbolPair.second << ") ";
+            }
+            std::cout << std::endl;
+            count++;
+        }
+    }
+    std::cout << "=========================" << std::endl;
 }

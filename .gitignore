@@ -35,6 +35,7 @@
 *.app
 fcm
 generator
+editor
 
 # VSCode files
 .vscode/
