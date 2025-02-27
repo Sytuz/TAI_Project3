@@ -2,6 +2,7 @@
 #include <sstream>
 #include "json.hpp"
 #include <unordered_set>
+#include <regex>
 
 using namespace std;
 using json = nlohmann::json;
@@ -417,19 +418,29 @@ void FCMModel::printModelSummary() const {
     std::cout << "Alphabet size: " << alphabet.size() << " unique symbols" << std::endl;
     std::cout << "Contexts: " << frequencyTable.size() << " unique contexts" << std::endl;
     std::cout << "Total transitions: " << getTotalTransitionCount() << std::endl;
-    
-    // Print some example contexts if available
+
     if (!frequencyTable.empty()) {
         std::cout << "\nExample contexts:" << std::endl;
         int count = 0;
+
         for (const auto &contextPair : frequencyTable) {
-            if (count >= 5) break; // Limit to 5 examples
-            
-            std::cout << "Context '" << contextPair.first << "' -> ";
+            if (count >= 5) break;
+
+            std::string context = contextPair.first;
+
+            // Replace non-printable characters with '?'
+            for (char &c : context) {
+                if (!std::isprint(c)) {
+                    c = '?';
+                }
+            }
+
+            std::cout << "Context '" << context << "' -> ";
             for (const auto &symbolPair : contextPair.second) {
                 std::cout << "'" << symbolPair.first << "'(" << symbolPair.second << ") ";
             }
             std::cout << std::endl;
+
             count++;
         }
     }

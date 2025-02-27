@@ -175,6 +175,7 @@ void predictNextSymbols(const FCMModel& model) {
     } catch (const std::exception& e) {
         std::cerr << "Error during prediction: " << e.what() << std::endl;
     }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
 }
 
 void computeInformationContent(const FCMModel& model) {
@@ -231,6 +232,7 @@ void lockUnlockModel(FCMModel& model) {
         model.lockModel();
         std::cout << "Model locked successfully." << std::endl;
     }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 void renameModel(std::string& modelName) {
@@ -257,6 +259,8 @@ void exportModel(FCMModel& model, std::string modelName) {
     } catch (const std::exception& e) {
         std::cerr << "Error exporting model: " << e.what() << std::endl;
     }
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 
@@ -317,6 +321,15 @@ int main() {
                 return 0;
             
             case 1:
+                if (modelInitialized) {
+                    std::cout << "A model is already loaded. Do you want to overwrite it? (y/n): ";
+                    char overwrite;
+                    std::cin >> overwrite;
+                    if (overwrite != 'y' && overwrite != 'Y') {
+                        break;
+                    }
+                    model.clearModel();
+                }
                 createNewModel(model);
                 modelInitialized = true;
                 modelName = "New Model";
@@ -324,10 +337,9 @@ int main() {
             
             case 2:
                 modelName = importModel(model);
-                modelInitialized = true;
-                std::cout << "Enter model filename: ";
-                std::cin.ignore();
-                std::getline(std::cin, modelName);
+                if (!modelName.empty()) {
+                    modelInitialized = true;
+                }
                 break;
             
             default:
