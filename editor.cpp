@@ -6,6 +6,9 @@
 #include <cstdlib>
 #include <filesystem>
 
+
+/* --- Screen Manipulation --- */
+
 void clearScreen() {
     #ifdef _WIN32
         system("cls");
@@ -16,9 +19,12 @@ void clearScreen() {
 
 void pressEnterToContinue() {
     std::cout << "\nPress Enter to continue...";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
 }
+
+
+/* --- Creation & Importing --- */
 
 void createNewModel(FCMModel& model) {
     int k;
@@ -42,7 +48,7 @@ void createNewModel(FCMModel& model) {
     std::cout << "New model created successfully with k=" << k << " and alpha=" << alpha << std::endl;
 }
 
-void importModel(FCMModel& model) {
+std::string importModel(FCMModel& model) {
     std::string filename;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
@@ -52,9 +58,48 @@ void importModel(FCMModel& model) {
     try {
         model.importModel(filename);
         std::cout << "Model imported successfully from " << filename << std::endl;
+        filename = filename.substr(0, filename.find_last_of('.'));
+        return filename;
     } catch (const std::exception& e) {
         std::cerr << "Error importing model: " << e.what() << std::endl;
+        return "";
     }
+}
+
+
+/* --- Core Model Operations --- */
+
+void batchLearnFromDirectory(FCMModel& model) {
+    std::string directoryPath;
+    
+    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cout << "Enter the directory path to learn from: ";
+    std::getline(std::cin, directoryPath);
+    
+    int successCount = 0;
+    int fileCount = 0;
+    
+    try {
+        for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
+            if (entry.is_regular_file()) {
+                fileCount++;
+                try {
+                    std::string text = readFile(entry.path().string());
+                    model.learn(text);
+                    std::cout << "✓ Learned from " << entry.path().string() << std::endl;
+                    successCount++;
+                } catch (const std::exception& e) {
+                    std::cerr << "✗ Error learning from " << entry.path().string() << ": " << e.what() << std::endl;
+                }
+            }
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error accessing directory: " << e.what() << std::endl;
+        return;
+    }
+    
+    std::cout << "Batch learning completed. Successfully processed " 
+              << successCount << " out of " << fileCount << " files." << std::endl;
 }
 
 void learnFromText(FCMModel& model) {
@@ -64,6 +109,7 @@ void learnFromText(FCMModel& model) {
     std::cout << "Choose input method:\n";
     std::cout << "1. Enter text directly\n";
     std::cout << "2. Load from file\n";
+    std::cout << "3. Batch learn from directory\n";
     std::cout << "Enter your choice: ";
     std::getline(std::cin, choice);
     
@@ -94,6 +140,8 @@ void learnFromText(FCMModel& model) {
         } catch (const std::exception& e) {
             std::cerr << "Error learning from file: " << e.what() << std::endl;
         }
+    } else if (choice == "3") {
+        batchLearnFromDirectory(model);
     } else {
         std::cout << "Invalid choice." << std::endl;
     }
@@ -172,12 +220,36 @@ void computeInformationContent(const FCMModel& model) {
     }
 }
 
-void exportModel(FCMModel& model) {  // Changed from const FCMModel& to FCMModel&
-    std::string filename;
+
+/* --- Model Manipulation --- */
+
+void lockUnlockModel(FCMModel& model) {
+    if (model.isLocked()) {
+        model.unlockModel();
+        std::cout << "Model unlocked successfully." << std::endl;
+    } else {
+        model.lockModel();
+        std::cout << "Model locked successfully." << std::endl;
+    }
+}
+
+void renameModel(std::string& modelName) {
+    std::string newName;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    std::cout << "Enter the filename to export the model to: ";
-    std::getline(std::cin, filename);
+    std::cout << "Enter the new model name: ";
+    std::getline(std::cin, newName);
+    modelName = newName;
+    std::cout << "Model renamed successfully." << std::endl;
+}
+
+void clearModel(FCMModel& model) {
+    model.clearModel();
+    std::cout << "Model cleared successfully." << std::endl;
+}
+
+void exportModel(FCMModel& model, std::string modelName) {
+    std::string filename = modelName + ".json";
     
     try {
         model.exportModel(filename);
@@ -187,52 +259,17 @@ void exportModel(FCMModel& model) {  // Changed from const FCMModel& to FCMModel
     }
 }
 
-void displayModelProperties(const FCMModel& model) {
-    std::cout << "Model Properties:" << std::endl;
-    std::cout << "- Order (k): " << model.getK() << std::endl;
-    // Additional properties can be added if we expand the FCMModel class to expose more information
-}
 
-void batchLearnFromFiles(FCMModel& model) {
-    std::string directoryPath;
-    
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cout << "Enter the directory path to learn from: ";
-    std::getline(std::cin, directoryPath);
-    
-    int successCount = 0;
-    int fileCount = 0;
-    
-    try {
-        for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
-            if (entry.is_regular_file()) {
-                fileCount++;
-                try {
-                    std::string text = readFile(entry.path().string());
-                    model.learn(text);
-                    std::cout << "✓ Learned from " << entry.path().string() << std::endl;
-                    successCount++;
-                } catch (const std::exception& e) {
-                    std::cerr << "✗ Error learning from " << entry.path().string() << ": " << e.what() << std::endl;
-                }
-            }
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error accessing directory: " << e.what() << std::endl;
-        return;
-    }
-    
-    std::cout << "Batch learning completed. Successfully processed " 
-              << successCount << " out of " << fileCount << " files." << std::endl;
-}
+/* --- Main Program Loop --- */
 
-void displayMenu(const std::string& modelName, bool modelInitialized) {
+void displayMenu(const std::string& modelName, bool modelInitialized, FCMModel& model) {
     clearScreen();
     std::cout << "=============================================\n";
-    std::cout << "             FCM MODEL EDITOR               \n";
+    std::cout << "              FCM MODEL EDITOR               \n";
     std::cout << "=============================================\n";
     if (modelInitialized) {
         std::cout << "Current Model: " << modelName << "\n";
+        model.printModelSummary();
     } else {
         std::cout << "No model loaded.\n";
     }
@@ -240,15 +277,18 @@ void displayMenu(const std::string& modelName, bool modelInitialized) {
     std::cout << "2. Import Model\n";
     
     if (modelInitialized) {
+        std::cout << "=============================================\n";
+        std::cout << "----        CORE MODEL OPERATIONS        ----\n";
         std::cout << "3. Learn From Text\n";
         std::cout << "4. Predict Next Symbols\n";
         std::cout << "5. Compute Information Content\n";
-        std::cout << "6. Lock Model\n";
-        std::cout << "7. Unlock Model\n";
+        std::cout << "=============================================\n";
+        std::cout << "----         MODEL MANIPULATION          ----\n";
+        std::cout << "6. Lock/Unlock Model\n";
+        std::cout << "7. Rename Model\n";
         std::cout << "8. Clear Model\n";
         std::cout << "9. Export Model\n";
-        std::cout << "10. Display Model Properties\n";
-        std::cout << "11. Batch Learn From Files\n";
+        std::cout << "=============================================\n";
     }
     
     std::cout << "0. Exit\n";
@@ -263,7 +303,7 @@ int main() {
     int choice;
     
     while (true) {
-        displayMenu(modelName, modelInitialized);
+        displayMenu(modelName, modelInitialized, model);
         while (!(std::cin >> choice)) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -283,7 +323,7 @@ int main() {
                 break;
             
             case 2:
-                importModel(model);
+                modelName = importModel(model);
                 modelInitialized = true;
                 std::cout << "Enter model filename: ";
                 std::cin.ignore();
@@ -305,25 +345,16 @@ int main() {
                             computeInformationContent(model);
                             break;
                         case 6:
-                            model.lockModel();
-                            std::cout << "Model locked successfully." << std::endl;
+                            lockUnlockModel(model);
                             break;
                         case 7:
-                            model.unlockModel();
-                            std::cout << "Model unlocked successfully." << std::endl;
+                            renameModel(modelName);
                             break;
                         case 8:
-                            model.clearModel();
-                            std::cout << "Model cleared successfully." << std::endl;
+                            clearModel(model);
                             break;
                         case 9:
-                            exportModel(model);
-                            break;
-                        case 10:
-                            displayModelProperties(model);
-                            break;
-                        case 11:
-                            batchLearnFromFiles(model);
+                            exportModel(model, modelName);
                             break;
                         default:
                             std::cout << "Invalid choice. Please try again." << std::endl;

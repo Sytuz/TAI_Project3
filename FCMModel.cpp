@@ -131,6 +131,8 @@ int FCMModel::getAlphabetSize() const {
 }
 
 double FCMModel::getProbability(const std::string &context, const std::string &symbol) const {
+
+    // If the model is locked, use the probability table
     if (locked) {
         auto contextI = probabilityTable.find(context);
         if (contextI != probabilityTable.end()) {
@@ -142,6 +144,7 @@ double FCMModel::getProbability(const std::string &context, const std::string &s
         return 1.0 / getAlphabetSize();
     }
 
+    // If the model is unlocked, apply Laplace smoothing on the frequency table
     auto contextI = frequencyTable.find(context);
     if (contextI == frequencyTable.end()) {
         return 1.0 / getAlphabetSize();
@@ -157,6 +160,7 @@ double FCMModel::getProbability(const std::string &context, const std::string &s
 void FCMModel::generateProbabilityTable() {
     std::cout << "Generating probability table..." << std::endl;
     
+    // Clear the current probability table
     probabilityTable.clear();
     
     // If the model is empty, there's nothing to do
@@ -167,6 +171,7 @@ void FCMModel::generateProbabilityTable() {
     
     int contextCount = 0;
     
+    // Iterate over each context in the frequency table
     for (const auto &contextPair : frequencyTable) {
         const std::string &context = contextPair.first;
         int totalCount = this->contextCount[context];
@@ -194,16 +199,19 @@ void FCMModel::generateProbabilityTable() {
 
 // uses Shannon entropy (average information content per symbol)
 double FCMModel::computeAverageInformationContent(const std::string &text) const{
+
     // First split the text into UTF-8 characters
     std::vector<std::string> characters = splitIntoUTF8Characters(text);
     
-    if(characters.size() <= static_cast<std::size_t>(k)){
+    // If the model is empty or the text is too short, return 0.0
+    if(frequencyTable.empty() || characters.size() <= static_cast<std::size_t>(k)){
         return 0.0;
-    }
+    } 
 
     double totalInformation = 0.0;
     int symbolCount = 0;
 
+    // Iterate over each symbol in the text
     for(std::size_t i = k; i < characters.size(); i++){
         std::string context;
         for(std::size_t j = i - k; j < i; j++){
@@ -221,9 +229,11 @@ double FCMModel::computeAverageInformationContent(const std::string &text) const
 }
 
 std::string FCMModel::predict(const std::string &context) const {
+
     // First check if the context exists in the probability table
     auto contextIt = probabilityTable.find(context);
     if (contextIt == probabilityTable.end()) {
+
         // If context doesn't exist, return random character from alphabet
         if (!alphabet.empty()) {
             auto it = alphabet.begin();
@@ -272,9 +282,9 @@ std::string FCMModel::predict(const std::string &initialContext, int n) const {
         }
         contextChars = tempChars;
         std::cout << "Trimmed context to last " << k << " characters" << std::endl;
-    } else if (contextChars.size() < static_cast<size_t>(k)) {
+    } else if (contextChars.size() < static_cast<std::size_t>(k)) {
         // If we have fewer than k, pad with spaces
-        while (contextChars.size() < static_cast<size_t>(k)) {
+        while (contextChars.size() < static_cast<std::size_t>(k)) {
             contextChars.insert(contextChars.begin(), " ");
         }
         std::cout << "Padded context to " << k << " characters" << std::endl;
@@ -302,7 +312,7 @@ std::string FCMModel::predict(const std::string &initialContext, int n) const {
         rollingContext.clear();
         
         // Skip the first UTF-8 character and add all others
-        for (size_t j = 1; j < updatedChars.size(); j++) {
+        for (std::size_t j = 1; j < updatedChars.size(); j++) {
             rollingContext += updatedChars[j];
         }
         // Add the new symbol
@@ -400,7 +410,7 @@ std::vector<std::string> FCMModel::splitIntoUTF8Characters(const std::string &te
 }
 
 void FCMModel::printModelSummary() const {
-    std::cout << "=== FCM Model Summary ===" << std::endl;
+    std::cout << "============= FCM MODEL SUMMARY =============" << std::endl;
     std::cout << "Order (k): " << k << std::endl;
     std::cout << "Smoothing (alpha): " << alpha << std::endl;
     std::cout << "Model is " << (locked ? "locked" : "unlocked") << std::endl;
@@ -423,5 +433,5 @@ void FCMModel::printModelSummary() const {
             count++;
         }
     }
-    std::cout << "=========================" << std::endl;
+    std::cout << "=============================================" << std::endl;
 }
