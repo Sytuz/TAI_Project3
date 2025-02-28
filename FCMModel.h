@@ -87,7 +87,7 @@ public:
      * @brief Learns from the given text by updating the model.
      * @param text The input text to learn from.
      */
-    void learn(const std::string &text);
+    void learn(const std::string &text, bool clearLogs = false);
 
     /**
      * @brief Computes the average information content of the given text based on the model.

@@ -49,7 +49,7 @@ std::size_t FCMModel::getTotalTransitionCount() const {
 }
 
 // Class methods
-void FCMModel::learn(const std::string &text) {
+void FCMModel::learn(const std::string &text, bool clearLogs) {
     if (locked) {
         std::cout << "Cannot learn: model is locked" << std::endl;
         return;  // Early return if locked - consider throwing an exception instead
@@ -60,11 +60,15 @@ void FCMModel::learn(const std::string &text) {
         return;  // Early return if text is empty
     }
     
-    std::cout << "Learning from text of length: " << text.length() << " characters..." << std::endl;
+    if (!clearLogs) {
+        std::cout << "Learning from text of length: " << text.length() << " characters..." << std::endl;
+    }
     
     // Split text into UTF-8 characters
     std::vector<std::string> characters = splitIntoUTF8Characters(text);
-    std::cout << "Split into " << characters.size() << " UTF-8 characters" << std::endl;
+    if (!clearLogs) {
+        std::cout << "Split into " << characters.size() << " UTF-8 characters" << std::endl;
+    }
     
     // We need at least k+1 characters to create a context and a following symbol
     if (characters.size() <= static_cast<std::size_t>(k)) {
@@ -100,12 +104,11 @@ void FCMModel::learn(const std::string &text) {
         }
     }
     
-    std::cout << "Learning complete. Processed " << contextProcessed << " contexts." << std::endl;
-    std::cout << "Model now contains " << frequencyTable.size() << " unique contexts." << std::endl;
-    std::cout << "Alphabet size: " << alphabet.size() << " unique symbols." << std::endl;
-    
-    // Generate probability table after learning
-    generateProbabilityTable();
+    if (!clearLogs) {
+        std::cout << "Learning complete. Processed " << contextProcessed << " contexts." << std::endl;
+        std::cout << "Model now contains " << frequencyTable.size() << " unique contexts." << std::endl;
+        std::cout << "Alphabet size: " << alphabet.size() << " unique symbols." << std::endl;
+    }
 }
 
 void FCMModel::clearModel(){
@@ -232,8 +235,8 @@ double FCMModel::computeAverageInformationContent(const std::string &text) const
 std::string FCMModel::predict(const std::string &context) const {
 
     // First check if the context exists in the probability table
-    auto contextIt = probabilityTable.find(context);
-    if (contextIt == probabilityTable.end()) {
+    auto contextIt = frequencyTable.find(context);
+    if (contextIt == frequencyTable.end()) {
 
         // If context doesn't exist, return random character from alphabet
         if (!alphabet.empty()) {
@@ -320,7 +323,6 @@ std::string FCMModel::predict(const std::string &initialContext, int n) const {
         rollingContext += nextSymbol;
     }
     
-    std::cout << "Predicted " << n << " characters: '" << result << "'" << std::endl;
     return result;
 }
 
@@ -330,6 +332,8 @@ void FCMModel::exportModel(const std::string &filename) {
     if(!file){
         throw std::runtime_error("The file " + filename + " could not be opened!");
     }
+
+    lockModel();  // Lock the model before exporting
 
     json modelJson;
     modelJson["k"] = k;

@@ -46,6 +46,7 @@ void createNewModel(FCMModel& model) {
     
     model = FCMModel(k, alpha);
     std::cout << "New model created successfully with k=" << k << " and alpha=" << alpha << std::endl;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 std::string importModel(FCMModel& model) {
@@ -73,11 +74,16 @@ void batchLearnFromDirectory(FCMModel& model) {
     std::string directoryPath;
     
     //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cout << "Enter the directory path to learn from: ";
+    std::cout << "Enter the directory path to learn from (type '0' to cancel): ";
     std::getline(std::cin, directoryPath);
     
     int successCount = 0;
     int fileCount = 0;
+
+    if (directoryPath == "0") {
+        std::cout << "Operation cancelled." << std::endl;
+        return;
+    }
     
     try {
         for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
@@ -110,6 +116,8 @@ void learnFromText(FCMModel& model) {
     std::cout << "1. Enter text directly\n";
     std::cout << "2. Load from file\n";
     std::cout << "3. Batch learn from directory\n";
+    std::cout << "4. Word List\n";
+    std::cout << "0. Cancel\n";
     std::cout << "Enter your choice: ";
     std::getline(std::cin, choice);
     
@@ -142,6 +150,26 @@ void learnFromText(FCMModel& model) {
         }
     } else if (choice == "3") {
         batchLearnFromDirectory(model);
+    } else if (choice == "4") {
+        // The word list option requires providing a text file where each line is a word
+        std::string filename;
+        std::cout << "Enter the filename to load the word list from: ";
+        std::getline(std::cin, filename);
+        
+        // For each word in the word list, learn the word followed and preceded by a space
+        try {
+            std::string text = readFile(filename);
+            std::istringstream iss(text);
+            std::string word;
+            while (iss >> word) {
+                model.learn(" " + word + " ", true);
+            }
+            std::cout << "Model learned from word list successfully." << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "Error learning from word list: " << e.what() << std::endl;
+        }
+    } else if (choice == "0") {
+        std::cout << "Operation cancelled." << std::endl;
     } else {
         std::cout << "Invalid choice." << std::endl;
     }
@@ -171,10 +199,22 @@ void predictNextSymbols(const FCMModel& model) {
     
     try {
         std::string prediction = model.predict(context, n);
-        std::cout << "Prediction: " << prediction << std::endl;
+        std::cout << "Prediction:\n" << prediction << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Error during prediction: " << e.what() << std::endl;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return;
     }
+
+    std::cout << "\n=============================================\n";
+    std::cout << "Do you want to evaluate the prediction? (y/n): ";
+    std::string evaluate;
+    std::cin >> evaluate;
+
+    if (evaluate == "y" || evaluate == "Y") {
+        // The prediction evaluation shows the percentage of real words in the prediction
+    }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
 }
 
@@ -251,6 +291,7 @@ void clearModel(FCMModel& model) {
 }
 
 void exportModel(FCMModel& model, std::string modelName) {
+    std::cout << "Exporting model..." << std::endl;
     std::string filename = modelName + ".json";
     
     try {
