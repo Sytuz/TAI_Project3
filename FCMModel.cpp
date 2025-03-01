@@ -326,13 +326,7 @@ std::string FCMModel::predict(const std::string &initialContext, int n) const {
     return result;
 }
 
-void FCMModel::exportModel(const std::string &filename) {
-    // Open file in binary mode to ensure exact byte writing.
-    std::ofstream file(filename, std::ios::binary);
-    if(!file){
-        throw std::runtime_error("The file " + filename + " could not be opened!");
-    }
-
+std::string FCMModel::exportModel(const std::string &filename, bool binary) {
     lockModel();  // Lock the model before exporting
 
     json modelJson;
@@ -353,15 +347,57 @@ void FCMModel::exportModel(const std::string &filename) {
 
     modelJson["contextCount"] = contextCount;
 
-    // Dump JSON with indent of 4 spaces and write to file
-    file << modelJson.dump(4, ' ', true) << std::endl;
+    // Update file extension based on format
+    std::string fullFilename = filename + (binary ? ".bson" : ".json");
+
+    // Open file in binary mode to ensure exact byte writing.
+    std::ofstream file(fullFilename, std::ios::binary);
+    if(!file){
+        throw std::runtime_error("The file " + fullFilename + " could not be opened!");
+    }
+
+    if (binary) {
+        // Use BSON format for binary export
+        std::vector<uint8_t> bson = json::to_bson(modelJson);
+        file.write(reinterpret_cast<const char*>(bson.data()), bson.size());
+    } else {
+        // Dump JSON with indent of 4 spaces and write to file
+        file << modelJson.dump(4, ' ', true) << std::endl;
+    }
     // No need to explicitly call close(); destructor will flush and close.
+    return fullFilename;
 }
 
-void FCMModel::importModel(const std::string &filename){    
-    std::string modelJsonString = readFile(filename);
-    json modelJson = json::parse(modelJsonString);
+void FCMModel::importModel(const std::string &filename, bool binary){    
 
+    json modelJson; // JSON object to store the parsed model data
+
+    if (binary) {
+        // Read binary file into vector
+        std::ifstream file(filename, std::ios::binary);
+        if (!file) {
+            throw std::runtime_error("The file " + filename + " could not be opened!");
+        }
+        
+        // Get file size
+        file.seekg(0, std::ios::end);
+        size_t fileSize = file.tellg();
+        file.seekg(0, std::ios::beg);
+        
+        // Read the file content
+        std::vector<uint8_t> data(fileSize);
+        file.read(reinterpret_cast<char*>(data.data()), fileSize);
+        
+        // Parse BSON data
+        modelJson = json::from_bson(data);
+        
+    } else {
+        // JSON import code
+        std::string modelJsonString = readFile(filename);
+        modelJson = json::parse(modelJsonString);
+    }
+
+    // Process the parsed data from file
     k = modelJson["k"];
     alpha = modelJson["alpha"];
     alphabet = modelJson["alphabet"];

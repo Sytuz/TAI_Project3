@@ -107,17 +107,20 @@ public:
     /**
      * @brief Imports a model from the given file.
      * @param filename The name of the file to import the model from.
+     * @param binary Whether to import a file in binary format (true) or JSON format (false).
      */
-    void importModel(const std::string &filename);
+    void importModel(const std::string &filename, bool binary = true);
 
     /**
      * @brief Exports the model to the given file.
      * @param filename The name of the file to export the model to.
+     * @param binary Whether to export in binary format (true) or JSON format (false).
+     * @return The filename of the exported model.
      */
-    void exportModel(const std::string &filename);
+    std::string exportModel(const std::string &filename, bool binary = true);
 
     /*
-    The JSON export file should contain the following fields:
+    The exported file should contain the following fields:
      - k: The order of the model (length of the context).
      - alpha: The smoothing parameter.
      - alphabet: The alphabet.

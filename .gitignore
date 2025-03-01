@@ -1,5 +1,6 @@
 # Exported models
 *.json
+*.bson
 
 # Prerequisites
 *.d
