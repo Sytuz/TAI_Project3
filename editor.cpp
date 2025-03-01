@@ -61,10 +61,35 @@ std::string importModel(FCMModel &model)
     std::cout << "Enter the filename to import the model from: ";
     std::getline(std::cin, filename);
 
+    // Determine if the model file is binary based on extension
+    bool binary = false;
+    std::string fileExtension;
+    size_t dotPosition = filename.find_last_of('.');
+
+    if (dotPosition != std::string::npos)
+    {
+        fileExtension = filename.substr(dotPosition);
+        if (fileExtension == ".bson")
+        {
+            binary = true;
+        }
+        else if (fileExtension != ".json")
+        {
+            std::cout << "Warning: Unrecognized file extension '" << fileExtension 
+                 << "'. Assuming JSON format." << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "Warning: No file extension found. Assuming JSON format." << std::endl;
+    }
+
     try
     {
-        model.importModel(filename);
+        model.importModel(filename, binary);
         std::cout << "Model imported successfully from " << filename << std::endl;
+
+        // Return the filename without the extension
         filename = filename.substr(0, filename.find_last_of('.'));
         return filename;
     }
@@ -406,12 +431,27 @@ void clearModel(FCMModel &model)
 void exportModel(FCMModel &model, std::string modelName)
 {
     std::cout << "Exporting model..." << std::endl;
-    std::string filename = modelName + ".json";
+
+    // Ask for format
+    std::cout << "Choose export format:\n";
+    std::cout << "1. Binary (BSON)\n";
+    std::cout << "2. JSON\n";
+    std::cout << "Enter your choice: ";
+
+    int formatChoice;
+    while (!(std::cin >> formatChoice) || (formatChoice != 1 && formatChoice != 2))
+    {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input. Please enter 1 for Binary or 2 for JSON: ";
+    }
+
+    bool binary = (formatChoice == 1);
 
     try
     {
-        model.exportModel(filename);
-        std::cout << "Model exported successfully to " << filename << std::endl;
+        std::string fullFilename = model.exportModel(modelName, binary);
+        std::cout << "Model exported successfully to " << fullFilename << std::endl;
     }
     catch (const std::exception &e)
     {
