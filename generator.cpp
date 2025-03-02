@@ -7,15 +7,25 @@
 using namespace std;
 
 void printError() {
-    cout << "Usage: ./generator <model_file> -p <prior> -s <size>\n";
-    cout << "Example: ./generator model.json -p \"the\" -s 100\n";
-    cout << "         ./generator model.bson -p \"the\" -s 100\n";
+    cout << "Usage: \n";
+    cout << "  Generate text from an existing model:\n";
+    cout << "    ./generator -m <model_file> -p <prior> -s <size>\n";
+    cout << "  Generate model from text and then generate text:\n";
+    cout << "    ./generator -f <text_file> -k <order> -a <alpha> [-o <output_model>] [--json] -p <prior> -s <size>\n";
+    cout << "\nExamples:\n";
+    cout << "  ./generator -m model.json -p \"the\" -s 100\n";
+    cout << "  ./generator -f sequences/sequence1.txt -k 3 -a 0.1 -p \"the\" -s 100\n";
+    cout << "  ./generator -f sequences/sequence1.txt -k 3 -a 0.1 -o new_model --json -p \"the\" -s 100\n";
     cout << "\nOptions:\n";
-    cout << "  <model_file>  : Path to the model file (.json or .bson format)\n";
-    cout << "  -p <prior>    : Prior context to start text generation\n";
-    cout << "  -s <size>     : Number of symbols to generate (default: 100)\n";
-    cout << "\nNote: The format (JSON or binary) is detected automatically from the file extension.\n";
-    cout << "      Models should be created first using the fcm program.\n";
+    cout << "  -m <model_file>  : Path to an existing model file (.json or .bson format)\n";
+    cout << "  -f <text_file>   : Path to a text file to learn from\n";
+    cout << "  -k <order>       : Context size (default: 3)\n";
+    cout << "  -a <alpha>       : Smoothing parameter (default: 0.1)\n";
+    cout << "  -o <output_model>: Optional name to save the trained model\n";
+    cout << "  --json           : Save model in JSON format (default is binary)\n";
+    cout << "  -p <prior>       : Prior context to start text generation\n";
+    cout << "  -s <size>        : Number of symbols to generate (default: 100)\n";
+    cout << "\nNote: The format for existing models is detected automatically from the extension.\n";
 }
 
 void validatePrior(const string& prior, int k) {
@@ -25,51 +35,131 @@ void validatePrior(const string& prior, int k) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc != 6) {
+    if (argc < 6) {
         printError();
         return 1;
     }
 
-    string modelFile = argv[1];
+    // Variables for model loading mode
+    string modelFile;
+    bool loadModel = false;
+    
+    // Variables for training mode
+    string textFile;
+    bool trainModel = false;
+    int k = 3;
+    double alpha = 0.1;
+    string outputModel;
+    bool saveModel = false;
+    bool jsonFormat = false;
+    
+    // Common variables
     string prior;
-    int size = 100;  // default size
+    int size = 100;
 
     // Parse command line arguments
-    for (int i = 2; i < argc; i += 2) {
+    for (int i = 1; i < argc; i++) {
         string arg = argv[i];
-        if (arg == "-p") {
-            prior = argv[i + 1];
+        
+        if (arg == "--json") {
+            jsonFormat = true;
+            continue;
+        }
+        
+        // Check if there's a next argument
+        if (i + 1 >= argc) {
+            cerr << "Error: Missing value for argument " << arg << endl;
+            printError();
+            return 1;
+        }
+        
+        // Parse arguments
+        if (arg == "-m") {
+            modelFile = argv[++i];
+            loadModel = true;
+        } else if (arg == "-f") {
+            textFile = argv[++i];
+            trainModel = true;
+        } else if (arg == "-k") {
+            k = atoi(argv[++i]);
+        } else if (arg == "-a") {
+            alpha = atof(argv[++i]);
+        } else if (arg == "-o") {
+            outputModel = argv[++i];
+            saveModel = true;
+        } else if (arg == "-p") {
+            prior = argv[++i];
         } else if (arg == "-s") {
-            size = atoi(argv[i + 1]);
+            size = atoi(argv[++i]);
         }
     }
 
-    try {
-        // Determine if the model file is binary based on extension
-        bool binary = false;
-        string fileExtension;
-        size_t dotPosition = modelFile.find_last_of('.');
-        
-        if (dotPosition != string::npos) {
-            fileExtension = modelFile.substr(dotPosition);
-            if (fileExtension == ".bson") {
-                binary = true;
-            } else if (fileExtension != ".json") {
-                // Warning for unexpected extension
-                cout << "Warning: Unrecognized file extension '" << fileExtension 
-                     << "'. Assuming JSON format." << endl;
-            }
-        } else {
-            // No extension provided
-            cout << "Warning: No file extension found. Assuming JSON format." << endl;
-        }
+    // Validate modes - we need exactly one source (either load or train)
+    if ((loadModel && trainModel) || (!loadModel && !trainModel)) {
+        cerr << "Error: Must specify exactly one of -m or -f" << endl;
+        printError();
+        return 1;
+    }
 
-        // Load the pre-trained model
+    // Check for required parameters for each mode
+    if (trainModel && (prior.empty() || size <= 0)) {
+        cerr << "Error: Training mode requires both -p and -s parameters" << endl;
+        printError();
+        return 1;
+    }
+
+    if (loadModel && (modelFile.empty() || prior.empty() || size <= 0)) {
+        cerr << "Error: Model loading mode requires -m, -p, and -s parameters" << endl;
+        printError();
+        return 1;
+    }
+
+    // Run the generator
+    try {
         FCMModel model;
-        model.importModel(modelFile, binary);
         
-        // The model should already be locked from fcm export but could be locked here as well
-        // model.lockModel();
+        if (loadModel) {
+            // Load an existing model
+            bool binary = false;
+            size_t dotPosition = modelFile.find_last_of('.');
+            
+            if (dotPosition != string::npos) {
+                string fileExtension = modelFile.substr(dotPosition);
+                if (fileExtension == ".bson") {
+                    binary = true;
+                } else if (fileExtension != ".json") {
+                    cout << "Warning: Unrecognized file extension. Assuming JSON format." << endl;
+                }
+            } else {
+                cout << "Warning: No file extension found. Assuming JSON format." << endl;
+            }
+            
+            model.importModel(modelFile, binary);
+            cout << "Model successfully loaded from: " << modelFile << endl;
+            
+        } else if (trainModel) {
+            // Train a new model from text
+            model = FCMModel(k, alpha);
+            
+            // Read the text file
+            string text = readFile(textFile);
+            cout << "Learning from text file: " << textFile << endl;
+            
+            // Train the model
+            model.learn(text);
+            cout << "Model successfully trained with k=" << k << ", alpha=" << alpha << endl;
+            
+            // Save model if requested
+            if (saveModel) {
+                string exportedFile = model.exportModel(outputModel, !jsonFormat);
+                cout << "Model saved to: " << exportedFile << endl;
+            }
+        }
+        
+        // Lock the model before generating
+        if (!model.isLocked()) {
+            model.lockModel();
+        }
         
         // Validate prior length against model's k
         validatePrior(prior, model.getK());
@@ -79,8 +169,9 @@ int main(int argc, char* argv[]) {
         
         // Output results
         cout << "\nText Generation Results:\n";
-        cout << "Model File: " << modelFile << "\n";
-        cout << "Format: " << (binary ? "Binary (BSON)" : "JSON") << "\n";
+        cout << "Source: " << (loadModel ? modelFile : textFile) << "\n";
+        cout << "Model Order (k): " << model.getK() << "\n";
+        cout << "Smoothing (alpha): " << model.getAlpha() << "\n";
         cout << "Prior Context: " << prior << "\n";
         cout << "Generated Size: " << size << "\n";
         cout << "\nGenerated Text:\n" << generatedText << "\n";
