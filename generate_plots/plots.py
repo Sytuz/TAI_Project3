@@ -62,7 +62,7 @@ def generate_plots(df, base_folder):
     os.makedirs(base_folder, exist_ok=True)
 
     for sequence in df["File"].unique():
-        seq_folder = f"results/plots/{sequence}"
+        seq_folder = f"../results/plots/{sequence}"
         os.makedirs(seq_folder, exist_ok=True)
         df_seq = df[df["File"] == sequence]
 
