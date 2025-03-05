@@ -72,7 +72,7 @@ def main():
         except ValueError:
             print("Invalid input. Please enter a valid integer (>= 0).")
 
-        output_folder = f"../results/plots/{sequence_name}"
+        output_folder = f"../results/plots/{sequence_name}/complexity_profiles"
         process_complexity_profile(sequence_file, k, output_folder)
 
 
