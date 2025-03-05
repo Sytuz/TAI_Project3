@@ -1,0 +1,42 @@
+obras_camoes_II:
+  Avg Execution Time (JSON): 510.14 ms
+  Avg Execution Time (BSON): 509.69 ms
+  Avg Model Size (JSON): 8770878.91 bytes
+  Avg Model Size (BSON): 3256215.17 bytes
+
+sequence5:
+  Avg Execution Time (JSON): 283.19 ms
+  Avg Execution Time (BSON): 283.32 ms
+  Avg Model Size (JSON): 4257257.39 bytes
+  Avg Model Size (BSON): 1599049.67 bytes
+
+sequence1:
+  Avg Execution Time (JSON): 11.66 ms
+  Avg Execution Time (BSON): 11.61 ms
+  Avg Model Size (JSON): 228049.39 bytes
+  Avg Model Size (BSON): 84775.33 bytes
+
+sequence4:
+  Avg Execution Time (JSON): 12290.72 ms
+  Avg Execution Time (BSON): 12254.51 ms
+  Avg Model Size (JSON): 295088.39 bytes
+  Avg Model Size (BSON): 99344.00 bytes
+
+obras_camoes_III:
+  Avg Execution Time (JSON): 408.79 ms
+  Avg Execution Time (BSON): 413.56 ms
+  Avg Model Size (JSON): 7845277.42 bytes
+  Avg Model Size (BSON): 2911429.33 bytes
+
+sequence3:
+  Avg Execution Time (JSON): 5157.47 ms
+  Avg Execution Time (BSON): 5167.47 ms
+  Avg Model Size (JSON): 126106439.70 bytes
+  Avg Model Size (BSON): 48466844.83 bytes
+
+sequence2:
+  Avg Execution Time (JSON): 347.45 ms
+  Avg Execution Time (BSON): 343.96 ms
+  Avg Model Size (JSON): 7225502.42 bytes
+  Avg Model Size (BSON): 2685418.17 bytes
+
