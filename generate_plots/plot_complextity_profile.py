@@ -57,7 +57,7 @@ def main():
 
     while True:
         print("\n--- Complexity Profile Matrix ---")
-        sequence_name = input("Enter the sequence filename (on the 'sequences/' folder, without .txt) or press Enter to quit: ")
+        sequence_name = input("Enter the sequence filename (in the 'sequences/' folder, without .txt) or press Enter to quit: ")
         if not sequence_name:
             break
 

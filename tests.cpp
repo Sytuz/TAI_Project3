@@ -6,12 +6,14 @@
 #include <sstream>
 #include <iomanip>
 #include <filesystem>
+#include <string>
 
 using namespace std;
 using namespace std::chrono;
 using namespace std::filesystem;
 
-void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &alpha_min, double &alpha_max, double &alpha_step){
+
+void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &alpha_min, double &alpha_max, double &alpha_step, string &outputFormat){
     string filename;
 
     cout << "Do you want to use all files in the 'sequences/' folder as input files? (y/n): ";
@@ -37,7 +39,7 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &al
         }
     }
     else{
-        cout << "Enter the input file names (saved in the 'sequences/' folder) (press Enter to finish):" << endl;
+        cout << "Enter the input file names (saved in the 'sequences/' folder, without .txt) (press Enter to finish):" << endl;
 
         while(true){
             cout << "> ";
@@ -45,7 +47,15 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &al
             if(filename.empty()){
                 break;
             }
-            inputFiles.push_back("sequences/" + filename);
+
+            string fullPath = "sequences/" + filename + ".txt";
+
+            if (!filesystem::exists(fullPath)) {
+                cerr << "Error: File '" << fullPath << "' not found. Please enter a valid file name." << endl;
+                continue;
+            }
+
+        inputFiles.push_back(fullPath);
         }
 
         if(inputFiles.empty()){
@@ -134,6 +144,9 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &al
             break;
         }
     }
+
+    cout << "Choose the output format: JSON (j), BSON (b), or both (press other letter or Enter): ";
+    getline(cin, outputFormat);
 }
 
 string getAverageInfoContent(const string &command) {
@@ -146,6 +159,7 @@ string getAverageInfoContent(const string &command) {
     string avgInfoContent = "N/A";
     char buffer[256];
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        cout << buffer << endl;
         string line(buffer);
         if(line.find("Average Information Content:") != string::npos) {
             avgInfoContent = line.substr(line.find(":") + 1);
@@ -157,28 +171,80 @@ string getAverageInfoContent(const string &command) {
         }
     }
 
+
     pclose(pipe);
     return avgInfoContent;
 }
 
-void runTests(const vector<string> &inputFiles, int k_min, int k_max, double alpha_min, double alpha_max, double alpha_step, vector<vector<string>> &results){
+void runTests(const vector<string> &inputFiles, int k_min, int k_max, double alpha_min, double alpha_max, double alpha_step, const string &outputFormat, vector<vector<string>> &results){
+    int testIndex = 0;
     for(const auto &inputFile : inputFiles){
         for(int k = k_min; k <= k_max; ++k){
             for(double alpha = alpha_min; alpha <= alpha_max + alpha_step/2; alpha+=alpha_step){
-                cout << "Running test for file: " << inputFile
-                    << ", k: " << k
-                    << ", alpha: " << fixed << setprecision(2) << alpha
-                    << "..." << endl;
+                testIndex++;
 
-                string modelFile = "temp_model.json";  // TODO: add the option to do it binary or json
-                string command = "./fcm " + inputFile + " -k " + to_string(k) + " -a " + to_string(alpha) + " -o " + modelFile;
+                vector<string> modelFiles;
 
-                auto start = high_resolution_clock::now();
-                string avgInfoContent = getAverageInfoContent(command);
-                auto end = high_resolution_clock::now();
-                double execTime = duration<double, milli>(end - start).count();
+                if(outputFormat == "j" || outputFormat.empty()){
+                    modelFiles.push_back("temp_model" + to_string(testIndex) + ".json");
+                }
+                if(outputFormat == "b" || outputFormat.empty()){
+                    modelFiles.push_back("temp_model" + to_string(testIndex) + ".bson");
+                }
 
-                results.push_back({inputFile, to_string(k), to_string(alpha), avgInfoContent, to_string(execTime)});
+                for(const auto& modelFile : modelFiles){
+                    string last4 = modelFile.substr(modelFile.length() - 4);
+                    string modelFileName = modelFile;
+                    modelFileName.erase(modelFile.length() - 5);
+                    if(last4 == "json"){
+                        modelFileName += " --json";
+                    }
+
+                    string command = "./fcm " + inputFile + " -k " + to_string(k) + " -a " + to_string(alpha) + " -o " + modelFileName;
+                    cout << "Running: " << command <<endl;
+
+                    int ret = system(command.c_str());
+                    if(ret != 0) {
+                        cerr << "Error executing command." << endl;
+                    }
+
+                    auto start = high_resolution_clock::now();
+                    string avgInfoContent = getAverageInfoContent(command);
+                    auto end = high_resolution_clock::now();
+                    double execTime = duration<double, milli>(end - start).count();
+
+                    long fileSize = 0;
+                    bool fileCreated = false;
+
+                    try{
+                        fileCreated = filesystem::exists(modelFile);
+                        if(fileCreated){
+                            fileSize = filesystem::file_size(modelFile);
+                        }
+                    }
+                    catch(const filesystem::filesystem_error& e){
+                        cerr << "Error: Unable to read file size for " << modelFile << endl;
+                        fileSize = -1;
+                    }
+
+                    if(!fileCreated || fileSize <= 0){
+                        cerr << "WARNING: Model generation failed for parameters:" << endl;
+                        cerr << "  File: " << inputFile << endl;
+                        cerr << "  k: " << k << endl;
+                        cerr << "  alpha: " << alpha << endl;
+                        cerr << "  Model File: " << modelFile << endl;
+                    }
+
+                    results.push_back({
+                        inputFile,
+                        to_string(k),
+                        to_string(alpha),
+                        modelFile,
+                        avgInfoContent,
+                        to_string(execTime),
+                        to_string(fileSize)
+                    });
+                }
             }
         }
     }
@@ -209,10 +275,11 @@ int main(){
     vector<string> inputFiles;
     int k_min, k_max;
     double alpha_min, alpha_max, alpha_step;
-    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step);
+    string outputFormat;
+    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat);
 
-    vector<vector<string>> results = {{"File", "k", "alpha", "AvgInfoContent", "ExecTime(ms)"}};
-    runTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, results);
+    vector<vector<string>> results = {{"File", "k", "alpha", "ModelFile", "AvgInfoContent", "ExecTime(ms)", "ModelSize"}};
+    runTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, results);
 
     string outputFile = "results/test_results.csv";
     saveToCSV(outputFile, results);
