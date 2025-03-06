@@ -12,11 +12,14 @@ def read_sequence(file_path):
         return f.read().replace("\n", "")
 
 def compute_complexity_profile_matrix(sequence, k):
+    if k == 0:
+        print("k cannot be 0. Please provide a positive integer value for k.")
+        return None
     if k > len(sequence):
         print(f"Skipping k={k} as it is larger than the sequence length.")
         return None
 
-    counter = Counter(sequence[i:i+k] for i in range(len(sequence) - k + 1))
+    counter = Counter(sequence[i:i+k+1] for i in range(len(sequence) - k + 1))
     unique_chars = set("".join(counter.keys()))
     matrix = {sub[:-1]: {c: 0 for c in unique_chars} for sub in counter.keys()}
 
@@ -37,7 +40,7 @@ def plot_complexity_profile_matrix(cp_matrix, sequence_name, k, output_folder):
     sns.heatmap(cp_matrix, annot=True, fmt="d", cmap="YlOrBr")
     plt.title(f"K Frequency Matrix (k={k}) - {sequence_name}")
     plt.xlabel("Next Char")
-    plt.ylabel(f"{k-1} Context")
+    plt.ylabel(f"{k} Context")
     plt.savefig(f"{output_folder}/complexity_profile_matrix_k{k}.png")
     plt.close()
 
