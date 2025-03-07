@@ -16,7 +16,7 @@ def load_data(csv_path):
     df["ModelSize"] = pd.to_numeric(df["ModelSize"], errors="coerce")
 
     df["File"] = df["File"].apply(lambda x: os.path.splitext(os.path.basename(x))[0])
-    df["Format"] = df["ModelFile"].apply(lambda x: "bson" if x.endswith(".bson") else "json")
+    df["Format"] = df["ModelType"]
 
     files_to_remove = df.loc[df["ModelSize"] == 0, "File"].unique()
     df = df[~df["File"].isin(files_to_remove)]

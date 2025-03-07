@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <filesystem>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 using namespace std::chrono;
@@ -23,6 +24,12 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &al
 
     if(useDefaultFiles == 'y' || useDefaultFiles == 'Y'){
         for(const auto& entry : directory_iterator("sequences/")){
+            if(entry.is_regular_file()){
+                inputFiles.push_back(entry.path().string());
+            }
+        }
+
+        for(const auto& entry : directory_iterator("sequences/camilo_castelo/")){
             if(entry.is_regular_file()){
                 inputFiles.push_back(entry.path().string());
             }
@@ -177,19 +184,17 @@ string getAverageInfoContent(const string &command) {
 }
 
 void runTests(const vector<string> &inputFiles, int k_min, int k_max, double alpha_min, double alpha_max, double alpha_step, const string &outputFormat, vector<vector<string>> &results){
-    int testIndex = 0;
     for(const auto &inputFile : inputFiles){
         for(int k = k_min; k <= k_max; ++k){
             for(double alpha = alpha_min; alpha <= alpha_max + alpha_step/2; alpha+=alpha_step){
-                testIndex++;
 
                 vector<string> modelFiles;
 
                 if(outputFormat == "j" || outputFormat.empty()){
-                    modelFiles.push_back("temp_model" + to_string(testIndex) + ".json");
+                    modelFiles.push_back("temp_model.json");
                 }
                 if(outputFormat == "b" || outputFormat.empty()){
-                    modelFiles.push_back("temp_model" + to_string(testIndex) + ".bson");
+                    modelFiles.push_back("temp_model.bson");
                 }
 
                 for(const auto& modelFile : modelFiles){
@@ -235,15 +240,19 @@ void runTests(const vector<string> &inputFiles, int k_min, int k_max, double alp
                         cerr << "  Model File: " << modelFile << endl;
                     }
 
+                    string typeName = modelFile.substr(modelFile.length() - 4);
+                    transform(typeName.begin(), typeName.end(), typeName.begin(), ::toupper);
                     results.push_back({
                         inputFile,
                         to_string(k),
                         to_string(alpha),
-                        modelFile,
+                        typeName,
                         avgInfoContent,
                         to_string(execTime),
                         to_string(fileSize)
                     });
+
+                    filesystem::remove(modelFile);
                 }
             }
         }
@@ -278,7 +287,7 @@ int main(){
     string outputFormat;
     getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat);
 
-    vector<vector<string>> results = {{"File", "k", "alpha", "ModelFile", "AvgInfoContent", "ExecTime(ms)", "ModelSize"}};
+    vector<vector<string>> results = {{"File", "k", "alpha", "ModelType", "AvgInfoContent", "ExecTime(ms)", "ModelSize"}};
     runTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, results);
 
     string outputFile = "results/test_results.csv";
