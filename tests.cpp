@@ -8,13 +8,14 @@
 #include <filesystem>
 #include <string>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 using namespace std::chrono;
 using namespace std::filesystem;
 
 
-void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &alpha_min, double &alpha_max, double &alpha_step, string &outputFormat, int &recursiveSteps, string &generationSize){
+void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &alpha_min, double &alpha_max, double &alpha_step, string &outputFormat, int &recursiveSteps, string &generationSize, bool &useTextSizeForK){
     string filename;
 
     cout << "Do you want to use all files in the 'sequences/' folder as input files? (y/n): ";
@@ -71,32 +72,45 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &al
         }
     }
 
-    while(true){
-        cout << "Enter the range for k (min max) or press Enter to use default [1, 6]: ";
-        string k_input;
-        getline(cin, k_input);
+    cout << "Do you want to set k based on the text size? (y/n): ";
+    char useTextSize;
+    cin >> useTextSize;
+    cin.ignore();
 
-        if(k_input.empty()){
-            k_min = 1;
-            k_max = 6;
-            cout << "Using default k range: [1, 6]" << endl;
-            break;
-        }
-        else{
-            stringstream ss(k_input);
-            ss >> k_min >> k_max;
+    if(useTextSize == 'y' || useTextSize == 'Y'){
+        useTextSizeForK = true;
+        cout << "k will be set based on the text size." << endl;
+    }
+    else{
+        useTextSizeForK = false;
 
-            if(k_min < 0 || k_max < 0){
-                cout << "Error: k values cannot be negative. Please enter valid values." << endl;
-                continue;
+        while(true){
+            cout << "Enter the range for k (min max) or press Enter to use default [1, 6]: ";
+            string k_input;
+            getline(cin, k_input);
+
+            if(k_input.empty()){
+                k_min = 1;
+                k_max = 6;
+                cout << "Using default k range: [1, 6]" << endl;
+                break;
             }
-            else if(k_min > k_max){
-                cout << "Error: k values must be in ascending order. Please enter valid values." << endl;
-                continue;
-            }
+            else{
+                stringstream ss(k_input);
+                ss >> k_min >> k_max;
 
-            cout << "Using k range: [" << k_min << "," << k_max << "]" << endl;
-            break;
+                if(k_min < 0 || k_max < 0){
+                    cout << "Error: k values cannot be negative. Please enter valid values." << endl;
+                    continue;
+                }
+                else if(k_min > k_max){
+                    cout << "Error: k values must be in ascending order. Please enter valid values." << endl;
+                    continue;
+                }
+
+                cout << "Using k range: [" << k_min << "," << k_max << "]" << endl;
+                break;
+            }
         }
     }
 
@@ -266,13 +280,27 @@ string getGeneratedText(const string &command) {
 
 void runRecursiveTests(const vector<string> &inputFiles, int k_min, int k_max, double alpha_min, double alpha_max,
                         double alpha_step, const string &outputFormat, int recursiveSteps, const string &generationSize,
-                        vector<vector<string>> &results) {
+                        vector<vector<string>> &results, bool useTextSizeForK) {
     if(!filesystem::exists("temp")) {
         filesystem::create_directory("temp");
     }
 
     for(const auto &inputFile : inputFiles) {
-        for(int k = k_min; k <= k_max; ++k) {
+        int k_min_actual = k_min;
+        int k_max_actual = k_max;
+
+        if(useTextSizeForK){
+            ifstream file(inputFile);
+            file.seekg(0, ios::end);
+            size_t textSize = file.tellg();
+            file.close();
+
+            k_min_actual = max(1, min(10, static_cast<int>(log10(textSize) * 2)));
+            k_max_actual = max(k_min_actual + 1, min(10, static_cast<int>(log10(textSize) * 3)));
+            cout << "Setting k based on text size: [" << k_min_actual << ", " << k_max_actual << "]" << endl;
+        }
+
+        for(int k = k_min_actual; k <= k_max_actual; ++k) {
             for(double alpha = alpha_min; alpha <= alpha_max + alpha_step/2; alpha += alpha_step) {
 
                 vector<string> modelFiles;
@@ -357,9 +385,9 @@ void runRecursiveTests(const vector<string> &inputFiles, int k_min, int k_max, d
                             inputFileStream.close();
                         }
 
-                        if(priorContext.length() < k) {
+                        if(priorContext.length() < static_cast<size_t>(k)) {
                             // Pad with spaces if not enough characters
-                            while(priorContext.length() < k) {
+                            while(priorContext.length() < static_cast<size_t>(k)) {
                                 priorContext += " ";
                             }
                         }
@@ -408,17 +436,16 @@ void saveToCSV(const string &filename, const vector<vector<string>> &data) {
 
 int main() {
     vector<string> inputFiles;
-    int k_min, k_max;
+    int k_min, k_max, recursiveSteps;
     double alpha_min, alpha_max, alpha_step;
-    string outputFormat;
-    int recursiveSteps;
-    string generationSize;
+    string outputFormat, generationSize;
+    bool useTextSizeForK;
 
-    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize);
+    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize, useTextSizeForK);
 
     vector<vector<string>> results = {{"File", "k", "alpha", "ModelType", "RecursiveStep", "AvgInfoContent", "ExecTime(ms)", "ModelSize"}};
 
-    runRecursiveTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize, results);
+    runRecursiveTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize, results, useTextSizeForK);
 
     string outputFile = "results/test_results.csv";
     saveToCSV(outputFile, results);
