@@ -15,7 +15,10 @@ using namespace std::chrono;
 using namespace std::filesystem;
 
 
-void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &alpha_min, double &alpha_max, double &alpha_step, string &outputFormat, int &recursiveSteps, string &generationSize, bool &useTextSizeForK){
+void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max,
+                    double &alpha_min, double &alpha_max, double &alpha_step,
+                    string &outputFormat, int &recursiveSteps, string &generationSize,
+                    bool &useTextSizeForK, string &priorContextMethod){
     string filename;
 
     cout << "Do you want to use all files in the 'sequences/' folder as input files? (y/n): ";
@@ -214,6 +217,79 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &al
 
     cout << "Choose the output format: JSON (j), BSON (b), or both (press other letter or Enter): ";
     getline(cin, outputFormat);
+
+    cout << "Choose prior context method:" << endl;
+    cout << "  'start' - Use first k characters (default)" << endl;
+    cout << "  'end' - Use last k characters" << endl;
+    cout << "  'random' - Use k characters from a random position" << endl;
+    cout << "Enter your choice: ";
+
+    getline(cin, priorContextMethod);
+    if (priorContextMethod.empty() ||
+        (priorContextMethod != "start" && priorContextMethod != "end" && priorContextMethod != "random")) {
+        priorContextMethod = "start";
+        cout << "Using default prior context method: start" << endl;
+    } else {
+        cout << "Using prior context method: " << priorContextMethod << endl;
+    }
+}
+
+string calculatePriorContext(const string &inputFile, int k, string method = "start") {
+    string priorContext = "";
+    ifstream inputFileStream(inputFile);
+
+    if (!inputFileStream) {
+        cerr << "Error: Unable to open file " << inputFile << " for prior context calculation" << endl;
+        // Return a default prior context (spaces)
+        return string(k, ' ');
+    }
+
+    inputFileStream.seekg(0, ios::end);
+    size_t fileSize = inputFileStream.tellg();
+    inputFileStream.seekg(0, ios::beg);
+
+    if (method == "start") {
+        // Use the first k characters
+        char c;
+        for (int i = 0; i < k && inputFileStream.get(c); ++i) {
+            priorContext += c;
+        }
+    }
+    else if (method == "end") {
+        // Use the last k characters
+        if (fileSize > static_cast<size_t>(k)) {
+            inputFileStream.seekg(-k, ios::end);
+        }
+
+        char c;
+        while (inputFileStream.get(c)) {
+            priorContext += c;
+        }
+    }
+    else if (method == "random") {
+        // Use k characters from a random position
+        if (fileSize > static_cast<size_t>(k)) {
+            size_t maxPos = fileSize - k;
+            size_t randomPos = rand() % maxPos;
+            inputFileStream.seekg(randomPos);
+        }
+
+        char c;
+        for (int i = 0; i < k && inputFileStream.get(c); ++i) {
+            priorContext += c;
+        }
+    }
+
+    inputFileStream.close();
+
+    if (priorContext.length() < static_cast<size_t>(k)) {
+        priorContext.append(k - priorContext.length(), ' ');
+    } else if (priorContext.length() > static_cast<size_t>(k)) {
+        priorContext = priorContext.substr(0, k);
+    }
+
+    cout << "Using prior context: \"" << priorContext << "\"" << endl;
+    return priorContext;
 }
 
 string getAverageInfoContent(const string &command) {
@@ -280,7 +356,7 @@ string getGeneratedText(const string &command) {
 
 void runRecursiveTests(const vector<string> &inputFiles, int k_min, int k_max, double alpha_min, double alpha_max,
                         double alpha_step, const string &outputFormat, int recursiveSteps, const string &generationSize,
-                        vector<vector<string>> &results, bool useTextSizeForK) {
+                        vector<vector<string>> &results, bool useTextSizeForK, const string &priorContextMethod) {
     if(!filesystem::exists("temp")) {
         filesystem::create_directory("temp");
     }
@@ -295,8 +371,8 @@ void runRecursiveTests(const vector<string> &inputFiles, int k_min, int k_max, d
             size_t textSize = file.tellg();
             file.close();
 
-            k_min_actual = max(1, min(10, static_cast<int>(log10(textSize) * 2)));
-            k_max_actual = max(k_min_actual + 1, min(10, static_cast<int>(log10(textSize) * 3)));
+            k_min_actual = max(1, min(10, static_cast<int>(log10(textSize))));
+            k_max_actual = max(k_min_actual + 1, min(10, static_cast<int>(log10(textSize)*3)));
             cout << "Setting k based on text size: [" << k_min_actual << ", " << k_max_actual << "]" << endl;
         }
 
@@ -375,22 +451,7 @@ void runRecursiveTests(const vector<string> &inputFiles, int k_min, int k_max, d
                         }
 
                         // Generate text from the model
-                        string priorContext;
-                        ifstream inputFileStream(currentInputFile);
-                        if(inputFileStream) {
-                            char c;
-                            for(int i = 0; i < k && inputFileStream.get(c); ++i) {
-                                priorContext += c;
-                            }
-                            inputFileStream.close();
-                        }
-
-                        if(priorContext.length() < static_cast<size_t>(k)) {
-                            // Pad with spaces if not enough characters
-                            while(priorContext.length() < static_cast<size_t>(k)) {
-                                priorContext += " ";
-                            }
-                        }
+                        string priorContext = calculatePriorContext(currentInputFile, k, priorContextMethod);
 
                         tempInputFile = "temp/temp_file.txt";
 
@@ -438,14 +499,18 @@ int main() {
     vector<string> inputFiles;
     int k_min, k_max, recursiveSteps;
     double alpha_min, alpha_max, alpha_step;
-    string outputFormat, generationSize;
+    string outputFormat, generationSize, priorContextMethod;
     bool useTextSizeForK;
 
-    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize, useTextSizeForK);
+    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step,
+                outputFormat, recursiveSteps, generationSize,
+                useTextSizeForK, priorContextMethod);
 
     vector<vector<string>> results = {{"File", "k", "alpha", "ModelType", "RecursiveStep", "AvgInfoContent", "ExecTime(ms)", "ModelSize"}};
 
-    runRecursiveTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize, results, useTextSizeForK);
+    runRecursiveTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step,
+                        outputFormat, recursiveSteps, generationSize,
+                        results, useTextSizeForK, priorContextMethod);
 
     string outputFile = "results/test_results.csv";
     saveToCSV(outputFile, results);
