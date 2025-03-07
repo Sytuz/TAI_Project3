@@ -14,7 +14,7 @@ using namespace std::chrono;
 using namespace std::filesystem;
 
 
-void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &alpha_min, double &alpha_max, double &alpha_step, string &outputFormat){
+void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &alpha_min, double &alpha_max, double &alpha_step, string &outputFormat, int &recursiveSteps, string &generationSize){
     string filename;
 
     cout << "Do you want to use all files in the 'sequences/' folder as input files? (y/n): ";
@@ -152,6 +152,52 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max, double &al
         }
     }
 
+    while(true){
+        cout << "Enter the number of recursive steps or press Enter to use default (10): ";
+        string recursive_steps_input;
+        getline(cin, recursive_steps_input);
+        if(recursive_steps_input.empty()){
+            recursiveSteps = 10;
+            cout << "Using default recursive steps: 10" << endl;
+            break;
+        }
+        else{
+            stringstream ss(recursive_steps_input);
+            ss >> recursiveSteps;
+
+            if(recursiveSteps < 1){
+                cout << "Error: recursive steps must be at least 1. Please enter a valid value." << endl;
+                continue;
+            }
+
+            cout << "Using recursive steps: " << recursiveSteps << endl;
+            break;
+        }
+    }
+
+    while(true){
+        cout << "Enter the text generation size or press Enter to use default (1000): ";
+        string gen_size_input;
+        getline(cin, gen_size_input);
+        if(gen_size_input.empty()){
+            generationSize = "1000";
+            cout << "Using default generation size: 1000" << endl;
+            break;
+        }
+        else{
+            generationSize = gen_size_input;
+            int size = stoi(generationSize);
+
+            if(size < 10){
+                cout << "Error: generation size must be at least 10. Please enter a valid value." << endl;
+                continue;
+            }
+
+            cout << "Using generation size: " << generationSize << endl;
+            break;
+        }
+    }
+
     cout << "Choose the output format: JSON (j), BSON (b), or both (press other letter or Enter): ";
     getline(cin, outputFormat);
 }
@@ -166,7 +212,6 @@ string getAverageInfoContent(const string &command) {
     string avgInfoContent = "N/A";
     char buffer[256];
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-        cout << buffer << endl;
         string line(buffer);
         if(line.find("Average Information Content:") != string::npos) {
             avgInfoContent = line.substr(line.find(":") + 1);
@@ -178,99 +223,180 @@ string getAverageInfoContent(const string &command) {
         }
     }
 
-
     pclose(pipe);
     return avgInfoContent;
 }
 
-void runTests(const vector<string> &inputFiles, int k_min, int k_max, double alpha_min, double alpha_max, double alpha_step, const string &outputFormat, vector<vector<string>> &results){
-    for(const auto &inputFile : inputFiles){
-        for(int k = k_min; k <= k_max; ++k){
-            for(double alpha = alpha_min; alpha <= alpha_max + alpha_step/2; alpha+=alpha_step){
+void writeToFile(const string &content, const string &filename) {
+    ofstream file(filename);
+    if(!file){
+        cerr << "Error: Unable to create file " << filename << endl;
+        return;
+    }
+    file << content;
+}
+
+string getGeneratedText(const string &command) {
+    FILE* pipe = popen(command.c_str(), "r");
+    if(!pipe){
+        cerr << "Error opening pipe to execute command." << endl;
+        return "";
+    }
+
+    string generatedText;
+    bool captureText = false;
+    char buffer[4096];
+
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        string line(buffer);
+
+        if(line.find("Generated Text:") != string::npos) {
+            captureText = true;
+            continue;
+        }
+
+        if(captureText) {
+            generatedText += line;
+        }
+    }
+
+    pclose(pipe);
+    return generatedText;
+}
+
+void runRecursiveTests(const vector<string> &inputFiles, int k_min, int k_max, double alpha_min, double alpha_max,
+                        double alpha_step, const string &outputFormat, int recursiveSteps, const string &generationSize,
+                        vector<vector<string>> &results) {
+    if(!filesystem::exists("temp")) {
+        filesystem::create_directory("temp");
+    }
+
+    for(const auto &inputFile : inputFiles) {
+        for(int k = k_min; k <= k_max; ++k) {
+            for(double alpha = alpha_min; alpha <= alpha_max + alpha_step/2; alpha += alpha_step) {
 
                 vector<string> modelFiles;
 
-                if(outputFormat == "j" || outputFormat.empty()){
-                    modelFiles.push_back("temp_model.json");
+                if(outputFormat == "j" || outputFormat.empty()) {
+                    modelFiles.push_back("temp/temp_model.json");
                 }
-                if(outputFormat == "b" || outputFormat.empty()){
-                    modelFiles.push_back("temp_model.bson");
+                if(outputFormat == "b" || outputFormat.empty()) {
+                    modelFiles.push_back("temp/temp_model.bson");
                 }
 
-                for(const auto& modelFile : modelFiles){
-                    string last4 = modelFile.substr(modelFile.length() - 4);
+                for(const auto& modelFile : modelFiles) {
+                    string modelType = modelFile.substr(modelFile.length() - 4);
+                    transform(modelType.begin(), modelType.end(), modelType.begin(), ::toupper);
+
                     string modelFileName = modelFile;
                     modelFileName.erase(modelFile.length() - 5);
-                    if(last4 == "json"){
-                        modelFileName += " --json";
+
+                    string modelFormatFlag = "";
+                    if(modelType == "JSON") {
+                        modelFormatFlag = " --json";
                     }
 
-                    string command = "./fcm " + inputFile + " -k " + to_string(k) + " -a " + to_string(alpha) + " -o " + modelFileName;
-                    cout << "Running: " << command <<endl;
+                    // Initial run with the original input file
+                    cout << "\n======== Starting recursive test for " << inputFile << " (k=" << k << ", alpha=" << alpha << ") ========\n";
 
-                    int ret = system(command.c_str());
-                    if(ret != 0) {
-                        cerr << "Error executing command." << endl;
-                    }
+                    string currentInputFile = inputFile;
+                    string tempInputFile;
 
-                    auto start = high_resolution_clock::now();
-                    string avgInfoContent = getAverageInfoContent(command);
-                    auto end = high_resolution_clock::now();
-                    double execTime = duration<double, milli>(end - start).count();
+                    for(int step = 0; step <= recursiveSteps; ++step) {
+                        cout << "\n--- Step " << step << " ---\n";
 
-                    long fileSize = 0;
-                    bool fileCreated = false;
+                        // Run FCM to create model and get average information content
+                        string fcmCommand = "./fcm " + currentInputFile + " -k " + to_string(k) + " -a " + to_string(alpha) + " -o " + modelFileName + modelFormatFlag;
+                        cout << "Running FCM: " << fcmCommand << endl;
 
-                    try{
-                        fileCreated = filesystem::exists(modelFile);
-                        if(fileCreated){
-                            fileSize = filesystem::file_size(modelFile);
+                        auto startTime = high_resolution_clock::now();
+                        system(fcmCommand.c_str());
+                        string avgInfoContent = getAverageInfoContent(fcmCommand);
+                        auto endTime = high_resolution_clock::now();
+                        double execTime = duration<double, milli>(endTime - startTime).count();
+
+                        // Get file size of the model
+                        long fileSize = 0;
+                        bool fileCreated = false;
+
+                        try {
+                            fileCreated = filesystem::exists(modelFile);
+                            if(fileCreated) {
+                                fileSize = filesystem::file_size(modelFile);
+                            }
                         }
-                    }
-                    catch(const filesystem::filesystem_error& e){
-                        cerr << "Error: Unable to read file size for " << modelFile << endl;
-                        fileSize = -1;
-                    }
+                        catch(const filesystem::filesystem_error& e) {
+                            cerr << "Error: Unable to read file size for " << modelFile << endl;
+                            fileSize = -1;
+                        }
 
-                    if(!fileCreated || fileSize <= 0){
-                        cerr << "WARNING: Model generation failed for parameters:" << endl;
-                        cerr << "  File: " << inputFile << endl;
-                        cerr << "  k: " << k << endl;
-                        cerr << "  alpha: " << alpha << endl;
-                        cerr << "  Model File: " << modelFile << endl;
+                        // Record the results for this step
+                        results.push_back({
+                            inputFile,
+                            to_string(k),
+                            to_string(alpha),
+                            modelType,
+                            to_string(step),
+                            avgInfoContent,
+                            to_string(execTime),
+                            to_string(fileSize)
+                        });
+
+                        if(step == recursiveSteps) {
+                            break;
+                        }
+
+                        // Generate text from the model
+                        string priorContext;
+                        ifstream inputFileStream(currentInputFile);
+                        if(inputFileStream) {
+                            char c;
+                            for(int i = 0; i < k && inputFileStream.get(c); ++i) {
+                                priorContext += c;
+                            }
+                            inputFileStream.close();
+                        }
+
+                        if(priorContext.length() < k) {
+                            // Pad with spaces if not enough characters
+                            while(priorContext.length() < k) {
+                                priorContext += " ";
+                            }
+                        }
+
+                        tempInputFile = "temp/temp_file.txt";
+
+                        // Run generator to create new text
+                        string generatorCommand = "./generator -m " + modelFile + " -p \"" + priorContext + "\" -s " + generationSize;
+                        cout << "Running Generator: " << generatorCommand << endl;
+
+                        // Get the generated text and write it to a file
+                        string generatedText = getGeneratedText(generatorCommand);
+                        writeToFile(generatedText, tempInputFile);
+
+                        // Set the generated text as the new input for the next iteration
+                        currentInputFile = tempInputFile;
+
+                        filesystem::remove(modelFile);
                     }
-
-                    string typeName = modelFile.substr(modelFile.length() - 4);
-                    transform(typeName.begin(), typeName.end(), typeName.begin(), ::toupper);
-                    results.push_back({
-                        inputFile,
-                        to_string(k),
-                        to_string(alpha),
-                        typeName,
-                        avgInfoContent,
-                        to_string(execTime),
-                        to_string(fileSize)
-                    });
-
-                    filesystem::remove(modelFile);
                 }
             }
         }
     }
 }
 
-void saveToCSV(const string &filename, const vector<vector<string>> &data){
+void saveToCSV(const string &filename, const vector<vector<string>> &data) {
     ofstream file(filename);
 
-    if(!file){
+    if(!file) {
         cerr << "Error: Unable to create file " << filename << endl;
         return;
     }
 
-    for(const auto &row : data){
-        for(size_t i = 0; i < row.size(); ++i){
+    for(const auto &row : data) {
+        for(size_t i = 0; i < row.size(); ++i) {
             file << row[i];
-            if(i != row.size() - 1){
+            if(i != row.size() - 1) {
                 file << ",";
             }
         }
@@ -280,18 +406,28 @@ void saveToCSV(const string &filename, const vector<vector<string>> &data){
     cout << "Results saved to: " << filename << endl;
 }
 
-int main(){
+int main() {
     vector<string> inputFiles;
     int k_min, k_max;
     double alpha_min, alpha_max, alpha_step;
     string outputFormat;
-    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat);
+    int recursiveSteps;
+    string generationSize;
 
-    vector<vector<string>> results = {{"File", "k", "alpha", "ModelType", "AvgInfoContent", "ExecTime(ms)", "ModelSize"}};
-    runTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, results);
+    getUserInput(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize);
+
+    vector<vector<string>> results = {{"File", "k", "alpha", "ModelType", "RecursiveStep", "AvgInfoContent", "ExecTime(ms)", "ModelSize"}};
+
+    runRecursiveTests(inputFiles, k_min, k_max, alpha_min, alpha_max, alpha_step, outputFormat, recursiveSteps, generationSize, results);
 
     string outputFile = "results/test_results.csv";
     saveToCSV(outputFile, results);
+
+    // Clean up temporary files
+    cout << "Cleaning up temporary files..." << endl;
+    for(const auto& entry : directory_iterator("temp/")) {
+        filesystem::remove(entry.path());
+    }
 
     return 0;
 }
