@@ -37,6 +37,7 @@
 fcm
 generator
 editor
+tests
 
 # VSCode files
 .vscode/
