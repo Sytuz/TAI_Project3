@@ -5,7 +5,7 @@ CXXFLAGS = -Wall -std=c++17
 # List source files and automatically generate object file names
 SOURCES_FCM  = fcm.cpp FCMModel.cpp
 SOURCES_GEN  = generator.cpp FCMModel.cpp
-SOURCES_EDIT = editor.cpp FCMModel.cpp
+SOURCES_EDIT = editor.cpp FCMModel.cpp RFCMModel.cpp
 OBJECTS_FCM  = $(SOURCES_FCM:.cpp=.o)
 OBJECTS_GEN  = $(SOURCES_GEN:.cpp=.o)
 OBJECTS_EDIT = $(SOURCES_EDIT:.cpp=.o)
