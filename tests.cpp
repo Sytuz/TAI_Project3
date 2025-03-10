@@ -217,6 +217,13 @@ void getUserInput(vector<string> &inputFiles, int &k_min, int &k_max,
 
     cout << "Choose the output format: JSON (j), BSON (b), or both (press other letter or Enter): ";
     getline(cin, outputFormat);
+    if (outputFormat.empty() ||
+        (outputFormat!= "j" && outputFormat!= "b" && outputFormat!= "J" && outputFormat!= "B" && outputFormat!= "jb")) {
+        outputFormat = "jb";
+        cout << "Using default output format: JSON and BSON" << endl;
+    } else {
+        cout << "Using output format: " << outputFormat << endl;
+    }
 
     cout << "Choose prior context method:" << endl;
     cout << "  'start' - Use first k characters (default)" << endl;
@@ -381,10 +388,10 @@ void runRecursiveTests(const vector<string> &inputFiles, int k_min, int k_max, d
 
                 vector<string> modelFiles;
 
-                if(outputFormat == "j" || outputFormat.empty()) {
+                if(outputFormat == "j" || outputFormat == "J" || outputFormat.empty() || outputFormat == "jb") {
                     modelFiles.push_back("temp/temp_model.json");
                 }
-                if(outputFormat == "b" || outputFormat.empty()) {
+                if(outputFormat == "b" || outputFormat == "B" || outputFormat.empty() || outputFormat == "jb") {
                     modelFiles.push_back("temp/temp_model.bson");
                 }
 
