@@ -63,6 +63,12 @@ public:
      * @brief Unlocks the model to allow further learning.
      */
     void unlockModel() override;
+
+    /**
+     * @brief Checks if the model is empty.
+     * @return True if the model is empty, false otherwise.
+     */
+    bool isModelEmpty() const override;
     
     /**
      * @brief Exports the model to the given file.

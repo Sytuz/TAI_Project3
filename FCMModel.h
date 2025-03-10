@@ -154,7 +154,7 @@ public:
      * @brief Checks if the model is empty.
      * @return True if the model is empty, false otherwise.
      */
-    bool isModelEmpty() const;
+    virtual bool isModelEmpty() const;
 
     /**
      * @brief Gets the number of unique contexts in the model.

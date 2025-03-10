@@ -33,7 +33,7 @@ std::string readFile(const std::string &filename) {
 }
 
 bool FCMModel::isModelEmpty() const {
-    return frequencyTable.empty() && probabilityTable.empty();
+    return frequencyTable.empty() && probabilityTable.empty() && alphabet.empty();
 }
 
 std::size_t FCMModel::getContextCount() const {

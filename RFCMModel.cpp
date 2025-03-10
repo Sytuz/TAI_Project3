@@ -75,6 +75,10 @@ void RFCMModel::learn(const std::string &text, bool clearLogs) {
     }
 }
 
+bool RFCMModel::isModelEmpty() const {
+    return rFrequencyTable.empty() && rProbabilityTable.empty() && alphabet.empty();
+}
+
 void RFCMModel::clearModel() {
     if (isLocked()) {
         return;
@@ -83,6 +87,8 @@ void RFCMModel::clearModel() {
     rFrequencyTable.clear();
     rProbabilityTable.clear();
     rContextCount.clear();
+
+    alphabet.clear();
     
     // Also clear the parent class's tables
     FCMModel::clearModel();

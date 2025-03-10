@@ -259,6 +259,13 @@ void predictNextSymbols(const FCMModel &model)
     std::string prediction;
     int n;
 
+    if (model.isModelEmpty())
+    {
+        std::cout << "Model is empty. Please learn from text first." << std::endl;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return;
+    }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cout << "Enter the context to predict from: ";
     std::getline(std::cin, context);
@@ -439,6 +446,7 @@ void clearModel(FCMModel &model)
 {
     model.clearModel();
     std::cout << "Model cleared successfully." << std::endl;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 void exportModel(FCMModel &model, std::string modelName)
