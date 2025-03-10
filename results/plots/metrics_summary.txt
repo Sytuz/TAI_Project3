@@ -1,193 +1,265 @@
 sequence1:
   Format Comparison:
-    Avg Execution Time (JSON): 75.02 ms
-    Avg Execution Time (BSON): 76.88 ms
-    Avg Model Size (JSON): 975420.48 bytes
+    Avg Execution Time (JSON): 73.81 ms
+    Avg Execution Time (BSON): 77.22 ms
+    Avg Model Size (JSON): 961400.74 bytes
     Avg Model Size (BSON): 416375.71 bytes
 
   Recursive Analysis:
     Total Recursive Steps: 10
     Information Content by Step:
-      Step 0: Mean=2.1343, Min=0.0073, Max=2.9018
-      Step 1: Mean=1.6622, Min=0.0000, Max=2.8074
-      Step 2: Mean=1.5063, Min=0.0000, Max=2.8074
-      Step 3: Mean=1.4160, Min=0.0000, Max=2.7995
-      Step 4: Mean=1.3876, Min=0.0000, Max=2.7878
-      Step 5: Mean=1.3399, Min=0.0000, Max=2.7738
-      Step 6: Mean=1.3144, Min=0.0000, Max=2.7581
-      Step 7: Mean=1.2868, Min=0.0000, Max=2.7413
-      Step 8: Mean=1.2723, Min=0.0000, Max=2.7236
-      Step 9: Mean=1.2718, Min=0.0000, Max=2.7052
-      Step 10: Mean=1.2575, Min=0.0000, Max=2.6863
+      Step 0: Mean=2.0562, Min=0.0073, Max=2.9018
+      Step 1: Mean=1.5895, Min=0.0000, Max=2.8074
+      Step 2: Mean=1.4362, Min=0.0000, Max=2.8074
+      Step 3: Mean=1.3508, Min=0.0000, Max=2.7995
+      Step 4: Mean=1.3223, Min=0.0000, Max=2.7878
+      Step 5: Mean=1.2770, Min=0.0000, Max=2.7738
+      Step 6: Mean=1.2522, Min=0.0000, Max=2.7581
+      Step 7: Mean=1.2260, Min=0.0000, Max=2.7413
+      Step 8: Mean=1.2120, Min=0.0000, Max=2.7236
+      Step 9: Mean=1.2104, Min=0.0000, Max=2.7052
+      Step 10: Mean=1.1969, Min=0.0000, Max=2.6863
 
     Convergence Analysis (Avg Change in Info Content):
       k=4, alpha=0.00: 0.086770
-      k=4, alpha=0.10: 0.075169
-      k=4, alpha=0.20: 0.070444
-      k=4, alpha=0.30: 0.067084
-      k=4, alpha=0.40: 0.064699
+      k=4, alpha=0.25: 0.068731
       k=4, alpha=0.50: 0.068952
-      k=4, alpha=0.60: 0.072019
-      k=4, alpha=0.70: 0.074238
-      k=4, alpha=0.80: 0.075831
-      k=4, alpha=0.90: 0.076951
+      k=4, alpha=0.75: 0.075101
       k=4, alpha=1.00: 0.077709
       k=5, alpha=0.00: 0.079832
-      k=5, alpha=0.10: 0.070013
-      k=5, alpha=0.20: 0.065002
-      k=5, alpha=0.30: 0.061712
-      k=5, alpha=0.40: 0.059289
+      k=5, alpha=0.25: 0.063214
       k=5, alpha=0.50: 0.057377
-      k=5, alpha=0.60: 0.055800
-      k=5, alpha=0.70: 0.054459
-      k=5, alpha=0.80: 0.053290
-      k=5, alpha=0.90: 0.052254
+      k=5, alpha=0.75: 0.053856
       k=5, alpha=1.00: 0.051322
       k=6, alpha=0.00: 0.046775
-      k=6, alpha=0.10: 0.044933
-      k=6, alpha=0.20: 0.043299
-      k=6, alpha=0.30: 0.041988
-      k=6, alpha=0.40: 0.040919
+      k=6, alpha=0.25: 0.042608
       k=6, alpha=0.50: 0.040026
-      k=6, alpha=0.60: 0.039264
-      k=6, alpha=0.70: 0.038603
-      k=6, alpha=0.80: 0.038022
-      k=6, alpha=0.90: 0.037507
+      k=6, alpha=0.75: 0.038303
       k=6, alpha=1.00: 0.037045
       k=7, alpha=0.00: 0.014404
-      k=7, alpha=0.10: 0.024201
-      k=7, alpha=0.20: 0.028749
-      k=7, alpha=0.30: 0.031031
-      k=7, alpha=0.40: 0.032361
+      k=7, alpha=0.25: 0.030058
       k=7, alpha=0.50: 0.033197
-      k=7, alpha=0.60: 0.033746
-      k=7, alpha=0.70: 0.034119
-      k=7, alpha=0.80: 0.034373
-      k=7, alpha=0.90: 0.034545
+      k=7, alpha=0.75: 0.034257
       k=7, alpha=1.00: 0.034661
       k=8, alpha=0.00: 0.004924
-      k=8, alpha=0.10: 0.004797
-      k=8, alpha=0.20: 0.005006
-      k=8, alpha=0.30: 0.005169
-      k=8, alpha=0.40: 0.005443
+      k=8, alpha=0.25: 0.005096
       k=8, alpha=0.50: 0.005829
-      k=8, alpha=0.60: 0.006059
-      k=8, alpha=0.70: 0.006191
-      k=8, alpha=0.80: 0.006259
-      k=8, alpha=0.90: 0.006283
+      k=8, alpha=0.75: 0.006231
       k=8, alpha=1.00: 0.006277
       k=9, alpha=0.00: 0.001936
-      k=9, alpha=0.10: 0.063499
-      k=9, alpha=0.20: 0.091884
-      k=9, alpha=0.30: 0.107673
-      k=9, alpha=0.40: 0.117149
+      k=9, alpha=0.25: 0.100828
       k=9, alpha=0.50: 0.123023
-      k=9, alpha=0.60: 0.126677
-      k=9, alpha=0.70: 0.128893
-      k=9, alpha=0.80: 0.130142
-      k=9, alpha=0.90: 0.130729
+      k=9, alpha=0.75: 0.129617
       k=9, alpha=1.00: 0.130851
       k=10, alpha=0.00: 0.000348
-      k=10, alpha=0.10: 0.027922
-      k=10, alpha=0.20: 0.038869
-      k=10, alpha=0.30: 0.044840
-      k=10, alpha=0.40: 0.048609
+      k=10, alpha=0.25: 0.042236
       k=10, alpha=0.50: 0.051199
-      k=10, alpha=0.60: 0.053080
-      k=10, alpha=0.70: 0.054504
-      k=10, alpha=0.80: 0.055613
-      k=10, alpha=0.90: 0.056498
+      k=10, alpha=0.75: 0.055091
       k=10, alpha=1.00: 0.057216
 
 
 sequence2:
   Format Comparison:
-    Avg Execution Time (JSON): 3042.02 ms
-    Avg Execution Time (BSON): 3073.68 ms
-    Avg Model Size (JSON): 30541633.00 bytes
+    Avg Execution Time (JSON): 3312.47 ms
+    Avg Execution Time (BSON): 3474.99 ms
+    Avg Model Size (JSON): 30032787.23 bytes
     Avg Model Size (BSON): 12796643.17 bytes
 
   Recursive Analysis:
     Total Recursive Steps: 10
     Information Content by Step:
-      Step 0: Mean=3.9592, Min=0.1251, Max=5.4782
-      Step 1: Mean=3.7856, Min=0.0000, Max=4.9498
-      Step 2: Mean=3.5948, Min=0.0000, Max=4.9542
-      Step 3: Mean=3.3864, Min=0.0000, Max=4.9542
-      Step 4: Mean=3.0099, Min=0.0000, Max=4.9463
-      Step 5: Mean=3.0065, Min=0.0000, Max=4.9340
-      Step 6: Mean=3.0726, Min=0.0000, Max=4.9189
-      Step 7: Mean=3.0556, Min=0.0000, Max=4.9016
-      Step 8: Mean=3.0345, Min=0.0000, Max=4.8826
-      Step 9: Mean=3.0300, Min=0.0000, Max=4.8622
-      Step 10: Mean=3.0462, Min=0.0000, Max=4.9542
+      Step 0: Mean=3.7042, Min=0.1251, Max=5.4782
+      Step 1: Mean=3.4911, Min=0.0000, Max=4.9498
+      Step 2: Mean=3.3241, Min=0.0000, Max=4.9542
+      Step 3: Mean=3.1340, Min=0.0000, Max=4.9542
+      Step 4: Mean=2.7788, Min=0.0000, Max=4.9463
+      Step 5: Mean=2.7760, Min=0.0000, Max=4.9340
+      Step 6: Mean=2.8421, Min=0.0000, Max=4.9189
+      Step 7: Mean=2.8264, Min=0.0000, Max=4.9016
+      Step 8: Mean=2.8066, Min=0.0000, Max=4.8826
+      Step 9: Mean=2.8015, Min=0.0000, Max=4.8622
+      Step 10: Mean=2.8154, Min=0.0000, Max=4.9542
 
     Convergence Analysis (Avg Change in Info Content):
       k=5, alpha=0.00: 0.061751
-      k=5, alpha=0.10: 0.040267
-      k=5, alpha=0.20: 0.056238
-      k=5, alpha=0.30: 0.061584
-      k=5, alpha=0.40: 0.063306
+      k=5, alpha=0.25: 0.059589
       k=5, alpha=0.50: 0.063416
-      k=5, alpha=0.60: 0.062711
-      k=5, alpha=0.70: 0.061576
-      k=5, alpha=0.80: 0.060207
-      k=5, alpha=0.90: 0.058716
+      k=5, alpha=0.75: 0.060911
       k=5, alpha=1.00: 0.057170
       k=6, alpha=0.00: 0.042096
-      k=6, alpha=0.10: 0.069755
-      k=6, alpha=0.20: 0.073541
-      k=6, alpha=0.30: 0.075772
-      k=6, alpha=0.40: 0.075080
+      k=6, alpha=0.25: 0.075233
       k=6, alpha=0.50: 0.073259
-      k=6, alpha=0.60: 0.070978
-      k=6, alpha=0.70: 0.068525
-      k=6, alpha=0.80: 0.066040
-      k=6, alpha=0.90: 0.063594
+      k=6, alpha=0.75: 0.067281
       k=6, alpha=1.00: 0.061223
       k=7, alpha=0.00: 0.027135
-      k=7, alpha=0.10: 0.015272
-      k=7, alpha=0.20: 0.012863
-      k=7, alpha=0.30: 0.012122
-      k=7, alpha=0.40: 0.011954
+      k=7, alpha=0.25: 0.012385
       k=7, alpha=0.50: 0.012040
-      k=7, alpha=0.60: 0.012250
-      k=7, alpha=0.70: 0.012520
-      k=7, alpha=0.80: 0.012823
-      k=7, alpha=0.90: 0.013138
+      k=7, alpha=0.75: 0.012668
       k=7, alpha=1.00: 0.013458
       k=8, alpha=0.00: 0.017062
-      k=8, alpha=0.10: 0.026765
-      k=8, alpha=0.20: 0.027040
-      k=8, alpha=0.30: 0.027277
-      k=8, alpha=0.40: 0.027527
+      k=8, alpha=0.25: 0.027156
       k=8, alpha=0.50: 0.027777
-      k=8, alpha=0.60: 0.028020
-      k=8, alpha=0.70: 0.028252
-      k=8, alpha=0.80: 0.028474
-      k=8, alpha=0.90: 0.028682
+      k=8, alpha=0.75: 0.028364
       k=8, alpha=1.00: 0.028879
       k=9, alpha=0.00: 0.010405
-      k=9, alpha=0.10: 0.173241
-      k=9, alpha=0.20: 0.200116
-      k=9, alpha=0.30: 0.208788
-      k=9, alpha=0.40: 0.211298
+      k=9, alpha=0.25: 0.205612
       k=9, alpha=0.50: 0.211119
-      k=9, alpha=0.60: 0.209618
-      k=9, alpha=0.70: 0.207432
-      k=9, alpha=0.80: 0.204891
-      k=9, alpha=0.90: 0.202179
+      k=9, alpha=0.75: 0.206193
       k=9, alpha=1.00: 0.199399
       k=10, alpha=0.00: 0.026108
-      k=10, alpha=0.10: 0.173977
-      k=10, alpha=0.20: 0.214470
-      k=10, alpha=0.30: 0.237832
-      k=10, alpha=0.40: 0.253767
+      k=10, alpha=0.25: 0.227421
       k=10, alpha=0.50: 0.265558
-      k=10, alpha=0.60: 0.274721
-      k=10, alpha=0.70: 0.282086
-      k=10, alpha=0.80: 0.288150
-      k=10, alpha=0.90: 0.293240
+      k=10, alpha=0.75: 0.285257
       k=10, alpha=1.00: 0.297575
+
+
+sequence3:
+  Format Comparison:
+    Avg Execution Time (JSON): 55878.05 ms
+    Avg Execution Time (BSON): 58276.81 ms
+    Avg Model Size (JSON): 440166427.76 bytes
+    Avg Model Size (BSON): 192780571.00 bytes
+
+  Recursive Analysis:
+    Total Recursive Steps: 10
+    Information Content by Step:
+      Step 0: Mean=2.2641, Min=0.0092, Max=3.2827
+      Step 1: Mean=2.3446, Min=0.0000, Max=3.3925
+      Step 2: Mean=2.3445, Min=0.0000, Max=3.3923
+      Step 3: Mean=2.3437, Min=0.0000, Max=3.3923
+      Step 4: Mean=2.3360, Min=0.0000, Max=3.3861
+      Step 5: Mean=2.3251, Min=0.0000, Max=3.3766
+      Step 6: Mean=2.3126, Min=0.0000, Max=3.3651
+      Step 7: Mean=2.2988, Min=0.0000, Max=3.3521
+      Step 8: Mean=2.2842, Min=0.0000, Max=3.3381
+      Step 9: Mean=2.2690, Min=0.0000, Max=3.3232
+      Step 10: Mean=2.2532, Min=0.0000, Max=3.3077
+
+    Convergence Analysis (Avg Change in Info Content):
+      k=6, alpha=0.00: 0.010206
+      k=6, alpha=0.25: 0.007843
+      k=6, alpha=0.50: 0.009848
+      k=6, alpha=0.75: 0.010297
+      k=6, alpha=1.00: 0.010313
+      k=7, alpha=0.00: 0.001994
+      k=7, alpha=0.25: 0.009763
+      k=7, alpha=0.50: 0.010914
+      k=7, alpha=0.75: 0.011031
+      k=7, alpha=1.00: 0.010873
+      k=8, alpha=0.00: 0.000914
+      k=8, alpha=0.25: 0.010233
+      k=8, alpha=0.50: 0.011307
+      k=8, alpha=0.75: 0.011388
+      k=8, alpha=1.00: 0.011205
+      k=9, alpha=0.00: 0.000593
+      k=9, alpha=0.25: 0.010647
+      k=9, alpha=0.50: 0.011739
+      k=9, alpha=0.75: 0.011814
+      k=9, alpha=1.00: 0.011620
+      k=10, alpha=0.00: 0.000438
+      k=10, alpha=0.25: 0.011084
+      k=10, alpha=0.50: 0.012219
+      k=10, alpha=0.75: 0.012297
+      k=10, alpha=1.00: 0.012093
+
+
+sequence4:
+  Format Comparison:
+    Avg Execution Time (JSON): 57457.58 ms
+    Avg Execution Time (BSON): 58101.94 ms
+    Avg Model Size (JSON): 84959587.75 bytes
+    Avg Model Size (BSON): 33440344.25 bytes
+
+  Recursive Analysis:
+    Total Recursive Steps: 10
+    Information Content by Step:
+      Step 0: Mean=1.7595, Min=1.6018, Max=1.8587
+      Step 1: Mean=1.0281, Min=0.0020, Max=1.5854
+      Step 2: Mean=0.9279, Min=0.0049, Max=1.5758
+      Step 3: Mean=0.8803, Min=0.0040, Max=1.5772
+      Step 4: Mean=0.9220, Min=0.0046, Max=1.5785
+      Step 5: Mean=0.9016, Min=0.0020, Max=1.5803
+      Step 6: Mean=0.8569, Min=0.0000, Max=1.5842
+      Step 7: Mean=0.8960, Min=0.0000, Max=1.5781
+      Step 8: Mean=0.8937, Min=0.0020, Max=1.5781
+      Step 9: Mean=0.8219, Min=0.0028, Max=1.5570
+      Step 10: Mean=0.8686, Min=0.0020, Max=1.5500
+
+    Convergence Analysis (Avg Change in Info Content):
+      k=7, alpha=0.00: 0.088715
+      k=7, alpha=0.25: 0.090380
+      k=7, alpha=0.50: 0.083124
+      k=7, alpha=0.75: 0.075005
+      k=7, alpha=1.00: 0.067552
+      k=8, alpha=0.00: 0.086645
+      k=8, alpha=0.25: 0.102852
+      k=8, alpha=0.50: 0.098745
+      k=8, alpha=0.75: 0.091170
+      k=8, alpha=1.00: 0.083659
+      k=9, alpha=0.00: 0.083289
+      k=9, alpha=0.25: 0.078513
+      k=9, alpha=0.50: 0.069447
+      k=9, alpha=0.75: 0.060997
+      k=9, alpha=1.00: 0.053661
+      k=10, alpha=0.00: 0.076866
+      k=10, alpha=0.25: 0.038785
+      k=10, alpha=0.50: 0.022190
+      k=10, alpha=0.75: 0.012365
+      k=10, alpha=1.00: 0.005792
+
+
+sequence5:
+  Format Comparison:
+    Avg Execution Time (JSON): 1791.14 ms
+    Avg Execution Time (BSON): 1864.96 ms
+    Avg Model Size (JSON): 13283660.27 bytes
+    Avg Model Size (BSON): 5635304.67 bytes
+
+  Recursive Analysis:
+    Total Recursive Steps: 10
+    Information Content by Step:
+      Step 0: Mean=2.2664, Min=0.3933, Max=3.5789
+      Step 1: Mean=3.2936, Min=0.0818, Max=4.8458
+      Step 2: Mean=3.0059, Min=0.0036, Max=5.0826
+      Step 3: Mean=2.9535, Min=0.0049, Max=5.0649
+      Step 4: Mean=3.1655, Min=0.0020, Max=5.0189
+      Step 5: Mean=3.0281, Min=0.0020, Max=4.9069
+      Step 6: Mean=3.0396, Min=0.0028, Max=4.8991
+      Step 7: Mean=2.9165, Min=0.0033, Max=4.8869
+      Step 8: Mean=2.4876, Min=0.0000, Max=4.9023
+      Step 9: Mean=2.4291, Min=0.0039, Max=4.8546
+      Step 10: Mean=2.6874, Min=0.0000, Max=4.8357
+
+    Convergence Analysis (Avg Change in Info Content):
+      k=5, alpha=0.00: 0.043926
+      k=5, alpha=0.25: 0.329550
+      k=5, alpha=0.50: 0.345009
+      k=5, alpha=0.75: 0.339986
+      k=5, alpha=1.00: 0.330371
+      k=6, alpha=0.00: 0.051761
+      k=6, alpha=0.25: 0.291123
+      k=6, alpha=0.50: 0.337893
+      k=6, alpha=0.75: 0.358998
+      k=6, alpha=1.00: 0.370769
+      k=7, alpha=0.00: 0.031479
+      k=7, alpha=0.25: 0.196311
+      k=7, alpha=0.50: 0.210457
+      k=7, alpha=0.75: 0.211427
+      k=7, alpha=1.00: 0.208886
+      k=8, alpha=0.00: 0.023825
+      k=8, alpha=0.25: 0.205977
+      k=8, alpha=0.50: 0.215865
+      k=8, alpha=0.75: 0.212784
+      k=8, alpha=1.00: 0.206826
+      k=9, alpha=0.00: 0.021749
+      k=9, alpha=0.25: 0.200651
+      k=9, alpha=0.50: 0.207038
+      k=9, alpha=0.75: 0.202035
+      k=9, alpha=1.00: 0.194798
+      k=10, alpha=0.00: 0.018429
+      k=10, alpha=0.25: 0.119458
+      k=10, alpha=0.50: 0.126109
+      k=10, alpha=0.75: 0.125336
+      k=10, alpha=1.00: 0.122742
 
 
