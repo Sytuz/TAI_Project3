@@ -1,4 +1,5 @@
 #include "FCMModel.h"
+#include "RFCMModel.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -27,10 +28,11 @@ void pressEnterToContinue()
 
 /* --- Creation & Importing --- */
 
-void createNewModel(FCMModel &model)
+void createNewModel(std::unique_ptr<FCMModel> &model)
 {
     int k;
     double alpha;
+    std::string recursive;
 
     std::cout << "Enter the order (k) of the model: ";
     while (!(std::cin >> k) || k < 1)
@@ -48,12 +50,22 @@ void createNewModel(FCMModel &model)
         std::cout << "Invalid input. Please enter a positive number: ";
     }
 
-    model = FCMModel(k, alpha);
-    std::cout << "New model created successfully with k=" << k << " and alpha=" << alpha << std::endl;
+    std::cout << "Do you want to enable recursive Markov order? (y/n): ";
+    std::cin >> recursive;
+    if (recursive == "y")
+    {
+        model = std::make_unique<RFCMModel>(k, alpha);
+        std::cout << "New recursive model created successfully with k=" << k << " and alpha=" << alpha << std::endl;
+    }
+    else
+    {
+        model = std::make_unique<FCMModel>(k, alpha);
+        std::cout << "New model created successfully with k=" << k << " and alpha=" << alpha << std::endl;
+    }
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-std::string importModel(FCMModel &model)
+std::string importModel(std::unique_ptr<FCMModel> &model)
 {
     std::string filename;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -86,7 +98,8 @@ std::string importModel(FCMModel &model)
 
     try
     {
-        model.importModel(filename, binary);
+        // TODO : Mudar isto para que detete se é um RFCMModel ou um FCMModel
+        model->importModel(filename, binary);
         std::cout << "Model imported successfully from " << filename << std::endl;
 
         // Return the filename without the extension
@@ -504,14 +517,14 @@ void displayMenu(const std::string &modelName, bool modelInitialized, FCMModel &
 
 int main()
 {
-    FCMModel model;
+    std::unique_ptr<FCMModel> model;
     bool modelInitialized = false;
     std::string modelName;
     int choice;
 
     while (true)
     {
-        displayMenu(modelName, modelInitialized, model);
+        displayMenu(modelName, modelInitialized, *model);
         while (!(std::cin >> choice))
         {
             std::cin.clear();
@@ -536,7 +549,7 @@ int main()
                 {
                     break;
                 }
-                model.clearModel();
+                model->clearModel();
             }
             createNewModel(model);
             modelInitialized = true;
@@ -561,25 +574,25 @@ int main()
                 switch (choice)
                 {
                 case 3:
-                    learnFromText(model);
+                    learnFromText(*model);
                     break;
                 case 4:
-                    predictNextSymbols(model);
+                    predictNextSymbols(*model);
                     break;
                 case 5:
-                    computeInformationContent(model);
+                    computeInformationContent(*model);
                     break;
                 case 6:
-                    lockUnlockModel(model);
+                    lockUnlockModel(*model);
                     break;
                 case 7:
                     renameModel(modelName);
                     break;
                 case 8:
-                    clearModel(model);
+                    clearModel(*model);
                     break;
                 case 9:
-                    exportModel(model, modelName);
+                    exportModel(*model, modelName);
                     break;
                 default:
                     std::cout << "Invalid choice. Please try again." << std::endl;
