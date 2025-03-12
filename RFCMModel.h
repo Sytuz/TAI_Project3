@@ -40,9 +40,10 @@ public:
      * @brief Computes the probability of a symbol given a context using the recursive model.
      * @param context The context string.
      * @param symbol The symbol to compute the probability for.
+     * @param tableIndex The index of the frequency/probability table to use.
      * @return The probability of the symbol given the context.
      */
-    double getProbability(const std::string &context, const std::string &symbol) const override;
+    double getProbability(const std::string &context, const std::string &symbol, int tableIndex) const;
     
     /**
      * @brief Clears the recursive model by resetting all tables.
@@ -115,6 +116,9 @@ private:
      * @return A vector of UTF-8 characters.
      */
     std::vector<std::string> splitIntoUTF8Characters(const std::string &text) const;
+
+    // Helper method to make UTF-8 strings display-friendly
+    std::string makeDisplayFriendly(const std::string &str) const;
 };
 
 #endif // RFCMMODEL_H

@@ -37,39 +37,92 @@ void RFCMModel::learn(const std::string &text, bool clearLogs) {
         return;
     }
     
-    int contextProcessed = 0;
+    int totalContextsProcessed = 0;
     
-    // Process each sequence of characters for all context lengths from k down to 1
-    for (std::size_t i = 0; i <= characters.size() - getK() - 1; ++i) {
-        // For each context length from k down to 1
-        for (int contextLength = getK(); contextLength >= 1; --contextLength) {
-            // Build context from contextLength consecutive characters
+    // Make a separate pass for each context length from 1 to k
+    // Start tracking overall learning time
+    auto startLearningTime = std::chrono::high_resolution_clock::now();
+    
+    for (int contextLength = 1; contextLength <= getK(); ++contextLength) {
+        int contextsProcessedThisPass = 0;
+        int uniqueContextsThisPass = 0;
+        std::map<std::string, bool> seenContexts;
+        
+        if (!clearLogs) {
+            std::cout << "Processing contexts of length " << contextLength << "..." << std::endl;
+        }
+        
+        auto startTimeThisPass = std::chrono::high_resolution_clock::now();
+        
+        // Process each valid position in the text for this context length
+        for (std::size_t i = 0; i <= characters.size() - contextLength - 1; ++i) {
+            // Build context of current length
             std::string context;
             for (std::size_t j = i; j < i + contextLength; ++j) {
                 context += characters[j];
             }
             
-            // The next character after the context
+            // Get the next symbol after this context
             std::string symbol = characters[i + contextLength];
             
-            // Add to alphabet (use the parent class's alphabet)
+            // Track if this is a new context
+            if (seenContexts.find(context) == seenContexts.end()) {
+                seenContexts[context] = true;
+                uniqueContextsThisPass++;
+            }
+            
+            // Add to alphabet
             alphabet.insert(symbol);
             
             // Update frequency tables for this context length
             rFrequencyTable[contextLength][context][symbol]++;
             rContextCount[contextLength][context]++;
+            
+            contextsProcessedThisPass++;
+            
+            // Print detailed progress every 100,000 contexts if logs are enabled
+            if (!clearLogs && contextsProcessedThisPass % 100000 == 0) {
+                std::cout << "    Processed " << contextsProcessedThisPass << " contexts..." << std::endl;
+            }
         }
         
-        contextProcessed++;
+        auto endTimeThisPass = std::chrono::high_resolution_clock::now();
+        auto durationThisPass = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeThisPass - startTimeThisPass).count();
         
-        // Optional: add progress indicator for large texts
-        if (contextProcessed % 10000 == 0 && !clearLogs) {
-            std::cout << "Processed " << contextProcessed << " contexts..." << std::endl;
+        totalContextsProcessed += contextsProcessedThisPass;
+        
+        if (!clearLogs) {
+            std::cout << "  Processed " << contextsProcessedThisPass << " contexts of length " << contextLength << std::endl;
+            std::cout << "  Found " << uniqueContextsThisPass << " unique contexts" << std::endl;
+            std::cout << "  Time taken: " << durationThisPass << " ms" << std::endl;
+            
+            // Show stats about frequency distribution for this context length
+            if (!rFrequencyTable[contextLength].empty()) {
+                int maxEntries = 0;
+                std::string busyContext;
+                
+                for (const auto &contextPair : rFrequencyTable[contextLength]) {
+                    if (contextPair.second.size() > maxEntries) {
+                        maxEntries = contextPair.second.size();
+                        busyContext = contextPair.first;
+                    }
+                }
+                
+                std::cout << "  Most diverse context: '" << busyContext 
+                          << "' with " << maxEntries << " different following symbols" << std::endl;
+            }
         }
     }
     
+    auto endLearningTime = std::chrono::high_resolution_clock::now();
+    auto totalDuration = std::chrono::duration_cast<std::chrono::milliseconds>(endLearningTime - startLearningTime).count();
+    
     if (!clearLogs) {
-        std::cout << "Learning complete. Processed " << contextProcessed << " contexts." << std::endl;
+        std::cout << "Total learning time: " << totalDuration << " ms" << std::endl;
+    }
+    
+    if (!clearLogs) {
+        std::cout << "Learning complete. Processed " << totalContextsProcessed << " contexts total." << std::endl;
         std::cout << "Model now contains contexts of lengths 1 to " << getK() << "." << std::endl;
         std::cout << "Alphabet size: " << alphabet.size() << " unique symbols." << std::endl;
     }
@@ -137,60 +190,68 @@ void RFCMModel::generateProbabilityTables() {
     }
 }
 
-double RFCMModel::getProbability(const std::string &context, const std::string &symbol) const {
-    // If context is shorter than k, use the frequency table that fits the context
-    int contextLength = std::min(static_cast<int>(context.length()), getK());
-    
-    // Start with the highest order model (largest context length)
-    for (int currentLength = contextLength; currentLength >= 1; --currentLength) {
-        std::string reducedContext = getReducedContext(context, currentLength);
-        
-        // Skip invalid contexts
-        if (reducedContext.empty()) {
-            continue;
-        }
-        
-        // Check if this context exists in our frequency tables
-        if (rFrequencyTable.find(currentLength) != rFrequencyTable.end() &&
-            rFrequencyTable.at(currentLength).find(reducedContext) != rFrequencyTable.at(currentLength).end()) {
-            
-            // If we're using locked probability tables
-            if (isLocked()) {
-                if (rProbabilityTable.find(currentLength) != rProbabilityTable.end() &&
-                    rProbabilityTable.at(currentLength).find(reducedContext) != rProbabilityTable.at(currentLength).end() &&
-                    rProbabilityTable.at(currentLength).at(reducedContext).find(symbol) != rProbabilityTable.at(currentLength).at(reducedContext).end()) {
-                    
-                    // Found the symbol in this context, return its probability
-                    return rProbabilityTable.at(currentLength).at(reducedContext).at(symbol);
-                }
-            } else {
-                // Calculate probability on-the-fly with smoothing
-                int count = 0;
-                if (rFrequencyTable.at(currentLength).at(reducedContext).find(symbol) != 
-                    rFrequencyTable.at(currentLength).at(reducedContext).end()) {
-                    count = rFrequencyTable.at(currentLength).at(reducedContext).at(symbol);
-                }
-                
-                int totalCount = rContextCount.at(currentLength).at(reducedContext);
-                return (count + getAlpha()) / (totalCount + getAlpha() * getAlphabetSize());
+double RFCMModel::getProbability(const std::string &context, const std::string &symbol, int tableIndex) const {
+
+    // If we're using locked probability tables
+    if (isLocked()) {
+        auto contextIt = rProbabilityTable.at(tableIndex).find(context);
+        if (contextIt != rProbabilityTable.at(tableIndex).end()) {
+            auto symbolIt = contextIt->second.find(symbol);
+            if (symbolIt != contextIt->second.end()) {
+                return symbolIt->second;
             }
         }
+        return 1.0 / getAlphabetSize();  // Default fallback
+
+    } else {
+        // If the model is unlocked, apply Laplace smoothing on the frequency table
+        auto contextIt = rFrequencyTable.at(tableIndex).find(context);
+        if (contextIt == rFrequencyTable.at(tableIndex).end()) {
+            return 1.0 / getAlphabetSize();  // Default fallback
+        }
         
-        // If we reach here, this context level didn't have the symbol or context
-        // We'll continue to the next lower order model
+        auto symbolIt = contextIt->second.find(symbol);
+        int count = (symbolIt != contextIt->second.end() ? symbolIt->second : 0);
+        int totalCount = rContextCount.at(tableIndex).at(context);
+        
+        return (count + getAlpha()) / (totalCount + getAlpha() * getAlphabetSize());
     }
-    
-    // If we've exhausted all context lengths without finding a match,
-    // fall back to a uniform distribution
-    return 1.0 / getAlphabetSize();
 }
 
 std::string RFCMModel::predict(const std::string &context) const {
     // For simplicity, let's use a weighted random selection based on getProbability
     
     // If the context is empty or too short, use a fallback
-    if (context.empty() || context.length() < static_cast<std::size_t>(getK())) {
-        std::cout << "Warning: Context is too short for prediction, using fallback" << std::endl;
+    if (context.empty()) {
+        std::cout << "Warning: Context is empty, using fallback" << std::endl;
+        // Fallback to random selection from alphabet
+        if (!alphabet.empty()) {
+            auto it = alphabet.begin();
+            std::advance(it, rand() % alphabet.size());
+            return *it;
+        }
+        return " ";  // Default fallback
+    }
+
+    // Find which context length to use (k or less)
+    int contextLength = std::min(static_cast<int>(context.length()), getK());
+
+    std::string reducedContext = getReducedContext(context, contextLength);
+
+    // Find the frequency table that contains the context (the higher order the better)
+    while (contextLength > 0) {
+        std::cout << "Checking context - " << reducedContext << " - with length " << contextLength << std::endl;
+        auto contextIt = rFrequencyTable.at(contextLength).find(reducedContext);
+        if (contextIt != rFrequencyTable.at(contextLength).end()) {
+            // Found the context, break out of the loop
+            break;
+        }
+        contextLength--;
+        reducedContext = getReducedContext(reducedContext, contextLength);
+    }
+
+    if (contextLength == 0) {
+        std::cout << "Warning: No context found, using fallback" << std::endl;
         // Fallback to random selection from alphabet
         if (!alphabet.empty()) {
             auto it = alphabet.begin();
@@ -205,7 +266,8 @@ std::string RFCMModel::predict(const std::string &context) const {
     double totalProbability = 0.0;
     
     for (const std::string &symbol : alphabet) {
-        double prob = getProbability(context, symbol);
+          // Adjust table index based on context length
+        double prob = getProbability(reducedContext, symbol, contextLength);
         probabilities.push_back({symbol, prob});
         totalProbability += prob;
     }
@@ -374,13 +436,46 @@ void RFCMModel::importModel(const std::string &filename, bool binary) {
 }
 
 std::string RFCMModel::getReducedContext(const std::string &context, int contextLength) const {
-    // If the context is shorter than the requested length, return an empty string
-    if (context.length() < static_cast<std::size_t>(contextLength)) {
+    // Split context into UTF-8 characters
+    std::vector<std::string> characters = splitIntoUTF8Characters(context);
+    
+    // If the context has fewer characters than requested, return an empty string
+    if (characters.size() < static_cast<std::size_t>(contextLength)) {
         return "";
     }
     
-    // Extract the last 'contextLength' characters from the context
-    return context.substr(context.length() - contextLength);
+    // Extract the last 'contextLength' UTF-8 characters
+    std::string reducedContext;
+    for (std::size_t i = characters.size() - contextLength; i < characters.size(); ++i) {
+        reducedContext += characters[i];
+    }
+    
+    return reducedContext;
+}
+
+// First, add a new helper method to make UTF-8 strings display-friendly
+std::string RFCMModel::makeDisplayFriendly(const std::string &str) const {
+    // For UTF-8 strings, we should preserve valid characters
+    // and only replace truly non-printable control characters
+    std::string result;
+    
+    // Process the string character by character (UTF-8 aware)
+    std::vector<std::string> chars = splitIntoUTF8Characters(str);
+    for (const auto &c : chars) {
+        // If it's a single byte character, check if it's a control character
+        if (c.length() == 1) {
+            unsigned char byte = static_cast<unsigned char>(c[0]);
+            if (byte < 32 || byte == 127) { // Control characters
+                result += "?";
+            } else {
+                result += c;
+            }
+        } else {
+            // Multi-byte UTF-8 character - keep as is
+            result += c;
+        }
+    }
+    return result;
 }
 
 void RFCMModel::printModelSummary() const {
@@ -414,16 +509,10 @@ void RFCMModel::printModelSummary() const {
             for (const auto &contextPair : rFrequencyTable.at(contextLength)) {
                 if (count >= 2) break;
                 
-                std::string context = contextPair.first;
+                // Make context display-friendly
+                std::string displayContext = makeDisplayFriendly(contextPair.first);
                 
-                // Replace non-printable characters with '?'
-                for (char &c : context) {
-                    if (!std::isprint(c)) {
-                        c = '?';
-                    }
-                }
-                
-                std::cout << "    Context '" << context << "' -> ";
+                std::cout << "    Context '" << displayContext << "' -> ";
                 int symbolCount = 0;
                 
                 for (const auto &symbolPair : contextPair.second) {
@@ -432,7 +521,10 @@ void RFCMModel::printModelSummary() const {
                         break;
                     }
                     
-                    std::cout << "'" << symbolPair.first << "'(" << symbolPair.second << ") ";
+                    // Make symbol display-friendly
+                    std::string displaySymbol = makeDisplayFriendly(symbolPair.first);
+                    
+                    std::cout << "'" << displaySymbol << "'(" << symbolPair.second << ") ";
                     symbolCount++;
                 }
                 std::cout << std::endl;
@@ -442,6 +534,37 @@ void RFCMModel::printModelSummary() const {
         }
     }
     
+    // Print full frequency tables for each context length
+    std::cout << "\nFrequency Tables (full):" << std::endl;
+    for (int contextLength = getK(); contextLength >= 1; --contextLength) {
+        if (rFrequencyTable.find(contextLength) == rFrequencyTable.end()) {
+            continue;  // Skip if no entries for this context length
+        }
+        
+        std::cout << "  Order " << contextLength << " contexts:" << std::endl;
+        
+        for (const auto &contextPair : rFrequencyTable.at(contextLength)) {
+            // Make context display-friendly
+            std::string displayContext = makeDisplayFriendly(contextPair.first);
+            
+            std::cout << "    \"" << displayContext << "\" → {";
+            
+            // Print all symbol frequencies
+            int symbolCount = 0;
+            for (const auto &symbolPair : contextPair.second) {
+                if (symbolCount > 0) std::cout << ", ";
+                
+                // Make symbol display-friendly
+                std::string displaySymbol = makeDisplayFriendly(symbolPair.first);
+                
+                std::cout << "\"" << displaySymbol << "\": " << symbolPair.second;
+                symbolCount++;
+            }
+            
+            std::cout << "}" << std::endl;
+        }
+    }
+
     std::cout << "===============================================" << std::endl;
 }
 

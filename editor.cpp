@@ -480,7 +480,7 @@ void displayMenu(const std::string &modelName, bool modelInitialized, FCMModel &
 {
     clearScreen();
     std::cout << "=============================================\n";
-    std::cout << "              FCM MODEL EDITOR               \n";
+    std::cout << "                MODEL EDITOR                 \n";
     std::cout << "=============================================\n";
     if (modelInitialized)
     {
@@ -580,6 +580,13 @@ int main()
                     predictNextSymbols(*model);
                     break;
                 case 5:
+                    // If the model is RFCM, show a message saying the feature is not available
+                    if (dynamic_cast<RFCMModel *>(model.get()) != nullptr)
+                    {
+                        std::cout << "This feature is not available for RFCM models." << std::endl;
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        break;
+                    }
                     computeInformationContent(*model);
                     break;
                 case 6:
