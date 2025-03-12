@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void printError() {
+void printHelpMenu() {
     cout << "Usage: \n";
     cout << "  Generate text from an existing model:\n";
     cout << "    ./generator -m <model_file> -p <prior> -s <size>\n";
@@ -25,6 +25,7 @@ void printError() {
     cout << "  --json           : Save model in JSON format (default is binary)\n";
     cout << "  -p <prior>       : Prior context to start text generation\n";
     cout << "  -s <size>        : Number of symbols to generate (default: 100)\n";
+    cout << "  -h               : Display this help menu\n";
     cout << "\nNote: The format for existing models is detected automatically from the extension.\n";
 }
 
@@ -35,8 +36,20 @@ void validatePrior(const string& prior, int k) {
 }
 
 int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        printHelpMenu();
+        return 1;
+    }
+    
+    // Check for help flag
+    string firstArg = argv[1];
+    if (firstArg == "-h") {
+        printHelpMenu();
+        return 0;
+    }
+    
     if (argc < 6) {
-        printError();
+        printHelpMenu();
         return 1;
     }
 
@@ -69,7 +82,7 @@ int main(int argc, char* argv[]) {
         // Check if there's a next argument
         if (i + 1 >= argc) {
             cerr << "Error: Missing value for argument " << arg << endl;
-            printError();
+            printHelpMenu();
             return 1;
         }
         
@@ -97,20 +110,20 @@ int main(int argc, char* argv[]) {
     // Validate modes - we need exactly one source (either load or train)
     if ((loadModel && trainModel) || (!loadModel && !trainModel)) {
         cerr << "Error: Must specify exactly one of -m or -f" << endl;
-        printError();
+        printHelpMenu();
         return 1;
     }
 
     // Check for required parameters for each mode
     if (trainModel && (prior.empty() || size <= 0)) {
         cerr << "Error: Training mode requires both -p and -s parameters" << endl;
-        printError();
+        printHelpMenu();
         return 1;
     }
 
     if (loadModel && (modelFile.empty() || prior.empty() || size <= 0)) {
         cerr << "Error: Model loading mode requires -m, -p, and -s parameters" << endl;
-        printError();
+        printHelpMenu();
         return 1;
     }
 
