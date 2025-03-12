@@ -1,5 +1,5 @@
 # TAI_Project1
-This repository contains the implementation of a Finite-Context Model (FCM) and its recursive extension (RFCM) for text analysis, average information content measurement, and text generation. 
+This [GitHub Repository](https://github.com/miguel-silva48/TAI_Project1/) contains the implementation of a Finite-Context Model (FCM) and its recursive extension (RFCM) for text analysis, average information content measurement, and text generation. 
 
 It was developed in the Teoria Algorítmica da Informação (TAI) course.
 
