@@ -160,6 +160,7 @@ python3 generate_plots/plots.py
 - `generate_plots/`: Python scripts for visualization
 - `results/`: Directory containing test outputs and generated plots
 - `sequences/`: Text samples for training and testing
+- `assets/`: Directory containing, the report PDF and source files, the presentation PDF and the diagram's code.
 
 ---
 
