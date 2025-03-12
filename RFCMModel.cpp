@@ -98,7 +98,7 @@ void RFCMModel::learn(const std::string &text, bool clearLogs) {
             
             // Show stats about frequency distribution for this context length
             if (!rFrequencyTable[contextLength].empty()) {
-                int maxEntries = 0;
+                std::size_t maxEntries = 0;
                 std::string busyContext;
                 
                 for (const auto &contextPair : rFrequencyTable[contextLength]) {
@@ -237,17 +237,21 @@ std::string RFCMModel::predict(const std::string &context) const {
     int contextLength = std::min(static_cast<int>(context.length()), getK());
 
     std::string reducedContext = getReducedContext(context, contextLength);
-
+    
     // Find the frequency table that contains the context (the higher order the better)
     while (contextLength > 0) {
-        std::cout << "Checking context - " << reducedContext << " - with length " << contextLength << std::endl;
-        auto contextIt = rFrequencyTable.at(contextLength).find(reducedContext);
-        if (contextIt != rFrequencyTable.at(contextLength).end()) {
-            // Found the context, break out of the loop
-            break;
+        if (rFrequencyTable.find(contextLength) != rFrequencyTable.end()) {
+            auto contextIt = rFrequencyTable.at(contextLength).find(reducedContext);
+            if (contextIt != rFrequencyTable.at(contextLength).end()) {
+                // Found the context, break out of the loop
+                break;
+            }
         }
+        // If not found, try shorter context
         contextLength--;
-        reducedContext = getReducedContext(reducedContext, contextLength);
+        if (contextLength > 0) {
+            reducedContext = getReducedContext(context, contextLength);
+        }
     }
 
     if (contextLength == 0) {
@@ -265,11 +269,23 @@ std::string RFCMModel::predict(const std::string &context) const {
     std::vector<std::pair<std::string, double>> probabilities;
     double totalProbability = 0.0;
     
-    for (const std::string &symbol : alphabet) {
-          // Adjust table index based on context length
+    // Only iterate through symbols that have appeared after this context
+    const auto &nextSymbols = rFrequencyTable.at(contextLength).at(reducedContext);
+    for (const auto &symbolPair : nextSymbols) {
+        const std::string &symbol = symbolPair.first;
         double prob = getProbability(reducedContext, symbol, contextLength);
         probabilities.push_back({symbol, prob});
         totalProbability += prob;
+    }
+    
+    // If we have no probabilities (shouldn't happen), use fallback
+    if (probabilities.empty()) {
+        if (!alphabet.empty()) {
+            auto it = alphabet.begin();
+            std::advance(it, rand() % alphabet.size());
+            return *it;
+        }
+        return " ";
     }
     
     // Select a symbol randomly based on probabilities
@@ -284,7 +300,7 @@ std::string RFCMModel::predict(const std::string &context) const {
     }
     
     // Fallback (shouldn't reach here with proper smoothing)
-    return !alphabet.empty() ? *alphabet.begin() : " ";
+    return probabilities[0].first;  // Return first symbol as last resort
 }
 
 void RFCMModel::lockModel() {
@@ -533,39 +549,6 @@ void RFCMModel::printModelSummary() const {
             }
         }
     }
-    
-    // Print full frequency tables for each context length
-    std::cout << "\nFrequency Tables (full):" << std::endl;
-    for (int contextLength = getK(); contextLength >= 1; --contextLength) {
-        if (rFrequencyTable.find(contextLength) == rFrequencyTable.end()) {
-            continue;  // Skip if no entries for this context length
-        }
-        
-        std::cout << "  Order " << contextLength << " contexts:" << std::endl;
-        
-        for (const auto &contextPair : rFrequencyTable.at(contextLength)) {
-            // Make context display-friendly
-            std::string displayContext = makeDisplayFriendly(contextPair.first);
-            
-            std::cout << "    \"" << displayContext << "\" → {";
-            
-            // Print all symbol frequencies
-            int symbolCount = 0;
-            for (const auto &symbolPair : contextPair.second) {
-                if (symbolCount > 0) std::cout << ", ";
-                
-                // Make symbol display-friendly
-                std::string displaySymbol = makeDisplayFriendly(symbolPair.first);
-                
-                std::cout << "\"" << displaySymbol << "\": " << symbolPair.second;
-                symbolCount++;
-            }
-            
-            std::cout << "}" << std::endl;
-        }
-    }
-
-    std::cout << "===============================================" << std::endl;
 }
 
 std::vector<std::string> RFCMModel::splitIntoUTF8Characters(const std::string &text) const {
