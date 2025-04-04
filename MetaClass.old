@@ -1,0 +1,443 @@
+/*
+TODO - maintained for possible future comparisons
+This class implements a simpler Markov model for DNA sequence analysis, specifically for metagenomic samples.
+- This model is NOT the one used in Project 1
+*/
+
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <algorithm>
+#include <getopt.h>
+#include <vector>
+#include <map>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+// Structure to hold reference sequence information
+struct Reference {
+    string name;
+    string sequence;
+    double nrc;
+};
+
+// Markov Model Class for DNA sequence analysis
+class MarkovModel {
+private:
+    size_t k;                              // Context size
+    double alpha;                          // Smoothing parameter
+    map<string, vector<int>> model;        // Model storage: context -> count vector
+
+    // Used to index into the count vectors for each context - Maps DNA nucleotides to indices
+    int symbolToIndex(char symbol) {
+        switch (symbol) {
+            case 'A': return 0;
+            case 'C': return 1;
+            case 'G': return 2;
+            case 'T': return 3;
+            default: return -1;  // Handle invalid symbols
+        }
+    }
+
+    // Used to calculate the total observations for a particular context
+    int getTotalCount(const vector<int>& counts) {
+        int total = 0;
+        for (int count : counts) {
+            total += count;
+        }
+        return total;
+    }
+
+public:
+    // Initializes the Markov model with context size and smoothing parameter
+    MarkovModel(size_t contextSize = 10, double smoothingParam = 0.1) : k(contextSize), alpha(smoothingParam) {}
+
+    // Train the model on a DNA sequence
+    void train(const string& sequence) {
+        if (sequence.length() <= k) {
+            cerr << "Warning: Sequence is too short for the given context size k=" << k << "." << endl;
+            return;
+        }
+
+        for (size_t i = 0; i <= sequence.length() - k - 1; ++i) {
+            string context = sequence.substr(i, k);
+            char nextSymbol = sequence[i + k];
+            int symbolIndex = symbolToIndex(nextSymbol);
+
+            if (symbolIndex == -1) continue;
+
+            // Initialize counts for new context
+            if (model.find(context) == model.end()) {
+                model[context] = vector<int>(4, 0);
+            }
+
+            // Increment count for the observed symbol
+            model[context][symbolIndex]++;
+        }
+    }
+
+    // Calculate bits needed to encode a sequence using this model
+    double calculateBits(const string& sequence) {
+        double totalBits = 0.0;
+
+        if (sequence.length() <= k) {
+            return 2.0 * sequence.length();
+        }
+
+        for (size_t i = 0; i <= sequence.length() - k - 1; ++i) {
+            string context = sequence.substr(i, k);
+            char nextSymbol = sequence[i + k];
+            int symbolIndex = symbolToIndex(nextSymbol);
+
+            if (symbolIndex == -1) continue;
+
+            double probability;
+
+            if (model.find(context) != model.end()) {
+                const vector<int>& counts = model[context];
+                int totalCount = getTotalCount(counts) + 4 * alpha;
+                probability = (counts[symbolIndex] + alpha) / totalCount;
+            }
+            else {
+                probability = 0.25; // 1/4 for DNA alphabet
+            }
+
+            totalBits += -log2(probability);
+        }
+
+        return totalBits;
+    }
+
+    // Calculate Normalized Relative Compression
+    double calculateNRC(const string& sequence) {
+        if (sequence.length() <= k) {
+            return 1.0; // Handle short sequences
+        }
+
+        double bits = calculateBits(sequence);
+        return bits / (2.0 * sequence.length());
+    }
+
+    // Save model to a file
+    bool saveModel(const string& filename) {
+        ofstream file(filename, ios::binary);
+        if (!file.is_open()) {
+            cerr << "Error: Could not open file for writing: " << filename << endl;
+            return false;
+        }
+
+        // Save model parameters
+        file.write(reinterpret_cast<const char*>(&k), sizeof(k));
+        file.write(reinterpret_cast<const char*>(&alpha), sizeof(alpha));
+
+        // Save model size
+        size_t modelSize = model.size();
+        file.write(reinterpret_cast<const char*>(&modelSize), sizeof(modelSize));
+
+        // Save each context and its counts
+        for (const auto& entry : model) {
+            // Save context string
+            size_t contextLen = entry.first.length();
+            file.write(reinterpret_cast<const char*>(&contextLen), sizeof(contextLen));
+            file.write(entry.first.c_str(), contextLen);
+
+            // Save count vector
+            for (int count : entry.second) {
+                file.write(reinterpret_cast<const char*>(&count), sizeof(count));
+            }
+        }
+
+        file.close();
+        return true;
+    }
+
+    // Load model from a file
+    bool loadModel(const string& filename) {
+        ifstream file(filename, ios::binary);
+        if (!file.is_open()) {
+            cerr << "Error: Could not open model file: " << filename << endl;
+            return false;
+        }
+
+        // Clear existing model
+        model.clear();
+
+        // Load model parameters
+        file.read(reinterpret_cast<char*>(&k), sizeof(k));
+        file.read(reinterpret_cast<char*>(&alpha), sizeof(alpha));
+
+        // Load model size
+        size_t modelSize;
+        file.read(reinterpret_cast<char*>(&modelSize), sizeof(modelSize));
+
+        // Load each context and its counts
+        for (size_t i = 0; i < modelSize; ++i) {
+            // Load context string
+            size_t contextLen;
+            file.read(reinterpret_cast<char*>(&contextLen), sizeof(contextLen));
+            
+            char* contextBuffer = new char[contextLen + 1];
+            file.read(contextBuffer, contextLen);
+            contextBuffer[contextLen] = '\0';
+            
+            string context(contextBuffer);
+            delete[] contextBuffer;
+
+            // Load count vector
+            vector<int> counts(4);
+            for (int& count : counts) {
+                file.read(reinterpret_cast<char*>(&count), sizeof(count));
+            }
+
+            model[context] = counts;
+        }
+
+        file.close();
+        return true;
+    }
+
+    // Get the context size
+    size_t getContextSize() const {
+        return k;
+    }
+
+    // Get the smoothing parameter
+    double getSmoothingParam() const {
+        return alpha;
+    }
+};
+
+// Utility Functions
+
+// Read a metagenomic sample from file
+string readMetagenomicSample(const string& filename) {
+    ifstream file(filename);
+    string sample;
+    string line;
+
+    if (!file.is_open()) {
+        cerr << "Error opening file: " << filename << endl;
+        exit(1);
+    }
+
+    while (getline(file, line)) {
+        // Skip empty lines
+        if (!line.empty()) {
+            sample += line;
+        }
+    }
+
+    file.close();
+    return sample;
+}
+
+// Read reference database from file
+vector<Reference> readReferenceDatabase(const string& filename) {
+    ifstream file(filename);
+    vector<Reference> references;
+    Reference reference;
+    string line;
+
+    if (!file.is_open()) {
+        cerr << "Error opening file: " << filename << endl;
+        exit(1);
+    }
+
+    while (getline(file, line)) {
+        // Skip empty lines
+        if (line.empty()) continue;
+
+        // Lines starting with '@' indicate a new sequence name
+        if (line[0] == '@') {
+            // Save previous reference if exists
+            if (!reference.name.empty() && !reference.sequence.empty()) {
+                references.push_back(reference);
+            }
+
+            // Start a new reference
+            reference.name = line.substr(1);    // Remove '@' character
+            reference.sequence = "";
+        }
+        else {
+            // Append to the current sequence
+            reference.sequence += line;
+        }
+    }
+
+    // Add the last reference
+    if (!reference.name.empty() && !reference.sequence.empty()) {
+        references.push_back(reference);
+    }
+
+    file.close();
+    return references;
+}
+
+// Print help menu
+void printHelp(const char* programName) {
+    cout << "MetaClass: A tool for DNA sequence similarity using Normalized Relative Compression" << endl;
+    cout << "Usage: " << programName << " [options]" << endl;
+    cout << "\nOptions:" << endl;
+    cout << "  -h, --help                 Show this help message" << endl;
+    cout << "  -d, --database <file>      Reference database file" << endl;
+    cout << "  -s, --sample <file>        Metagenomic sample file" << endl;
+    cout << "  -k, --context <size>       Context size (default: 10)" << endl;
+    cout << "  -a, --alpha <value>        Smoothing parameter (default: 0.1)" << endl;
+    cout << "  -t, --top <count>          Number of top results to display (default: 20)" << endl;
+    cout << "  -m, --save-model <file>    Save the trained model to a file" << endl;
+    cout << "  -l, --load-model <file>    Load a model from file instead of training" << endl;
+    cout << "\nExamples:" << endl;
+    cout << "  " << programName << " -d db.txt -s meta.txt" << endl;
+    cout << "  " << programName << " -d db.txt -s meta.txt -k 8 -a 0.05 -t 10" << endl;
+    cout << "  " << programName << " -d db.txt -s meta.txt -m model.bin" << endl;
+    cout << "  " << programName << " -d db.txt -l model.bin" << endl;
+}
+
+// Main function
+int main(int argc, char* argv[]) {
+    // Default parameter values
+    string dbFile, sampleFile, saveModelFile, loadModelFile;
+    int k = 10;
+    double alpha = 0.1;
+    int topN = 20;
+    bool showHelp = false;
+
+    // Define long options
+    static struct option long_options[] = {
+        {"help",       no_argument,       0, 'h'},
+        {"database",   required_argument, 0, 'd'},
+        {"sample",     required_argument, 0, 's'},
+        {"context",    required_argument, 0, 'k'},
+        {"alpha",      required_argument, 0, 'a'},
+        {"top",        required_argument, 0, 't'},
+        {"save-model", required_argument, 0, 'm'},
+        {"load-model", required_argument, 0, 'l'},
+        {0, 0, 0, 0}
+    };
+
+    // Parse command line options
+    int option_index = 0;
+    int opt;
+    while ((opt = getopt_long(argc, argv, "hd:s:k:a:t:m:l:", long_options, &option_index)) != -1) {
+        switch (opt) {
+            case 'h':
+                showHelp = true;
+                break;
+            case 'd':
+                dbFile = optarg;
+                break;
+            case 's':
+                sampleFile = optarg;
+                break;
+            case 'k':
+                k = stoi(optarg);
+                break;
+            case 'a':
+                alpha = stod(optarg);
+                break;
+            case 't':
+                topN = stoi(optarg);
+                break;
+            case 'm':
+                saveModelFile = optarg;
+                break;
+            case 'l':
+                loadModelFile = optarg;
+                break;
+            default:
+                cerr << "Unknown option. Use --help for usage information." << endl;
+                return 1;
+        }
+    }
+
+    // Show help if requested or if required arguments are missing
+    if (showHelp || (dbFile.empty() && !showHelp)) {
+        printHelp(argv[0]);
+        return showHelp ? 0 : 1;
+    }
+
+    // Verify database file is provided
+    if (dbFile.empty()) {
+        cerr << "Error: Database file is required." << endl;
+        return 1;
+    }
+
+    // Create Markov model
+    MarkovModel model(k, alpha);
+    bool modelLoaded = false;
+
+    // Load model if specified
+    if (!loadModelFile.empty()) {
+        cout << "Loading model from file: " << loadModelFile << endl;
+        if (model.loadModel(loadModelFile)) {
+            k = model.getContextSize();
+            alpha = model.getSmoothingParam();
+            cout << "Model loaded successfully (k=" << k << ", alpha=" << alpha << ")" << endl;
+            modelLoaded = true;
+        } else {
+            cerr << "Failed to load model. Exiting." << endl;
+            return 1;
+        }
+    }
+    // Otherwise, train on the sample
+    else if (!sampleFile.empty()) {
+        cout << "Reading metagenomic sample from: " << sampleFile << endl;
+        string sample = readMetagenomicSample(sampleFile);
+
+        if (sample.empty()) {
+            cerr << "Error: Empty metagenomic sample" << endl;
+            return 1;
+        }
+
+        cout << "Metagenomic sample length: " << sample.length() << " nucleotides" << endl;
+        cout << "Training Markov model with k=" << k << ", alpha=" << alpha << endl;
+        model.train(sample);
+        
+        // Save model if requested
+        if (!saveModelFile.empty()) {
+            cout << "Saving model to file: " << saveModelFile << endl;
+            if (!model.saveModel(saveModelFile)) {
+                cerr << "Warning: Failed to save model." << endl;
+            }
+        }
+    } else {
+        cerr << "Error: Either a sample file (-s) or a model file (-l) must be provided." << endl;
+        return 1;
+    }
+
+    // Read the reference database
+    cout << "Reading reference database from: " << dbFile << endl;
+    vector<Reference> references = readReferenceDatabase(dbFile);
+
+    if (references.empty()) {
+        cerr << "Error: No references found in database" << endl;
+        return 1;
+    }
+
+    cout << "Found " << references.size() << " reference sequences" << endl;
+
+    // Calculate NRC for each reference sequence
+    cout << "Calculating NRC for each reference..." << endl;
+    for (auto& ref : references) {
+        ref.nrc = model.calculateNRC(ref.sequence);
+    }
+
+    // Sort references by NRC (lowest to highest = most to least similar)
+    sort(references.begin(), references.end(), 
+         [](const Reference& a, const Reference& b) { return a.nrc < b.nrc; });
+
+    // Print the top N results
+    cout << "\nTop " << topN << " most similar sequences:" << endl;
+    cout << "----------------------------------------" << endl;
+    cout << setw(4) << "Rank" << " | " << setw(10) << "NRC" << " | " << "Reference Name" << endl;
+    cout << "----------------------------------------" << endl;
+    
+    for (int i = 0; i < min(topN, static_cast<int>(references.size())); ++i) {
+        cout << setw(4) << i+1 << " | " << setw(10) << fixed << setprecision(6) 
+             << references[i].nrc << " | " << references[i].name << endl;
+    }
+
+    return 0;
+}
