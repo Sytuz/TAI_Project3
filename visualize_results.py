@@ -249,6 +249,148 @@ def plot_parameter_influence(df, output_dir):
         plt.savefig(os.path.join(output_dir, f'parameter_influence_{safe_name}.png'))
         plt.close()
 
+def plot_nrc_boxplot_by_k(df, output_dir):
+    """Create boxplots showing the distribution of NRC values for each k value with outlier tracking"""
+    plt.figure(figsize=(14, 8))
+    
+    # First create a boxplot for all data
+    ax1 = plt.subplot(1, 2, 1)
+    box_plot = sns.boxplot(x='k', y='nrc', data=df, palette='viridis', showfliers=True)
+    plt.title('Distribution of NRC Values by k')
+    plt.xlabel('k value')
+    plt.ylabel('NRC')
+    plt.grid(True, linestyle='--', alpha=0.7)
+    
+    # Then create a boxplot for only top ranking (rank <= 5) organisms
+    ax2 = plt.subplot(1, 2, 2)
+    top_data = df[df['rank'] <= 5]
+    sns.boxplot(x='k', y='nrc', data=top_data, palette='viridis', showfliers=True)
+    plt.title('NRC Values for Top 5 Ranking Organisms by k')
+    plt.xlabel('k value')
+    plt.ylabel('NRC')
+    plt.grid(True, linestyle='--', alpha=0.7)
+    
+    # Add annotations for median NRC values
+    for ax, data in [(ax1, df), (ax2, top_data)]:
+        # Calculate median NRC for each k value
+        k_values = sorted(data['k'].unique())
+        for i, k in enumerate(k_values):
+            k_data = data[data['k'] == k]
+            median_nrc = k_data['nrc'].median()
+            ax.text(i, median_nrc + 0.02, f'{median_nrc:.3f}', 
+                    horizontalalignment='center', size='small', 
+                    color='black', weight='semibold')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'nrc_boxplot_by_k.png'))
+    plt.close()
+    
+    # Create a more detailed plot that shows the effect of alpha for each k
+    plt.figure(figsize=(15, 10))
+    # Use different colors for different alpha values
+    sns.boxplot(x='k', y='nrc', hue='alpha', data=df, palette='viridis', showfliers=True)
+    plt.title('Distribution of NRC Values by k and Alpha')
+    plt.xlabel('k value')
+    plt.ylabel('NRC')
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(title='Alpha value')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'nrc_boxplot_by_k_and_alpha.png'))
+    plt.close()
+    
+    # Generate outlier statistics and tracking
+    track_outliers(df, output_dir)
+
+def track_outliers(df, output_dir):
+    """Track and identify outliers in the NRC values across different k values"""
+    outliers_data = []
+    
+    # For each k value, identify outliers
+    for k in sorted(df['k'].unique()):
+        k_data = df[df['k'] == k]
+        
+        # Calculate IQR for this k value
+        q1 = k_data['nrc'].quantile(0.25)
+        q3 = k_data['nrc'].quantile(0.75)
+        iqr = q3 - q1
+        
+        # Define outlier bounds (standard 1.5*IQR rule)
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+        
+        # Find outliers
+        outliers = k_data[(k_data['nrc'] < lower_bound) | (k_data['nrc'] > upper_bound)]
+        
+        # Calculate median for calculating deviation
+        median = k_data['nrc'].median()
+        
+        # Add outlier details to our list
+        for _, row in outliers.iterrows():
+            deviation = row['nrc'] - median
+            percent_deviation = (deviation / median) * 100 if median != 0 else float('inf')
+            
+            outliers_data.append({
+                'k': k,
+                'alpha': row['alpha'],
+                'organism': row['short_name'],
+                'full_name': row['name'],
+                'nrc': row['nrc'],
+                'median_nrc': median,
+                'deviation': deviation,
+                'percent_deviation': percent_deviation,
+                'rank': row['rank']
+            })
+    
+    # If we found outliers, save them to CSV
+    if outliers_data:
+        outliers_df = pd.DataFrame(outliers_data)
+        outliers_df.sort_values(by=['k', 'percent_deviation'], ascending=[True, False], inplace=True)
+        outliers_df.to_csv(os.path.join(output_dir, 'nrc_outliers.csv'), index=False)
+        
+        # Create a summary plot of the most frequent outlier organisms
+        plt.figure(figsize=(12, 6))
+        outlier_counts = Counter(outliers_df['organism'])
+        top_outliers = pd.DataFrame({
+            'Organism': [name for name, _ in outlier_counts.most_common(10)],
+            'Count': [count for _, count in outlier_counts.most_common(10)]
+        })
+        
+        if not top_outliers.empty:
+            sns.barplot(x='Count', y='Organism', data=top_outliers, palette='viridis')
+            plt.title('Most Frequent NRC Outlier Organisms')
+            plt.xlabel('Number of times identified as outlier')
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, 'nrc_outliers_summary.png'))
+            plt.close()
+            
+            # Also create a visualization showing the distribution of outlier deviations
+            plt.figure(figsize=(12, 6))
+            sns.histplot(outliers_df['percent_deviation'], bins=20, kde=True)
+            plt.title('Distribution of Outlier Deviations from Median NRC')
+            plt.xlabel('Percent Deviation from Median (%)')
+            plt.ylabel('Frequency')
+            plt.axvline(x=0, color='red', linestyle='--')
+            plt.grid(True, linestyle='--', alpha=0.7)
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, 'nrc_outliers_deviation.png'))
+            plt.close()
+        
+        # Add summary to the summary.txt file
+        with open(os.path.join(output_dir, 'outliers_summary.txt'), 'w') as f:
+            f.write("=== OUTLIER ANALYSIS ===\n")
+            f.write(f"Total outliers detected: {len(outliers_data)}\n")
+            f.write(f"Number of unique outlier organisms: {len(outlier_counts)}\n\n")
+            f.write("TOP OUTLIER ORGANISMS:\n")
+            for organism, count in outlier_counts.most_common(10):
+                f.write(f"{organism}: {count} occurrences\n")
+            
+            # Also add statistics by k value
+            f.write("\nOUTLIERS BY K VALUE:\n")
+            for k in sorted(outliers_df['k'].unique()):
+                k_outliers = outliers_df[outliers_df['k'] == k]
+                f.write(f"k={k}: {len(k_outliers)} outliers\n")
+
 def main():
     # Set up command line argument parsing
     parser = argparse.ArgumentParser(description='Visualize NRC results from JSON data.')
@@ -292,6 +434,7 @@ def main():
     plot_execution_time(df, output_dir)
     plot_rank_stability(df, output_dir)
     plot_parameter_influence(df, output_dir)
+    plot_nrc_boxplot_by_k(df, output_dir)  # This now includes outlier tracking
     
     # Generate summary statistics
     top_organism = Counter(df[df['rank'] == 1]['name']).most_common(1)[0][0]
