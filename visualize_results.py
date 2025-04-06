@@ -14,6 +14,35 @@ def load_data(filepath):
         data = json.load(file)
     return data
 
+def load_organism_symbols(filepath):
+    """Load organism symbol information from CSV files"""
+    organism_data = {}
+    
+    # Get list of all symbol info files
+    symbol_info_dir = os.path.join(os.getcwd(), filepath)
+    if os.path.exists(symbol_info_dir):
+        # Iterate through each CSV file in the directory
+        for filename in os.listdir(symbol_info_dir):
+            if filename.endswith('.csv'):
+                file_path = os.path.join(symbol_info_dir, filename)
+                try:
+                    # Extract organism name from filename (remove .csv extension)
+                    # Example filename: 20250406_152411_rank1_OR353425.1_Octopus_vulgaris_mitochondrion,_complete_genome
+                    # Extract only the name, which is: OR353425.1_Octopus_vulgaris_mitochondrion
+                    organism_name = '_'.join(filename.split('_')[2:]).split(',')[0].replace('.csv', '')
+                    # Load CSV into dataframe
+                    organism_df = pd.read_csv(file_path)
+                    
+                    # Store dataframe in dictionary with organism name as key
+                    organism_data[organism_name] = organism_df
+                    print(f"Loaded symbol data for {organism_name}")
+                except Exception as e:
+                    print(f"Error loading {filename}: {e}")
+    else:
+        print(f"Warning: Symbol info directory '{symbol_info_dir}' not found")
+    
+    return organism_data
+
 def process_data(data):
     """Convert JSON data to pandas DataFrame"""
     results = []
@@ -50,6 +79,27 @@ def process_data(data):
             })
     
     return pd.DataFrame(results)
+        
+def plot_top_organisms_info_profile(organisms_data, output_dir):
+    """Plot information profile of top organisms"""
+    
+    for organism in organisms_data:
+        org_df = organisms_data[organism]
+        
+        # Create a figure for each organism
+        plt.figure(figsize=(12, 6))
+        
+        # Plot the information profile (position vs. information)
+        plt.plot(org_df['Position'], org_df['Information'], linestyle='-', color='black')
+        plt.title(f'Information Profile for {organism}')
+        plt.xlabel('Position')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f'info_profile_{organism}.png'))
+        plt.close()
 
 def plot_top_organisms_nrc(df, output_dir):
     """Plot NRC values of top-ranked organisms as a 3D mesh surface"""
@@ -394,8 +444,10 @@ def track_outliers(df, output_dir):
 def main():
     # Set up command line argument parsing
     parser = argparse.ArgumentParser(description='Visualize NRC results from JSON data.')
-    parser.add_argument('--input', '-i', type=str, default='results/test_results_20250401_133812.json',
+    parser.add_argument('--input_test_results', '-it', type=str, default='results/test_results_20250401_133812.json',
                         help='Path to the JSON results file (default: results/test_results_20250401_133812.json)')
+    parser.add_argument('--input_organisms_symbols', '-io', type=str, default='symbol_info',
+                        help='Path to the directory containing organism symbol information (default: symbol_info)')
     parser.add_argument('--output', '-o', type=str, default='visualization_results',
                         help='Directory to save visualization results (default: visualization_results)')
     args = parser.parse_args()
@@ -405,7 +457,7 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
     
     # Find and load data
-    input_filepath = args.input
+    input_filepath = args.input_test_results
     
     # If the file doesn't exist at specified path, try some common relative paths
     if not os.path.exists(input_filepath):
@@ -429,7 +481,10 @@ def main():
     data = load_data(input_filepath)
     df = process_data(data)
     
+    organism_data = load_organism_symbols(args.input_organisms_symbols)
+    
     # Generate plots
+    plot_top_organisms_info_profile(organism_data, output_dir)
     plot_top_organisms_nrc(df, output_dir)
     plot_execution_time(df, output_dir)
     plot_rank_stability(df, output_dir)

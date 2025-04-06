@@ -280,6 +280,77 @@ vector<double> generateAlphaValues(double minAlpha, double maxAlpha, int numTick
     return alphas;
 }
 
+// New function to analyze and export symbol information for reference sequences
+bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>& topRefs, int k, double alpha) {
+    cout << "\n=============================================" << endl;
+    cout << "Analyzing symbol information for top matches" << endl;
+    cout << "=============================================" << endl;
+    
+    string sample = readDNASequence(sampleFile);
+    if (sample.empty()) {
+        cerr << "Error: Empty sample" << endl;
+        return false;
+    }
+    
+    // Create directory for information files
+    string infoDir = "symbol_info";
+    if (!filesystem::exists(infoDir)) {
+        filesystem::create_directory(infoDir);
+    }
+    
+    // Create FCM model from sample
+    FCMModel model(k, alpha);
+    model.learn(sample);
+    model.lockModel();
+    
+    // Generate timestamp for unique filenames
+    auto now = system_clock::now();
+    time_t now_time = system_clock::to_time_t(now);
+    tm* now_tm = localtime(&now_time);
+    
+    char timeStr[20];
+    strftime(timeStr, sizeof(timeStr), "%Y%m%d_%H%M%S", now_tm);
+    
+    // Process each top reference
+    vector<string> exportedFiles;
+    for (size_t i = 0; i < topRefs.size(); i++) {
+        cout << "Processing " << topRefs[i].name << " (rank " << i+1 << ")..." << endl;
+        
+        // Create base filename with organism name and rank
+        string safeName = topRefs[i].name;
+        // Replace problematic characters in filename
+        for (char& c : safeName) {
+            if (c == ' ' || c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|') {
+                c = '_';
+            }
+        }
+        
+        string baseFilename = infoDir + "/" + timeStr + "_rank" + to_string(i+1) + "_" + safeName;
+        
+        try {
+            // Export symbol information
+            string exportedFile = model.exportSymbolInformation(topRefs[i].sequence, baseFilename);
+            exportedFiles.push_back(exportedFile);
+            
+            // Calculate average information content for comparison
+            double avgInfo = model.computeAverageInformationContent(topRefs[i].sequence);
+            cout << "  Average information content: " << fixed << setprecision(6) << avgInfo << " bits/symbol" << endl;
+            cout << "  Symbol information exported to: " << exportedFile << endl;
+        }
+        catch (const exception& e) {
+            cerr << "  Error processing reference: " << e.what() << endl;
+        }
+    }
+    
+    if (!exportedFiles.empty()) {
+        cout << "\nExported symbol information for " << exportedFiles.size() << " references." << endl;
+        cout << "Files saved to directory: " << filesystem::absolute(infoDir).string() << endl;
+        return true;
+    }
+    
+    return false;
+}
+
 // Main function with interactive menu
 int main() {
     cout << "===============================================" << endl;
@@ -437,6 +508,37 @@ int main() {
         cout << "\nResults successfully saved to " << defaultFilename << endl;
     } else {
         cerr << "\nFailed to save results" << endl;
+    }
+    
+    // Ask if user wants to analyze symbol information for top organisms
+    if (!allResults.empty() && askYesNo("\nWould you like to analyze symbol information for top organisms?")) {
+        // Get best k and alpha values (simplistic approach - use the first test's values)
+        int bestK = allResults[0].first.first;
+        double bestAlpha = allResults[0].first.second;
+        
+        // Find best test result based on top match's NRC
+        double bestNrc = std::numeric_limits<double>::max();
+        size_t bestTestIndex = 0;
+        
+        for (size_t i = 0; i < allResults.size(); i++) {
+            if (!allResults[i].second.first.empty() && allResults[i].second.first[0].nrc < bestNrc) {
+                bestNrc = allResults[i].second.first[0].nrc;
+                bestTestIndex = i;
+                bestK = allResults[i].first.first;
+                bestAlpha = allResults[i].first.second;
+            }
+        }
+        
+        cout << "\nUsing best performing parameters: k=" << bestK << ", alpha=" << bestAlpha << endl;
+        
+        // Ask how many top organisms to analyze
+        int numOrgs = std::min(getIntInput("How many top organisms to analyze? (1-5): ", 1, 5), 
+                         static_cast<int>(allResults[bestTestIndex].second.first.size()));
+        
+        vector<Reference> topRefs(allResults[bestTestIndex].second.first.begin(),
+                                 allResults[bestTestIndex].second.first.begin() + numOrgs);
+        
+        analyzeSymbolInformation(sampleFile, topRefs, bestK, bestAlpha);
     }
     
     // Ask if user wants to test model saving/loading
