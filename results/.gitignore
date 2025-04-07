@@ -1,0 +1,10 @@
+# Ignore all directories
+*/
+
+# Don't ignore the latest or the old folder
+!latest/
+!old/
+
+# Don't ignore subdirectories of latest and old
+!latest/*/
+!old/*/

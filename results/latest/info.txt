@@ -1,0 +1,10 @@
+Test Parameters
+===============
+Date and Time: 20250407_163914
+Sample file: samples/meta.txt
+Database file: samples/db.txt
+Context sizes (k): 10 to 13
+Alpha values: 0.05 to 0.1 (2 ticks)
+Top matches saved: 10
+Total tests: 8
+Output format: JSON

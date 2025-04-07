@@ -1,0 +1,6 @@
+=== SUMMARY STATISTICS ===
+Input file: results/latest\test_results.json
+Timestamp: 20250407_163914
+Most frequent top-ranking organism: NC_001348.1 Human herpesvirus 3, complete genome
+Best NRC value: 0.051901
+Best parameters: k=13, alpha=0.05

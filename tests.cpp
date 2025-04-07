@@ -281,7 +281,8 @@ vector<double> generateAlphaValues(double minAlpha, double maxAlpha, int numTick
 }
 
 // New function to analyze and export symbol information for reference sequences
-bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>& topRefs, int k, double alpha) {
+bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>& topRefs, int k, double alpha, 
+                            const string& timestampSymbolDir, const string& latestSymbolDir) {
     cout << "\n=============================================" << endl;
     cout << "Analyzing symbol information for top matches" << endl;
     cout << "=============================================" << endl;
@@ -290,12 +291,6 @@ bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>&
     if (sample.empty()) {
         cerr << "Error: Empty sample" << endl;
         return false;
-    }
-    
-    // Create directory for information files
-    string infoDir = "symbol_info";
-    if (!filesystem::exists(infoDir)) {
-        filesystem::create_directory(infoDir);
     }
     
     // Create FCM model from sample
@@ -325,17 +320,22 @@ bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>&
             }
         }
         
-        string baseFilename = infoDir + "/" + timeStr + "_rank" + to_string(i+1) + "_" + safeName;
+        string baseTimestampFile = timestampSymbolDir + "/" + "rank" + to_string(i+1) + "_" + safeName;
+        string baseLatestFile = latestSymbolDir + "/" + "rank" + to_string(i+1) + "_" + safeName;
         
         try {
-            // Export symbol information
-            string exportedFile = model.exportSymbolInformation(topRefs[i].sequence, baseFilename);
-            exportedFiles.push_back(exportedFile);
+            // Export symbol information to both directories
+            string exportedTimestampFile = model.exportSymbolInformation(topRefs[i].sequence, baseTimestampFile);
+            string exportedLatestFile = model.exportSymbolInformation(topRefs[i].sequence, baseLatestFile);
+            
+            exportedFiles.push_back(exportedTimestampFile);
             
             // Calculate average information content for comparison
             double avgInfo = model.computeAverageInformationContent(topRefs[i].sequence);
             cout << "  Average information content: " << fixed << setprecision(6) << avgInfo << " bits/symbol" << endl;
-            cout << "  Symbol information exported to: " << exportedFile << endl;
+            cout << "  Symbol information exported to: " << endl;
+            cout << "    - " << exportedTimestampFile << endl;
+            cout << "    - " << exportedLatestFile << endl;
         }
         catch (const exception& e) {
             cerr << "  Error processing reference: " << e.what() << endl;
@@ -344,7 +344,9 @@ bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>&
     
     if (!exportedFiles.empty()) {
         cout << "\nExported symbol information for " << exportedFiles.size() << " references." << endl;
-        cout << "Files saved to directory: " << filesystem::absolute(infoDir).string() << endl;
+        cout << "Files saved to directories: " << endl;
+        cout << "  - " << filesystem::absolute(timestampSymbolDir).string() << endl;
+        cout << "  - " << filesystem::absolute(latestSymbolDir).string() << endl;
         return true;
     }
     
@@ -404,37 +406,45 @@ int main() {
     
     // Ask for output format and file
     bool useJson = askYesNo("\nSave results as JSON? (No for CSV)");
-    string outputDir = "results";
+    string baseOutputDir = "results";
     
     // Create results directory if it doesn't exist
-    if (!filesystem::exists(outputDir)) {
-        filesystem::create_directory(outputDir);
+    if (!filesystem::exists(baseOutputDir)) {
+        filesystem::create_directory(baseOutputDir);
     }
     
-    // Generate default filename based on current time
+    // Generate timestamp for directory name
     auto now = system_clock::now();
     time_t now_time = system_clock::to_time_t(now);
     tm* now_tm = localtime(&now_time);
     
     char timeStr[20];
     strftime(timeStr, sizeof(timeStr), "%Y%m%d_%H%M%S", now_tm);
+    string timestamp = string(timeStr);
     
-    string defaultFilename = outputDir + "/test_results_" + string(timeStr) + 
-                            (useJson ? ".json" : ".csv");
+    // Create timestamped directory and latest directory
+    string timestampDir = baseOutputDir + "/" + timestamp;
+    string latestDir = baseOutputDir + "/latest";
     
-    cout << "Output will be saved to: " << defaultFilename << endl;
-    if (!askYesNo("Is this filename okay?")) {
-        cin.ignore(); // Clear the buffer before getStringInput
-        string filename = getStringInput("Enter output filename: ");
-        outputDir = filesystem::path(filename).parent_path().string();
-        
-        // Create directory if needed
-        if (!outputDir.empty() && !filesystem::exists(outputDir)) {
-            filesystem::create_directory(outputDir);
-        }
-        
-        defaultFilename = filename;
+    // Create directories
+    if (filesystem::exists(latestDir)) {
+        filesystem::remove_all(latestDir);
     }
+    filesystem::create_directory(timestampDir);
+    filesystem::create_directory(latestDir);
+    
+    // Create symbol_info directories
+    filesystem::create_directory(timestampDir + "/symbol_info");
+    filesystem::create_directory(latestDir + "/symbol_info");
+    
+    // Define filenames
+    string extension = useJson ? ".json" : ".csv";
+    string timestampFilename = timestampDir + "/test_results" + extension;
+    string latestFilename = latestDir + "/test_results" + extension;
+    
+    cout << "Output will be saved to:" << endl;
+    cout << "- " << timestampFilename << endl;
+    cout << "- " << latestFilename << endl;
     
     // Run all tests and collect results
     vector<pair<pair<int, double>, pair<vector<Reference>, double>>> allResults;
@@ -496,20 +506,40 @@ int main() {
         }
     }
     
-    // Save results
+    // Save results to both directories
     bool saved = false;
     if (useJson) {
-        saved = saveResultsToJson(allResults, defaultFilename);
+        saved = saveResultsToJson(allResults, timestampFilename) && 
+                saveResultsToJson(allResults, latestFilename);
     } else {
-        saved = saveResultsToCsv(allResults, defaultFilename);
+        saved = saveResultsToCsv(allResults, timestampFilename) && 
+                saveResultsToCsv(allResults, latestFilename);
     }
     
-    if (saved) {
-        cout << "\nResults successfully saved to " << defaultFilename << endl;
-    } else {
-        cerr << "\nFailed to save results" << endl;
-    }
+    // Create info.txt with test parameters in both directories
+    ofstream infoTimestamp(timestampDir + "/info.txt");
+    ofstream infoLatest(latestDir + "/info.txt");
     
+    if (infoTimestamp && infoLatest) {
+        // Write test parameters to both files
+        for (ofstream& infoFile : {ref(infoTimestamp), ref(infoLatest)}) {
+            infoFile << "Test Parameters" << endl;
+            infoFile << "===============" << endl;
+            infoFile << "Date and Time: " << timestamp << endl;
+            infoFile << "Sample file: " << sampleFile << endl;
+            infoFile << "Database file: " << dbFile << endl;
+            infoFile << "Context sizes (k): " << minK << " to " << maxK << endl;
+            infoFile << "Alpha values: " << minAlpha << " to " << maxAlpha << " (" << alphaTicks << " ticks)" << endl;
+            infoFile << "Top matches saved: " << topN << endl;
+            infoFile << "Total tests: " << totalTests << endl;
+            infoFile << "Output format: " << (useJson ? "JSON" : "CSV") << endl;
+        }
+        
+        infoTimestamp.close();
+        infoLatest.close();
+    }
+
+        
     // Ask if user wants to analyze symbol information for top organisms
     if (!allResults.empty() && askYesNo("\nWould you like to analyze symbol information for top organisms?")) {
         // Get best k and alpha values (simplistic approach - use the first test's values)
@@ -538,7 +568,15 @@ int main() {
         vector<Reference> topRefs(allResults[bestTestIndex].second.first.begin(),
                                  allResults[bestTestIndex].second.first.begin() + numOrgs);
         
-        analyzeSymbolInformation(sampleFile, topRefs, bestK, bestAlpha);
+        // Pass both symbol_info directories to the function
+        analyzeSymbolInformation(sampleFile, topRefs, bestK, bestAlpha, 
+                               timestampDir + "/symbol_info", latestDir + "/symbol_info");
+    }   
+    
+    if (saved) {
+        cout << "\nResults successfully saved to both directories" << endl;
+    } else {
+        cerr << "\nFailed to save results" << endl;
     }
     
     // Ask if user wants to test model saving/loading
