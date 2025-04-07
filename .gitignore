@@ -1,9 +1,5 @@
-# Exported models
-*.json
-*.bson
-
-# Include JSON results
-!results/*.json
+# Ignore test model
+test_model.json
 
 # Prerequisites
 *.d

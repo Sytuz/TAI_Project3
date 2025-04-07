@@ -233,6 +233,88 @@ double FCMModel::computeAverageInformationContent(const std::string &text) const
     return totalInformation / symbolCount;
 }
 
+std::vector<double> FCMModel::computeSymbolInformation(const std::string &text) const {
+    // First split the text into UTF-8 characters
+    std::vector<std::string> characters = splitIntoUTF8Characters(text);
+    
+    // Create a vector to store information content for each symbol
+    std::vector<double> informationValues;
+    
+    // If the model is empty or the text is too short, return empty vector
+    if(frequencyTable.empty() || characters.size() <= static_cast<std::size_t>(k)){
+        return informationValues;
+    } 
+
+    // Reserve space for efficiency
+    informationValues.reserve(characters.size() - k);
+    
+    // Iterate over each symbol in the text starting after the first k symbols
+    for(std::size_t i = k; i < characters.size(); i++){
+        std::string context;
+        for(std::size_t j = i - k; j < i; j++){
+            context += characters[j];
+        }
+        
+        std::string symbol = characters[i];
+
+        double probability = getProbability(context, symbol);
+        double information = -std::log2(static_cast<float>(probability));
+        informationValues.push_back(information);
+    }
+
+    return informationValues;
+}
+
+std::string FCMModel::exportSymbolInformation(const std::string &text, const std::string &filename) const {
+    // Compute symbol information
+    std::vector<double> informationValues = computeSymbolInformation(text);
+    
+    if (informationValues.empty()) {
+        throw std::runtime_error("No information to export: model is empty or text is too short.");
+    }
+    
+    // Prepare filename
+    std::string fullFilename = filename + ".csv";
+    
+    // Open file for writing
+    std::ofstream file(fullFilename);
+    if (!file) {
+        throw std::runtime_error("The file " + fullFilename + " could not be opened for writing!");
+    }
+    
+    // Write header
+    file << "Position,Symbol,Information" << std::endl;
+    
+    // Get UTF-8 characters for reference
+    std::vector<std::string> characters = splitIntoUTF8Characters(text);
+    
+    // Write each information value along with its position and symbol
+    for (std::size_t i = 0; i < informationValues.size(); i++) {
+        // Position in text (add k to account for the initial context)
+        std::size_t position = i + k;
+        
+        // Get the actual symbol (replace non-printable or CSV-breaking chars)
+        std::string symbol = characters[position];
+        std::string escapedSymbol = symbol;
+        
+        // Replace commas, quotes, and non-printable characters for CSV safety
+        for (std::size_t j = 0; j < escapedSymbol.length(); j++) {
+            if (escapedSymbol[j] == ',' || escapedSymbol[j] == '"' || !std::isprint(escapedSymbol[j])) {
+                // Use hex representation for problematic characters
+                char hex[8];
+                snprintf(hex, sizeof(hex), "\\x%02X", static_cast<unsigned char>(escapedSymbol[j]));
+                escapedSymbol.replace(j, 1, hex);
+                j += 3;  // Adjust index after replacement
+            }
+        }
+        
+        // Write the data line
+        file << position << ",\"" << escapedSymbol << "\"," << informationValues[i] << std::endl;
+    }
+    
+    return fullFilename;
+}
+
 std::string FCMModel::predict(const std::string &context) const {
 
     // First check if the context exists in the probability table

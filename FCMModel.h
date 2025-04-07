@@ -115,6 +115,21 @@ public:
     double computeAverageInformationContent(const std::string &text) const;
 
     /**
+     * @brief Computes the information content for each symbol in the given text.
+     * @param text The input text to compute the information content for.
+     * @return A vector containing the information content for each symbol.
+     */
+    std::vector<double> computeSymbolInformation(const std::string &text) const;
+
+    /**
+     * @brief Exports the information content for each symbol to a file.
+     * @param text The input text to compute the information content for.
+     * @param filename The name of the file to export the information to.
+     * @return The filename of the exported information.
+     */
+    std::string exportSymbolInformation(const std::string &text, const std::string &filename) const;
+
+    /**
      * @brief Predicts the next n symbols in the given context based on the model.
      * @param context The context string to predict the next symbols for.
      * @param n The number of symbols to predict.

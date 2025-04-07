@@ -7,12 +7,44 @@ from collections import Counter
 import os
 import argparse
 from matplotlib import cm
+from scipy import signal
+import datetime
+import shutil
 
 def load_data(filepath):
     """Load the JSON results file"""
     with open(filepath, 'r') as file:
         data = json.load(file)
     return data
+
+def load_organism_symbols(filepath):
+    """Load organism symbol information from CSV files"""
+    organism_data = {}
+    
+    # Get list of all symbol info files
+    symbol_info_dir = os.path.join(os.path.dirname(filepath), 'symbol_info')
+    if os.path.exists(symbol_info_dir):
+        # Iterate through each CSV file in the directory
+        for filename in os.listdir(symbol_info_dir):
+            if filename.endswith('.csv'):
+                file_path = os.path.join(symbol_info_dir, filename)
+                try:
+                    # Extract organism name from filename (remove .csv extension)
+                    # Example filename: rank1_OR353425.1_Octopus_vulgaris_mitochondrion
+                    # Extract only the name, which is: OR353425.1_Octopus_vulgaris_mitochondrion
+                    organism_name = '_'.join(filename.split('_')[1:]).split(',')[0].replace('.csv', '')
+                    # Load CSV into dataframe
+                    organism_df = pd.read_csv(file_path)
+                    
+                    # Store dataframe in dictionary with organism name as key
+                    organism_data[organism_name] = organism_df
+                    print(f"Loaded symbol data for {organism_name}")
+                except Exception as e:
+                    print(f"Error loading {filename}: {e}")
+    else:
+        print(f"Warning: Symbol info directory '{symbol_info_dir}' not found")
+    
+    return organism_data
 
 def process_data(data):
     """Convert JSON data to pandas DataFrame"""
@@ -50,6 +82,78 @@ def process_data(data):
             })
     
     return pd.DataFrame(results)
+        
+def plot_top_organisms_info_profile(organisms_data, output_dir):
+    """Plot information profile of top organisms with various filtering techniques"""
+    
+    for organism in organisms_data:
+        org_df = organisms_data[organism]
+        
+        # Extract data
+        positions = org_df['Position'].values
+        information = org_df['Information'].values
+        
+        # Apply low-pass filtering using averaging with a Blackman window of size 21
+        window_size = 21
+        blackman_window = np.blackman(window_size)
+        blackman_window = blackman_window / sum(blackman_window)  # Normalize for averaging
+        
+        # We need to handle edge effects, so pad the signal
+        padded_info = np.pad(information, (window_size//2, window_size//2), mode='edge')
+        
+        # Apply the filter
+        filtered_info = signal.convolve(padded_info, blackman_window, mode='valid')
+        
+        # Process in reverse direction (for comparison)
+        reversed_info = np.flip(information)
+        padded_reversed = np.pad(reversed_info, (window_size//2, window_size//2), mode='edge')
+        filtered_reversed = signal.convolve(padded_reversed, blackman_window, mode='valid')
+        filtered_reversed = np.flip(filtered_reversed)  # Flip back to original direction
+        
+        # Combine according to minimum value
+        combined_info = np.minimum(filtered_info, filtered_reversed)
+        
+        # Create plots
+        plt.figure(figsize=(15, 10))
+        
+        # Original data
+        plt.subplot(3, 1, 1)
+        plt.plot(positions, information, linestyle='-', color='green')
+        plt.title(f'Original Information Profile for {organism}')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        # Filtered data
+        plt.subplot(3, 1, 2)
+        plt.plot(positions, filtered_info, linestyle='-', color='blue')
+        plt.title('Low-pass Filtered with Blackman Window (size 21)')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        # Combined minimum from both directions
+        plt.subplot(3, 1, 3)
+        plt.plot(positions, combined_info, linestyle='-', color='black')
+        plt.title('Combined Minimum from Both Directions')
+        plt.xlabel('Position')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f'info_profile_{organism}.png'))
+        plt.close()
+        
+        # Also save a version with just the final processed data for cleaner visualization
+        plt.figure(figsize=(12, 6))
+        plt.plot(positions, combined_info, linestyle='-', color='black')
+        plt.title(f'Processed Information Profile for {organism}')
+        plt.xlabel('Position')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f'info_profile_processed_{organism}.png'))
+        plt.close()
 
 def plot_top_organisms_nrc(df, output_dir):
     """Plot NRC values of top-ranked organisms as a 3D mesh surface"""
@@ -391,70 +495,116 @@ def track_outliers(df, output_dir):
                 k_outliers = outliers_df[outliers_df['k'] == k]
                 f.write(f"k={k}: {len(k_outliers)} outliers\n")
 
+def get_timestamp_from_info(input_folder):
+    """Extract timestamp from info.txt file in the test results folder"""
+    info_file_path = os.path.join(input_folder, 'info.txt')
+    
+    if os.path.exists(info_file_path):
+        with open(info_file_path, 'r') as f:
+            for line in f:
+                if line.startswith('Date and Time:'):
+                    # Extract timestamp from the line
+                    timestamp = line.split(':', 1)[1].strip()
+                    return timestamp
+    
+    # If we can't find the timestamp in the info file, generate a current timestamp as fallback
+    current_time = datetime.datetime.now()
+    timestamp = current_time.strftime("%Y%m%d_%H%M%S")
+    print(f"Warning: Could not find timestamp in info.txt, using current time: {timestamp}")
+    return timestamp
+
 def main():
     # Set up command line argument parsing
     parser = argparse.ArgumentParser(description='Visualize NRC results from JSON data.')
-    parser.add_argument('--input', '-i', type=str, default='results/test_results_20250401_133812.json',
-                        help='Path to the JSON results file (default: results/test_results_20250401_133812.json)')
+    parser.add_argument('--input', '-i', type=str, default='results/latest',
+                        help='Path to the test results folder (default: results/latest)')
     parser.add_argument('--output', '-o', type=str, default='visualization_results',
-                        help='Directory to save visualization results (default: visualization_results)')
+                        help='Base directory for visualization results (default: visualization_results)')
     args = parser.parse_args()
     
-    # Create output directory if it doesn't exist
-    output_dir = args.output
-    os.makedirs(output_dir, exist_ok=True)
-    
     # Find and load data
-    input_filepath = args.input
+    input_folder = args.input
+    
+    # Get timestamp from info.txt in the input folder
+    timestamp = get_timestamp_from_info(input_folder)
+    
+    # Create both output directories
+    base_output_dir = args.output
+    if not os.path.exists(base_output_dir):
+        os.makedirs(base_output_dir)
+    
+    # Create timestamped directory
+    timestamp_dir = os.path.join(base_output_dir, timestamp)
+    os.makedirs(timestamp_dir, exist_ok=True)
+    
+    # Create/recreate latest directory
+    latest_dir = os.path.join(base_output_dir, "latest")
+    if os.path.exists(latest_dir):
+        shutil.rmtree(latest_dir)
+    os.makedirs(latest_dir, exist_ok=True)
+    
+    print(f"Visualization outputs will be saved to:")
+    print(f"  - {os.path.abspath(timestamp_dir)}")
+    print(f"  - {os.path.abspath(latest_dir)}")
+    
+    # Find test results file
+    test_results_filepath = os.path.join(input_folder, 'test_results.json')
     
     # If the file doesn't exist at specified path, try some common relative paths
-    if not os.path.exists(input_filepath):
+    if not os.path.exists(test_results_filepath):
         possible_paths = [
-            f'results/{os.path.basename(input_filepath)}',
-            f'../results/{os.path.basename(input_filepath)}',
-            f'../{input_filepath}'
+            'results/latest/test_results.json',
+            '../results/latest/test_results.json',
+            'results/test_results.json'
         ]
         
         for path in possible_paths:
             if os.path.exists(path):
-                input_filepath = path
+                test_results_filepath = path
                 print(f"Found input file at: {path}")
                 break
     
-    if not os.path.exists(input_filepath):
-        print(f"Error: Could not find input file at {input_filepath}")
+    if not os.path.exists(test_results_filepath):
+        print(f"Error: Could not find input file at {test_results_filepath}")
         print("Please provide a valid file path using the --input argument.")
         return
     
-    data = load_data(input_filepath)
+    data = load_data(test_results_filepath)
     df = process_data(data)
     
-    # Generate plots
-    plot_top_organisms_nrc(df, output_dir)
-    plot_execution_time(df, output_dir)
-    plot_rank_stability(df, output_dir)
-    plot_parameter_influence(df, output_dir)
-    plot_nrc_boxplot_by_k(df, output_dir)  # This now includes outlier tracking
+    # Load organism symbol data
+    organism_data = load_organism_symbols(os.path.join(input_folder, 'symbol_info'))
     
-    # Generate summary statistics
-    top_organism = Counter(df[df['rank'] == 1]['name']).most_common(1)[0][0]
-    best_nrc = df[df['rank'] == 1]['nrc'].min()
-    best_row = df.loc[df[df['rank'] == 1]['nrc'].idxmin()]
+    # Generate plots to both directories
+    for output_dir in [timestamp_dir, latest_dir]:
+        if organism_data:
+            plot_top_organisms_info_profile(organism_data, output_dir)
+        plot_top_organisms_nrc(df, output_dir)
+        plot_execution_time(df, output_dir)
+        plot_rank_stability(df, output_dir)
+        plot_parameter_influence(df, output_dir)
+        plot_nrc_boxplot_by_k(df, output_dir)
+        
+        # Generate summary statistics
+        top_organism = Counter(df[df['rank'] == 1]['name']).most_common(1)[0][0]
+        best_nrc = df[df['rank'] == 1]['nrc'].min()
+        best_row = df.loc[df[df['rank'] == 1]['nrc'].idxmin()]
+        
+        # Write the summary to a file in the output directory
+        with open(os.path.join(output_dir, 'summary.txt'), 'w') as f:
+            f.write("=== SUMMARY STATISTICS ===\n")
+            f.write(f"Input file: {test_results_filepath}\n")
+            f.write(f"Timestamp: {timestamp}\n")
+            f.write(f"Most frequent top-ranking organism: {top_organism}\n")
+            f.write(f"Best NRC value: {best_nrc:.6f}\n")
+            f.write(f"Best parameters: k={best_row['k']}, alpha={best_row['alpha']}\n")
     
     print("=== SUMMARY STATISTICS ===")
     print(f"Most frequent top-ranking organism: {top_organism}")
     print(f"Best NRC value: {best_nrc:.6f}")
     print(f"Best parameters: k={best_row['k']}, alpha={best_row['alpha']}")
     
-    print(f"\nVisualization complete. Results saved to '{output_dir}' directory")
-    
-    # Also write the summary to a file in the output directory
-    with open(os.path.join(output_dir, 'summary.txt'), 'w') as f:
-        f.write("=== SUMMARY STATISTICS ===\n")
-        f.write(f"Input file: {input_filepath}\n")
-        f.write(f"Most frequent top-ranking organism: {top_organism}\n")
-        f.write(f"Best NRC value: {best_nrc:.6f}\n")
-        f.write(f"Best parameters: k={best_row['k']}, alpha={best_row['alpha']}\n")
+    print(f"\nVisualization complete. Results saved to both directories.")
 
 if __name__ == "__main__":
     main()
