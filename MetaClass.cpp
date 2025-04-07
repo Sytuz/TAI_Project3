@@ -8,8 +8,12 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <thread>
+#include <mutex>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 // Print help menu
 void printHelp(const char* programName) {
@@ -25,12 +29,26 @@ void printHelp(const char* programName) {
     cout << "  -m, --save-model <file>    Save the trained model to a file (without extension)" << endl;
     cout << "  -l, --load-model <file>    Load a model from file instead of training" << endl;
     cout << "  --json                     Use JSON format for model saving/loading (default is binary)" << endl;
+    cout << "  -p, --threads <count>      Number of parallel threads to use (default: hardware cores)" << endl;
     cout << "\nExamples:" << endl;
     cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt" << endl;
     cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt -k 8 -a 0.05 -t 10" << endl;
     cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt -m model" << endl;
     cout << "  " << programName << " -d samples/db.txt -l model.bson" << endl;
     cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt -m model --json" << endl;
+}
+
+// Worker function for parallel processing
+void calculateMetricsBatch(vector <Reference>& reference, size_t start, size_t end, DNACompressor& compressor, mutex& mtx){
+    for (size_t i = start; i < end && i < reference.size(); ++i){
+        double nrc = compressor.calculateNRC(reference[i].sequence);
+        double kld = compressor.calculateKLD(reference[i].sequence);
+
+        // Thread-safe update of the references
+        lock_guard<mutex> lock(mtx);
+        reference[i].nrc = nrc;
+        reference[i].kld = kld;
+    }
 }
 
 // Main function
@@ -42,6 +60,7 @@ int main(int argc, char* argv[]) {
     int topN = 20;
     bool showHelp = false;
     bool useJson = false;
+    int numThreads = thread::hardware_concurrency(); // Default to hardware cores
 
     // Define long options
     static struct option long_options[] = {
@@ -54,13 +73,14 @@ int main(int argc, char* argv[]) {
         {"save-model", required_argument, 0, 'm'},
         {"load-model", required_argument, 0, 'l'},
         {"json",       no_argument,       0, 'j'},
+        {"threads",    required_argument, 0, 'p'},
         {0, 0, 0, 0}
     };
 
     // Parse command line options
     int option_index = 0;
     int opt;
-    while ((opt = getopt_long(argc, argv, "hd:s:k:a:t:m:l:j", long_options, &option_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "hd:s:k:a:t:m:l:jp:", long_options, &option_index)) != -1) {
         switch (opt) {
             case 'h':
                 showHelp = true;
@@ -88,6 +108,9 @@ int main(int argc, char* argv[]) {
                 break;
             case 'j':
                 useJson = true;
+                break;
+            case 'p':
+                numThreads = stoi(optarg);
                 break;
             default:
                 cerr << "Unknown option. Use --help for usage information." << endl;
@@ -169,12 +192,39 @@ int main(int argc, char* argv[]) {
         // Create DNA compressor using the FCMModel
         DNACompressor compressor(model);
 
-        // Calculate NRC and KLD for each reference sequence
-        cout << "Calculating metrics for each reference..." << endl;
-        for (auto& ref : references) {
-            ref.nrc = compressor.calculateNRC(ref.sequence);
-            ref.kld = compressor.calculateKLD(ref.sequence);
+        auto startTime = high_resolution_clock::now();
+
+        // Multi-threaded calculation of NRC and KLD metrics
+        cout << "Calculating metrics using " << numThreads << " threads..." << endl;
+        vector<thread> threads;
+        mutex mtx;  // Mutex for thread synchronization
+
+        size_t batchSize = (references.size() + numThreads - 1) / numThreads;
+
+        for (int t = 0; t < numThreads; ++t) {
+            size_t start = t * batchSize;
+            size_t end = min((t + 1) * batchSize, references.size());
+
+            if (start >= references.size()) break;
+
+            threads.push_back(thread(calculateMetricsBatch,
+                                    ref(references),
+                                    start,
+                                    end,
+                                    ref(compressor),
+                                    ref(mtx)
+            ));
         }
+
+        // Wait for all threads to complete
+        for (auto& t : threads){
+            t.join();
+        }
+
+        auto endTime = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(endTime - startTime).count();
+
+        cout << "Metrics calculation completed in " << duration << " ms" << endl;
 
         // Sort references by NRC (lowest to highest = most to least similar)
         sort(references.begin(), references.end(), 

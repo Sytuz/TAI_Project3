@@ -9,11 +9,27 @@
 #include <algorithm>
 #include <filesystem>
 #include <iomanip>
+#include <thread>
+#include <mutex>
 #include "json.hpp"
 
 using namespace std;
 using namespace std::chrono;
 using json = nlohmann::json;
+
+
+// Function to process reference batches in parallel
+void processReferenceBatch(vector<Reference>& references, size_t start, size_t end, DNACompressor& compressor, mutex& mtx) {
+    for (size_t i = start; i < end && i < references.size(); ++i) {
+        double nrc = compressor.calculateNRC(references[i].sequence);
+        double kld = compressor.calculateKLD(references[i].sequence);
+
+        // Thread-safe update of references
+        lock_guard<mutex> lock(mtx);
+        references[i].nrc = nrc;
+        references[i].kld = kld;
+    }
+}
 
 // Utility function to read DNA sequences
 string readDNASequence(const string& filename) {
@@ -59,14 +75,39 @@ vector<Reference> runTest(const string& sampleFile, const string& dbFile, int k,
     FCMModel model(k, alpha);
     model.learn(sample);
     model.lockModel();
-    
-    // Calculate NRC for each reference
+
+    // Calculate NRC in parallel for each reference
     DNACompressor compressor(model);
-    for (auto& ref : references) {
-        ref.nrc = compressor.calculateNRC(ref.sequence);
-        ref.kld = compressor.calculateKLD(ref.sequence);
+
+    // Get system thread with a minimum of 2
+    unsigned int threadCount = max(2u, thread::hardware_concurrency());
+    cout << "Using " << threadCount << " threads for parallel processing" << endl;
+
+    vector<thread> threads;
+    mutex mtx;
+
+    size_t batchSize = (references.size() + threadCount - 1) / threadCount;
+
+    for (unsigned int t = 0; t < threadCount; ++t) {
+        size_t start = t * batchSize;
+        size_t end = min((t + 1) * batchSize, references.size());
+
+        if (start >= references.size()) break;
+
+        threads.push_back(thread(processReferenceBatch,
+                                ref(references),
+                                start,
+                                end,
+                                ref(compressor),
+                                ref(mtx)
+        ));
     }
-    
+
+    // Wait for all threads to complete
+    for (auto& t: threads) {
+        t.join();
+    }
+
     // Sort by NRC (lowest to highest = most similar to least similar)
     sort(references.begin(), references.end(), 
          [](const Reference& a, const Reference& b) { return a.nrc < b.nrc; });
