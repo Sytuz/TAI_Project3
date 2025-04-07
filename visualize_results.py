@@ -7,6 +7,7 @@ from collections import Counter
 import os
 import argparse
 from matplotlib import cm
+from scipy import signal
 
 def load_data(filepath):
     """Load the JSON results file"""
@@ -81,17 +82,56 @@ def process_data(data):
     return pd.DataFrame(results)
         
 def plot_top_organisms_info_profile(organisms_data, output_dir):
-    """Plot information profile of top organisms"""
+    """Plot information profile of top organisms with various filtering techniques"""
     
     for organism in organisms_data:
         org_df = organisms_data[organism]
         
-        # Create a figure for each organism
-        plt.figure(figsize=(12, 6))
+        # Extract data
+        positions = org_df['Position'].values
+        information = org_df['Information'].values
         
-        # Plot the information profile (position vs. information)
-        plt.plot(org_df['Position'], org_df['Information'], linestyle='-', color='black')
-        plt.title(f'Information Profile for {organism}')
+        # Apply low-pass filtering using averaging with a Blackman window of size 21
+        window_size = 21
+        blackman_window = np.blackman(window_size)
+        blackman_window = blackman_window / sum(blackman_window)  # Normalize for averaging
+        
+        # We need to handle edge effects, so pad the signal
+        padded_info = np.pad(information, (window_size//2, window_size//2), mode='edge')
+        
+        # Apply the filter
+        filtered_info = signal.convolve(padded_info, blackman_window, mode='valid')
+        
+        # Process in reverse direction (for comparison)
+        reversed_info = np.flip(information)
+        padded_reversed = np.pad(reversed_info, (window_size//2, window_size//2), mode='edge')
+        filtered_reversed = signal.convolve(padded_reversed, blackman_window, mode='valid')
+        filtered_reversed = np.flip(filtered_reversed)  # Flip back to original direction
+        
+        # Combine according to minimum value
+        combined_info = np.minimum(filtered_info, filtered_reversed)
+        
+        # Create plots
+        plt.figure(figsize=(15, 10))
+        
+        # Original data
+        plt.subplot(3, 1, 1)
+        plt.plot(positions, information, linestyle='-', color='green')
+        plt.title(f'Original Information Profile for {organism}')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        # Filtered data
+        plt.subplot(3, 1, 2)
+        plt.plot(positions, filtered_info, linestyle='-', color='blue')
+        plt.title('Low-pass Filtered with Blackman Window (size 21)')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        # Combined minimum from both directions
+        plt.subplot(3, 1, 3)
+        plt.plot(positions, combined_info, linestyle='-', color='black')
+        plt.title('Combined Minimum from Both Directions')
         plt.xlabel('Position')
         plt.ylabel('Information')
         plt.grid(True, linestyle='--', alpha=0.7)
@@ -99,6 +139,18 @@ def plot_top_organisms_info_profile(organisms_data, output_dir):
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'info_profile_{organism}.png'))
+        plt.close()
+        
+        # Also save a version with just the final processed data for cleaner visualization
+        plt.figure(figsize=(12, 6))
+        plt.plot(positions, combined_info, linestyle='-', color='black')
+        plt.title(f'Processed Information Profile for {organism}')
+        plt.xlabel('Position')
+        plt.ylabel('Information')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f'info_profile_processed_{organism}.png'))
         plt.close()
 
 def plot_top_organisms_nrc(df, output_dir):
