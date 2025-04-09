@@ -23,11 +23,15 @@ void processReferenceBatch(vector<Reference>& references, size_t start, size_t e
     for (size_t i = start; i < end && i < references.size(); ++i) {
         double nrc = compressor.calculateNRC(references[i].sequence);
         double kld = compressor.calculateKLD(references[i].sequence);
+        
+        // Calculate compression size in bits (non-normalized bits required for compression)
+        double compressionBits = nrc * references[i].sequence.length();
 
         // Thread-safe update of references
         lock_guard<mutex> lock(mtx);
         references[i].nrc = nrc;
         references[i].kld = kld;
+        references[i].compressionBits = compressionBits; // Store the new metric
     }
 }
 
@@ -112,18 +116,13 @@ vector<Reference> runTest(const string& sampleFile, const string& dbFile, int k,
     sort(references.begin(), references.end(), 
          [](const Reference& a, const Reference& b) { return a.nrc < b.nrc; });
     
-    // Keep only top N results
-    if (topN < static_cast<int>(references.size())) {
-        references.resize(topN);
-    }
-    
     auto endTime = high_resolution_clock::now();
     execTime = duration<double, milli>(endTime - startTime).count();
     
     return references;
 }
 
-// Save results to JSON file
+// Save results to JSON file with only top matches
 bool saveResultsToJson(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
                       const string& outputFile) {
     json resultsJson;
@@ -164,7 +163,7 @@ bool saveResultsToJson(const vector<pair<pair<int, double>, pair<vector<Referenc
     return true;
 }
 
-// Save results to CSV file
+// Save results to CSV file with only top matches
 bool saveResultsToCsv(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
                      const string& outputFile) {
     ofstream file(outputFile);
@@ -191,6 +190,83 @@ bool saveResultsToCsv(const vector<pair<pair<int, double>, pair<vector<Reference
                  << "\"" << references[i].name << "\"" << ","
                  << references[i].nrc << ","
                  << references[i].kld << ","
+                 << execTime << endl;
+        }
+    }
+    
+    return true;
+}
+
+// Save results to JSON file with ALL organisms
+bool saveAllResultsToJson(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
+                      const string& outputFile) {
+    json resultsJson;
+    
+    for (size_t testIdx = 0; testIdx < allResults.size(); testIdx++) {
+        const auto& test = allResults[testIdx];
+        int k = test.first.first;
+        double alpha = test.first.second;
+        const auto& references = test.second.first;
+        double execTime = test.second.second;
+        
+        json testJson;
+        testJson["k"] = k;
+        testJson["alpha"] = alpha;
+        testJson["execTime_ms"] = execTime;
+        
+        json refsJson = json::array();
+        for (size_t i = 0; i < references.size(); i++) {
+            json refJson;
+            refJson["rank"] = i + 1;
+            refJson["name"] = references[i].name;
+            refJson["nrc"] = references[i].nrc;
+            refJson["kld"] = references[i].kld;
+            refJson["compressionBits"] = references[i].compressionBits;
+            refsJson.push_back(refJson);
+        }
+        
+        testJson["references"] = refsJson;
+        resultsJson.push_back(testJson);
+    }
+    
+    ofstream file(outputFile);
+    if (!file) {
+        cerr << "Error: Could not open output file: " << outputFile << endl;
+        return false;
+    }
+    
+    file << setw(4) << resultsJson << endl;
+    return true;
+}
+
+// Save results to CSV file with ALL organisms
+bool saveAllResultsToCsv(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
+                     const string& outputFile) {
+    ofstream file(outputFile);
+    if (!file) {
+        cerr << "Error: Could not open output file: " << outputFile << endl;
+        return false;
+    }
+    
+    // Write header with compression bits
+    file << "test_id,k,alpha,rank,reference_name,nrc,kld,compression_bits,exec_time_ms" << endl;
+    
+    for (size_t testIdx = 0; testIdx < allResults.size(); testIdx++) {
+        const auto& test = allResults[testIdx];
+        int k = test.first.first;
+        double alpha = test.first.second;
+        const auto& references = test.second.first;
+        double execTime = test.second.second;
+        
+        for (size_t i = 0; i < references.size(); i++) {
+            file << testIdx + 1 << ","
+                 << k << ","
+                 << alpha << ","
+                 << i + 1 << ","
+                 << "\"" << references[i].name << "\"" << ","
+                 << references[i].nrc << ","
+                 << references[i].kld << ","
+                 << references[i].compressionBits << ","
                  << execTime << endl;
         }
     }
@@ -483,15 +559,20 @@ int main() {
     string timestampFilename = timestampDir + "/test_results" + extension;
     string latestFilename = latestDir + "/test_results" + extension;
     
+    // Add new filenames for top organisms results
+    string topOrgTimestampFilename = timestampDir + "/top_organisms_results" + extension;
+    string topOrgLatestFilename = latestDir + "/top_organisms_results" + extension;
+    
     cout << "Output will be saved to:" << endl;
-    cout << "- " << timestampFilename << endl;
-    cout << "- " << latestFilename << endl;
+    cout << "- " << timestampFilename << " (all organisms)" << endl;
+    cout << "- " << topOrgTimestampFilename << " (top matches only)" << endl;
     
     // Track total test time
     auto totalTestStartTime = high_resolution_clock::now();
     
     // Run all tests and collect results
     vector<pair<pair<int, double>, pair<vector<Reference>, double>>> allResults;
+    vector<pair<pair<int, double>, pair<vector<Reference>, double>>> topResults;
     
     int testCounter = 0;
     
@@ -504,7 +585,15 @@ int main() {
             vector<Reference> results = runTest(sampleFile, dbFile, k, alpha, topN, execTime);
             
             if (!results.empty()) {
+                // Store all results (all references)
                 allResults.push_back({{k, alpha}, {results, execTime}});
+                
+                // Create a copy of only the top N results for the top organisms file
+                vector<Reference> topMatchesOnly;
+                for (size_t i = 0; i < min(static_cast<size_t>(topN), results.size()); i++) {
+                    topMatchesOnly.push_back(results[i]);
+                }
+                topResults.push_back({{k, alpha}, {topMatchesOnly, execTime}});
                 
                 // Display brief results for this test
                 cout << "Completed test for k=" << k << ", alpha=" << alpha << " in " << execTime << " ms" << endl;
@@ -554,14 +643,26 @@ int main() {
         }
     }
     
-    // Save results to both directories
+    // Save results to both directories - now save both full and top results
     bool saved = false;
     if (useJson) {
-        saved = saveResultsToJson(allResults, timestampFilename) && 
-                saveResultsToJson(allResults, latestFilename);
+        // Save top organisms results (previous behavior)
+        saved = saveResultsToJson(topResults, topOrgTimestampFilename) && 
+                saveResultsToJson(topResults, topOrgLatestFilename);
+                
+        // Save all organisms results with compression bits
+        saved = saved && 
+                saveAllResultsToJson(allResults, timestampFilename) && 
+                saveAllResultsToJson(allResults, latestFilename);
     } else {
-        saved = saveResultsToCsv(allResults, timestampFilename) && 
-                saveResultsToCsv(allResults, latestFilename);
+        // Save top organisms results (previous behavior)
+        saved = saveResultsToCsv(topResults, topOrgTimestampFilename) && 
+                saveResultsToCsv(topResults, topOrgLatestFilename);
+                
+        // Save all organisms results with compression bits
+        saved = saved && 
+                saveAllResultsToCsv(allResults, timestampFilename) && 
+                saveAllResultsToCsv(allResults, latestFilename);
     }
     
     // Create info.txt with test parameters in both directories

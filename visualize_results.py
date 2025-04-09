@@ -548,28 +548,28 @@ def main():
     print(f"  - {os.path.abspath(latest_dir)}")
     
     # Find test results file
-    test_results_filepath = os.path.join(input_folder, 'test_results.json')
+    top_organisms_results_filepath = os.path.join(input_folder, 'top_organisms_results.json')
     
     # If the file doesn't exist at specified path, try some common relative paths
-    if not os.path.exists(test_results_filepath):
+    if not os.path.exists(top_organisms_results_filepath):
         possible_paths = [
-            'results/latest/test_results.json',
-            '../results/latest/test_results.json',
-            'results/test_results.json'
+            'results/latest/top_organisms_results.json',
+            '../results/latest/top_organisms_results.json',
+            'results/top_organisms_results.json'
         ]
         
         for path in possible_paths:
             if os.path.exists(path):
-                test_results_filepath = path
+                top_organisms_results_filepath = path
                 print(f"Found input file at: {path}")
                 break
     
-    if not os.path.exists(test_results_filepath):
-        print(f"Error: Could not find input file at {test_results_filepath}")
+    if not os.path.exists(top_organisms_results_filepath):
+        print(f"Error: Could not find input file at {top_organisms_results_filepath}")
         print("Please provide a valid file path using the --input argument.")
         return
     
-    data = load_data(test_results_filepath)
+    data = load_data(top_organisms_results_filepath)
     df = process_data(data)
     
     # Load organism symbol data
@@ -593,7 +593,7 @@ def main():
         # Write the summary to a file in the output directory
         with open(os.path.join(output_dir, 'summary.txt'), 'w') as f:
             f.write("=== SUMMARY STATISTICS ===\n")
-            f.write(f"Input file: {test_results_filepath}\n")
+            f.write(f"Input file: {top_organisms_results_filepath}\n")
             f.write(f"Timestamp: {timestamp}\n")
             f.write(f"Most frequent top-ranking organism: {top_organism}\n")
             f.write(f"Best NRC value: {best_nrc:.6f}\n")

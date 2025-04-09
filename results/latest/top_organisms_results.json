@@ -1,0 +1,1166 @@
+[
+    {
+        "alpha": 0.01,
+        "execTime_ms": 20346.646512,
+        "k": 10,
+        "references": [
+            {
+                "kld": 28659.988005775234,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.18728298888322084,
+                "rank": 1
+            },
+            {
+                "kld": 494.6077528681588,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.20025915206703868,
+                "rank": 2
+            },
+            {
+                "kld": 9707.464866734292,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.22851494502463138,
+                "rank": 3
+            },
+            {
+                "kld": 391.60669719439846,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2719490952738894,
+                "rank": 4
+            },
+            {
+                "kld": 6723.738646425547,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.3033360513629198,
+                "rank": 5
+            },
+            {
+                "kld": 19136.814257813123,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4121700445352686,
+                "rank": 6
+            },
+            {
+                "kld": 433445.43906746915,
+                "name": "gi|363539767|ref|NC_016072.1| Megavirus chiliensis, complete genome\r",
+                "nrc": 0.8642350504125256,
+                "rank": 7
+            },
+            {
+                "kld": 155200.9913474217,
+                "name": "gi|12084983|ref|NC_002642.1| Yaba-like disease virus, complete genome\r",
+                "nrc": 0.8649461245003368,
+                "rank": 8
+            },
+            {
+                "kld": 2306.3330118864314,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.8790410729250507,
+                "rank": 9
+            },
+            {
+                "kld": 46871.51084395465,
+                "name": "gi|169822550|ref|NC_010437.1| Bat coronavirus 1A, complete genome\r",
+                "nrc": 0.8793460579396668,
+                "rank": 10
+            },
+            {
+                "kld": 5206.373374441459,
+                "name": "gi|1003725904|ref|NC_029631.1| Lake Sarah-associated circular virus-44 isolate LSaCV-44-LSCO-2013, complete sequence\r",
+                "nrc": 0.8823798760921142,
+                "rank": 11
+            },
+            {
+                "kld": 46112.42369653159,
+                "name": "gi|971745655|ref|NC_028814.1| BtRf-AlphaCoV/HuB2013, complete genome\r",
+                "nrc": 0.8825184576896882,
+                "rank": 12
+            },
+            {
+                "kld": 8285.529991561933,
+                "name": "gi|1013949521|ref|NC_029798.1| Iris yellow spot virus segment M, complete sequence\r",
+                "nrc": 0.8831682331546852,
+                "rank": 13
+            },
+            {
+                "kld": 3921.116461284538,
+                "name": "gi|897364658|ref|NC_027575.1| Lutzomyia reovirus 1 isolate piaui segment unknown 1 hypothetical protein gene, complete cds\r",
+                "nrc": 0.8835906395369922,
+                "rank": 14
+            },
+            {
+                "kld": 48435.874436620994,
+                "name": "gi|163869641|ref|NC_004037.2| Ovine adenovirus 7, complete genome\r",
+                "nrc": 0.8837901849645968,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 18137.742146,
+        "k": 10,
+        "references": [
+            {
+                "kld": 29606.470342476307,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.19117042253927863,
+                "rank": 1
+            },
+            {
+                "kld": 504.7952646244097,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.2043692101621259,
+                "rank": 2
+            },
+            {
+                "kld": 9907.338547801857,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.23220749648719916,
+                "rank": 3
+            },
+            {
+                "kld": 397.1256192182652,
+                "name": "Super MUL 720\r",
+                "nrc": 0.27578168001268477,
+                "rank": 4
+            },
+            {
+                "kld": 6815.622185263349,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.30633606644895073,
+                "rank": 5
+            },
+            {
+                "kld": 19290.13132764452,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.41505222389083885,
+                "rank": 6
+            },
+            {
+                "kld": 434041.7544214963,
+                "name": "gi|363539767|ref|NC_016072.1| Megavirus chiliensis, complete genome\r",
+                "nrc": 0.865139178853829,
+                "rank": 7
+            },
+            {
+                "kld": 155394.59990461418,
+                "name": "gi|12084983|ref|NC_002642.1| Yaba-like disease virus, complete genome\r",
+                "nrc": 0.8658744117985108,
+                "rank": 8
+            },
+            {
+                "kld": 2308.1197305432775,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.8797215936463479,
+                "rank": 9
+            },
+            {
+                "kld": 46919.92867233524,
+                "name": "gi|169822550|ref|NC_010437.1| Bat coronavirus 1A, complete genome\r",
+                "nrc": 0.8802407010133609,
+                "rank": 10
+            },
+            {
+                "kld": 5211.638065738233,
+                "name": "gi|1003725904|ref|NC_029631.1| Lake Sarah-associated circular virus-44 isolate LSaCV-44-LSCO-2013, complete sequence\r",
+                "nrc": 0.8832659633064234,
+                "rank": 11
+            },
+            {
+                "kld": 46160.53015115749,
+                "name": "gi|971745655|ref|NC_028814.1| BtRf-AlphaCoV/HuB2013, complete genome\r",
+                "nrc": 0.883425179477604,
+                "rank": 12
+            },
+            {
+                "kld": 8293.70843114562,
+                "name": "gi|1013949521|ref|NC_029798.1| Iris yellow spot virus segment M, complete sequence\r",
+                "nrc": 0.8840210898874677,
+                "rank": 13
+            },
+            {
+                "kld": 3925.2687996122745,
+                "name": "gi|897364658|ref|NC_027575.1| Lutzomyia reovirus 1 isolate piaui segment unknown 1 hypothetical protein gene, complete cds\r",
+                "nrc": 0.8845268604077179,
+                "rank": 14
+            },
+            {
+                "kld": 48484.32199042512,
+                "name": "gi|163869641|ref|NC_004037.2| Ovine adenovirus 7, complete genome\r",
+                "nrc": 0.8846524144652946,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 21183.096386,
+        "k": 11,
+        "references": [
+            {
+                "kld": 14212.663838283002,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.0771394512906261,
+                "rank": 1
+            },
+            {
+                "kld": 4467.3705293354715,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.09757598852239885,
+                "rank": 2
+            },
+            {
+                "kld": 336.0339035296989,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.13549754174584688,
+                "rank": 3
+            },
+            {
+                "kld": 3282.7858763416784,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.1373417261192023,
+                "rank": 4
+            },
+            {
+                "kld": 310.23830993048267,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21544327078505793,
+                "rank": 5
+            },
+            {
+                "kld": 18081.414733130878,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.350227393429305,
+                "rank": 6
+            },
+            {
+                "kld": 922308.1319022067,
+                "name": "gi|363539767|ref|NC_016072.1| Megavirus chiliensis, complete genome\r",
+                "nrc": 0.9213949347730138,
+                "rank": 7
+            },
+            {
+                "kld": 219288.10956996735,
+                "name": "gi|12084983|ref|NC_002642.1| Yaba-like disease virus, complete genome\r",
+                "nrc": 0.9242549472530439,
+                "rank": 8
+            },
+            {
+                "kld": 2457.034419823216,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9312311036747467,
+                "rank": 9
+            },
+            {
+                "kld": 2486.061379468372,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9337643294367212,
+                "rank": 10
+            },
+            {
+                "kld": 2503.828503826699,
+                "name": "gi|146411809|ref|NC_009450.1| Honeysuckle yellow vein mosaic beta-[Japan:Miyizaki:2001] DNA, complete genome\r",
+                "nrc": 0.9359168258856725,
+                "rank": 11
+            },
+            {
+                "kld": 5649.413128673902,
+                "name": "gi|1013949526|ref|NC_029800.1| Iris yellow spot virus non-structural protein (NSs) and nucleoprotein (N) genes, complete cds\r",
+                "nrc": 0.9387324693382224,
+                "rank": 12
+            },
+            {
+                "kld": 1842.035876510167,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9389867715559019,
+                "rank": 13
+            },
+            {
+                "kld": 2508.9949127431764,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9406509320264007,
+                "rank": 14
+            },
+            {
+                "kld": 5584.621078133273,
+                "name": "gi|1003725904|ref|NC_029631.1| Lake Sarah-associated circular virus-44 isolate LSaCV-44-LSCO-2013, complete sequence\r",
+                "nrc": 0.9420375013680796,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 20814.652002,
+        "k": 11,
+        "references": [
+            {
+                "kld": 15449.806234397103,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.08213194916326774,
+                "rank": 1
+            },
+            {
+                "kld": 4739.058248384147,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.10253819859787193,
+                "rank": 2
+            },
+            {
+                "kld": 347.91240330982356,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.1402872593991231,
+                "rank": 3
+            },
+            {
+                "kld": 3422.103539305687,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.14184279816809658,
+                "rank": 4
+            },
+            {
+                "kld": 316.3934174689055,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2197176510200741,
+                "rank": 5
+            },
+            {
+                "kld": 18278.794848494388,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.3538606877619193,
+                "rank": 6
+            },
+            {
+                "kld": 922862.2527213785,
+                "name": "gi|363539767|ref|NC_016072.1| Megavirus chiliensis, complete genome\r",
+                "nrc": 0.9220519416912576,
+                "rank": 7
+            },
+            {
+                "kld": 219435.47154329065,
+                "name": "gi|12084983|ref|NC_002642.1| Yaba-like disease virus, complete genome\r",
+                "nrc": 0.9248962825244968,
+                "rank": 8
+            },
+            {
+                "kld": 2458.066944005813,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9316224804155411,
+                "rank": 9
+            },
+            {
+                "kld": 2487.132674965161,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9341655640408214,
+                "rank": 10
+            },
+            {
+                "kld": 2504.8721258985915,
+                "name": "gi|146411809|ref|NC_009450.1| Honeysuckle yellow vein mosaic beta-[Japan:Miyizaki:2001] DNA, complete genome\r",
+                "nrc": 0.936310117259631,
+                "rank": 11
+            },
+            {
+                "kld": 5652.064479341347,
+                "name": "gi|1013949526|ref|NC_029800.1| Iris yellow spot virus non-structural protein (NSs) and nucleoprotein (N) genes, complete cds\r",
+                "nrc": 0.9391701183302179,
+                "rank": 12
+            },
+            {
+                "kld": 1842.636987743196,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9392941193327353,
+                "rank": 13
+            },
+            {
+                "kld": 2510.0808461759384,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9410537263263865,
+                "rank": 14
+            },
+            {
+                "kld": 5587.5122738728105,
+                "name": "gi|1003725904|ref|NC_029631.1| Lake Sarah-associated circular virus-44 isolate LSaCV-44-LSCO-2013, complete sequence\r",
+                "nrc": 0.9425418907817451,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 23077.804654,
+        "k": 12,
+        "references": [
+            {
+                "kld": 8641.766618217953,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.040517233866354106,
+                "rank": 1
+            },
+            {
+                "kld": 2365.04668210986,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.047321676675936154,
+                "rank": 2
+            },
+            {
+                "kld": 1613.9233715426826,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.06394840527407446,
+                "rank": 3
+            },
+            {
+                "kld": 270.8354420604105,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.10920783954048875,
+                "rank": 4
+            },
+            {
+                "kld": 291.91869690831834,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20272131729744322,
+                "rank": 5
+            },
+            {
+                "kld": 18524.137867733607,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.3426215405385459,
+                "rank": 6
+            },
+            {
+                "kld": 2574.4085991663587,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9605469004692612,
+                "rank": 7
+            },
+            {
+                "kld": 2539.639046297193,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9609369033625068,
+                "rank": 8
+            },
+            {
+                "kld": 1899.6153827715802,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9677596046650969,
+                "rank": 9
+            },
+            {
+                "kld": 1455861.4542497238,
+                "name": "gi|363539767|ref|NC_016072.1| Megavirus chiliensis, complete genome\r",
+                "nrc": 0.96799084570939,
+                "rank": 10
+            },
+            {
+                "kld": 2598.0451166140083,
+                "name": "gi|146411809|ref|NC_009450.1| Honeysuckle yellow vein mosaic beta-[Japan:Miyizaki:2001] DNA, complete genome\r",
+                "nrc": 0.9683534662039407,
+                "rank": 11
+            },
+            {
+                "kld": 259291.79547315242,
+                "name": "gi|12084983|ref|NC_002642.1| Yaba-like disease virus, complete genome\r",
+                "nrc": 0.9694770714174588,
+                "rank": 12
+            },
+            {
+                "kld": 2654.440382529873,
+                "name": "gi|33438957|ref|NC_005057.1| Tobacco curly shoot virus associated DNA 1, complete genome\r",
+                "nrc": 0.9708999204571596,
+                "rank": 13
+            },
+            {
+                "kld": 2599.2977275659205,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9711786823315729,
+                "rank": 14
+            },
+            {
+                "kld": 3149.6888079297623,
+                "name": "gi|1003725831|ref|NC_029622.1| Lake Sarah-associated circular virus-20 isolate LSaCV-20-LSMU-2013, complete sequence\r",
+                "nrc": 0.9713004670312845,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 22756.419148,
+        "k": 12,
+        "references": [
+            {
+                "kld": 9995.557950621742,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.04595226788450849,
+                "rank": 1
+            },
+            {
+                "kld": 2669.079168333455,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.05285008154905217,
+                "rank": 2
+            },
+            {
+                "kld": 1779.4103878142591,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.06926205978196262,
+                "rank": 3
+            },
+            {
+                "kld": 283.4046168006513,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11427605516155374,
+                "rank": 4
+            },
+            {
+                "kld": 298.3230208496221,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20716876447890473,
+                "rank": 5
+            },
+            {
+                "kld": 18736.170175987187,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.34648651495190363,
+                "rank": 6
+            },
+            {
+                "kld": 2574.963941277487,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9607552641341721,
+                "rank": 7
+            },
+            {
+                "kld": 2540.1722237894814,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9611384065719882,
+                "rank": 8
+            },
+            {
+                "kld": 1899.864562065646,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9678863489652322,
+                "rank": 9
+            },
+            {
+                "kld": 1456199.587669071,
+                "name": "gi|363539767|ref|NC_016072.1| Megavirus chiliensis, complete genome\r",
+                "nrc": 0.9682884885085655,
+                "rank": 10
+            },
+            {
+                "kld": 2598.4470567616427,
+                "name": "gi|146411809|ref|NC_009450.1| Honeysuckle yellow vein mosaic beta-[Japan:Miyizaki:2001] DNA, complete genome\r",
+                "nrc": 0.9685045290589005,
+                "rank": 11
+            },
+            {
+                "kld": 259364.7859759462,
+                "name": "gi|12084983|ref|NC_002642.1| Yaba-like disease virus, complete genome\r",
+                "nrc": 0.9697666938346946,
+                "rank": 12
+            },
+            {
+                "kld": 2654.855473087281,
+                "name": "gi|33438957|ref|NC_005057.1| Tobacco curly shoot virus associated DNA 1, complete genome\r",
+                "nrc": 0.9710517458256331,
+                "rank": 13
+            },
+            {
+                "kld": 2599.6935908263445,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9713255158851428,
+                "rank": 14
+            },
+            {
+                "kld": 3150.0272916122663,
+                "name": "gi|1003725831|ref|NC_029622.1| Lake Sarah-associated circular virus-20 isolate LSaCV-20-LSMU-2013, complete sequence\r",
+                "nrc": 0.9714212192277483,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 23412.24389,
+        "k": 13,
+        "references": [
+            {
+                "kld": 7028.327904371293,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03008979239072094,
+                "rank": 1
+            },
+            {
+                "kld": 1730.6330751709938,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.032964517221114674,
+                "rank": 2
+            },
+            {
+                "kld": 989.7173288753355,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.03669870498348119,
+                "rank": 3
+            },
+            {
+                "kld": 260.40686081487473,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.10500276645761134,
+                "rank": 4
+            },
+            {
+                "kld": 285.9110084785054,
+                "name": "Super MUL 720\r",
+                "nrc": 0.19854931144340734,
+                "rank": 5
+            },
+            {
+                "kld": 19476.173555185393,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.3555856682184837,
+                "rank": 6
+            },
+            {
+                "kld": 2587.0201187819844,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9777097954580442,
+                "rank": 7
+            },
+            {
+                "kld": 2631.830076387184,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9792363412580741,
+                "rank": 8
+            },
+            {
+                "kld": 1436.0093189781383,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9795425095348829,
+                "rank": 9
+            },
+            {
+                "kld": 1927.2229697220857,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9802761799196775,
+                "rank": 10
+            },
+            {
+                "kld": 2626.068703788837,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9803667298920018,
+                "rank": 11
+            },
+            {
+                "kld": 2641.0140451525795,
+                "name": "gi|146411809|ref|NC_009450.1| Honeysuckle yellow vein mosaic beta-[Japan:Miyizaki:2001] DNA, complete genome\r",
+                "nrc": 0.9811163130194739,
+                "rank": 12
+            },
+            {
+                "kld": 2744.659238336177,
+                "name": "gi|1012306354|ref|NC_029784.1| Tomato yellow leaf curl Oman betasatellite complete sequence, clone BZ-4\r",
+                "nrc": 0.9818327099561842,
+                "rank": 13
+            },
+            {
+                "kld": 3183.128079185953,
+                "name": "gi|1003725831|ref|NC_029622.1| Lake Sarah-associated circular virus-20 isolate LSaCV-20-LSMU-2013, complete sequence\r",
+                "nrc": 0.9828828930908213,
+                "rank": 14
+            },
+            {
+                "kld": 1624.0107530314217,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9830573565565506,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 22893.916895,
+        "k": 13,
+        "references": [
+            {
+                "kld": 8428.035790571672,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.035701027630920555,
+                "rank": 1
+            },
+            {
+                "kld": 2046.613739351988,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.03870242736508071,
+                "rank": 2
+            },
+            {
+                "kld": 1167.4048010526476,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.04238729428245641,
+                "rank": 3
+            },
+            {
+                "kld": 273.1784524172085,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11015260178113342,
+                "rank": 4
+            },
+            {
+                "kld": 292.4150458754306,
+                "name": "Super MUL 720\r",
+                "nrc": 0.203066004080161,
+                "rank": 5
+            },
+            {
+                "kld": 19689.11625825366,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.35945575064270424,
+                "rank": 6
+            },
+            {
+                "kld": 2587.2648299921752,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9778022789086073,
+                "rank": 7
+            },
+            {
+                "kld": 2631.99523847271,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9792987273743352,
+                "rank": 8
+            },
+            {
+                "kld": 1436.018586658623,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.979548831281462,
+                "rank": 9
+            },
+            {
+                "kld": 1927.2755103764846,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9803029045658622,
+                "rank": 10
+            },
+            {
+                "kld": 2626.3208624029844,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9804602605352317,
+                "rank": 11
+            },
+            {
+                "kld": 2641.2148928300194,
+                "name": "gi|146411809|ref|NC_009450.1| Honeysuckle yellow vein mosaic beta-[Japan:Miyizaki:2001] DNA, complete genome\r",
+                "nrc": 0.9811907010481552,
+                "rank": 12
+            },
+            {
+                "kld": 2744.828067118127,
+                "name": "gi|1012306354|ref|NC_029784.1| Tomato yellow leaf curl Oman betasatellite complete sequence, clone BZ-4\r",
+                "nrc": 0.9818924512095281,
+                "rank": 13
+            },
+            {
+                "kld": 3183.2255864374674,
+                "name": "gi|1003725831|ref|NC_029622.1| Lake Sarah-associated circular virus-20 isolate LSaCV-20-LSMU-2013, complete sequence\r",
+                "nrc": 0.9829218257638092,
+                "rank": 14
+            },
+            {
+                "kld": 1624.0213736713279,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9830637855153317,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 23561.018007,
+        "k": 14,
+        "references": [
+            {
+                "kld": 789.6865162259312,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.02759873144507948,
+                "rank": 1
+            },
+            {
+                "kld": 6692.825228126038,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.027620902558351014,
+                "rank": 2
+            },
+            {
+                "kld": 1576.0159144151748,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.029020828138972048,
+                "rank": 3
+            },
+            {
+                "kld": 262.18235202739936,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.10571869033362924,
+                "rank": 4
+            },
+            {
+                "kld": 285.75611739915973,
+                "name": "Super MUL 720\r",
+                "nrc": 0.19844174819386068,
+                "rank": 5
+            },
+            {
+                "kld": 20491.99085870903,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.3725728221635351,
+                "rank": 6
+            },
+            {
+                "kld": 1438.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9809004092769441,
+                "rank": 7
+            },
+            {
+                "kld": 1932.3470476831671,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.982882526797135,
+                "rank": 8
+            },
+            {
+                "kld": 1624.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9830508474576272,
+                "rank": 9
+            },
+            {
+                "kld": 2653.075183323229,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9844607795860745,
+                "rank": 10
+            },
+            {
+                "kld": 2641.1532343921763,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9852200424303325,
+                "rank": 11
+            },
+            {
+                "kld": 2242.0215060628434,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859373377585063,
+                "rank": 12
+            },
+            {
+                "kld": 2162.0143078686806,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9863203959254929,
+                "rank": 13
+            },
+            {
+                "kld": 2610.247800340623,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9864882087455114,
+                "rank": 14
+            },
+            {
+                "kld": 2206.0107530314217,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9865879933056447,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 24093.890984,
+        "k": 14,
+        "references": [
+            {
+                "kld": 8116.074454831511,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03332398275232957,
+                "rank": 1
+            },
+            {
+                "kld": 973.2815737926359,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.03346770695228058,
+                "rank": 2
+            },
+            {
+                "kld": 1897.9628594190956,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.03486451643091007,
+                "rank": 3
+            },
+            {
+                "kld": 275.0532645830253,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11090857442864022,
+                "rank": 4
+            },
+            {
+                "kld": 292.32480375797985,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20300333594304198,
+                "rank": 5
+            },
+            {
+                "kld": 20702.32697253972,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.3763919606335143,
+                "rank": 6
+            },
+            {
+                "kld": 1438.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9809004092769441,
+                "rank": 7
+            },
+            {
+                "kld": 1932.371915280728,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9828951756260064,
+                "rank": 8
+            },
+            {
+                "kld": 1624.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9830508474576272,
+                "rank": 9
+            },
+            {
+                "kld": 2653.1490752289988,
+                "name": "gi|1008861384|ref|NC_005030.2| Tobacco leaf curl Yunnan virus satellite DNA beta clone 17, complete sequence\r",
+                "nrc": 0.9844881672457371,
+                "rank": 10
+            },
+            {
+                "kld": 2641.300209266583,
+                "name": "gi|62327499|ref|NC_006935.1| Cotton leaf curl Gezira virus-associated DNA beta isolate CLC55-C, complete sequence\r",
+                "nrc": 0.9852745583333022,
+                "rank": 11
+            },
+            {
+                "kld": 2242.0427473426557,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859466786907017,
+                "rank": 12
+            },
+            {
+                "kld": 2162.0283818116204,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9863268165198998,
+                "rank": 13
+            },
+            {
+                "kld": 2610.3395285961733,
+                "name": "gi|66396483|ref|NC_007067.1| Ageratum yellow vein China virus-associated DNA beta, complete genome\r",
+                "nrc": 0.9865228755087577,
+                "rank": 14
+            },
+            {
+                "kld": 2206.0213736713276,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9865927431446009,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 23590.425247,
+        "k": 15,
+        "references": [
+            {
+                "kld": 728.5170232089849,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.023944650941066868,
+                "rank": 1
+            },
+            {
+                "kld": 6718.4269735432035,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.02738042846742427,
+                "rank": 2
+            },
+            {
+                "kld": 1544.8715883644431,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.028154369309651133,
+                "rank": 3
+            },
+            {
+                "kld": 264.03932744533057,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.10646747074408552,
+                "rank": 4
+            },
+            {
+                "kld": 284.7080691168818,
+                "name": "Super MUL 720\r",
+                "nrc": 0.19771393688672304,
+                "rank": 5
+            },
+            {
+                "kld": 21510.03406437674,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.3906765805320419,
+                "rank": 6
+            },
+            {
+                "kld": 1436.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9795361527967258,
+                "rank": 7
+            },
+            {
+                "kld": 1622.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9818401937046005,
+                "rank": 8
+            },
+            {
+                "kld": 1936.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9847405900305188,
+                "rank": 9
+            },
+            {
+                "kld": 2242.0107530314217,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859326090727448,
+                "rank": 10
+            },
+            {
+                "kld": 2162.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9863138686131386,
+                "rank": 11
+            },
+            {
+                "kld": 2206.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9865831842576028,
+                "rank": 12
+            },
+            {
+                "kld": 2216.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9866429207479964,
+                "rank": 13
+            },
+            {
+                "kld": 2369.00861309735,
+                "name": "gi|19919965|ref|NC_003508.1| Beet soil-borne mosaic virus RNA4 13K protein gene, complete cds\r",
+                "nrc": 0.9867034967154406,
+                "rank": 14
+            },
+            {
+                "kld": 2294.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9870912220309811,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 23971.129739,
+        "k": 15,
+        "references": [
+            {
+                "kld": 915.6453163964126,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.02992261057148934,
+                "rank": 1
+            },
+            {
+                "kld": 8159.026674764334,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.033152297496536684,
+                "rank": 2
+            },
+            {
+                "kld": 1870.9198021378688,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.03407164325817697,
+                "rank": 3
+            },
+            {
+                "kld": 277.0246087591538,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11170347127385316,
+                "rank": 4
+            },
+            {
+                "kld": 291.34134562955336,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20232037890941273,
+                "rank": 5
+            },
+            {
+                "kld": 21716.81634458332,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.39442983753194094,
+                "rank": 6
+            },
+            {
+                "kld": 1436.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9795361527967258,
+                "rank": 7
+            },
+            {
+                "kld": 1622.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9818401937046005,
+                "rank": 8
+            },
+            {
+                "kld": 1936.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9847405900305188,
+                "rank": 9
+            },
+            {
+                "kld": 2242.0213736713276,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859372795388424,
+                "rank": 10
+            },
+            {
+                "kld": 2162.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9863138686131386,
+                "rank": 11
+            },
+            {
+                "kld": 2206.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9865831842576028,
+                "rank": 12
+            },
+            {
+                "kld": 2216.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9866429207479964,
+                "rank": 13
+            },
+            {
+                "kld": 2369.017141124599,
+                "name": "gi|19919965|ref|NC_003508.1| Beet soil-borne mosaic virus RNA4 13K protein gene, complete cds\r",
+                "nrc": 0.986707041198919,
+                "rank": 14
+            },
+            {
+                "kld": 2294.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9870912220309811,
+                "rank": 15
+            }
+        ]
+    }
+]

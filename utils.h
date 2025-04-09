@@ -10,8 +10,9 @@
 struct Reference {
     std::string name;
     std::string sequence;
-    double nrc;
-    double kld;  // Added Kullback-Leibler divergence
+    double nrc = 0.0;
+    double kld = 0.0;  // Added Kullback-Leibler divergence
+    double compressionBits = 0.0;  // Add this new field
 };
 
 // DNA-specific calculator for FCMModel metrics
