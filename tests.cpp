@@ -487,6 +487,9 @@ int main() {
     cout << "- " << timestampFilename << endl;
     cout << "- " << latestFilename << endl;
     
+    // Track total test time
+    auto totalTestStartTime = high_resolution_clock::now();
+    
     // Run all tests and collect results
     vector<pair<pair<int, double>, pair<vector<Reference>, double>>> allResults;
     
@@ -512,6 +515,10 @@ int main() {
                  << fixed << setprecision(1) << (100.0 * testCounter / totalTests) << "%)" << endl;
         }
     }
+    
+    // Calculate total test time
+    auto totalTestEndTime = high_resolution_clock::now();
+    double totalTestTime = duration<double, milli>(totalTestEndTime - totalTestStartTime).count();
     
     // Display detailed results for all tests
     cout << "\n\n===============================================" << endl;
@@ -573,6 +580,7 @@ int main() {
             infoFile << "Alpha values: " << minAlpha << " to " << maxAlpha << " (" << alphaTicks << " ticks)" << endl;
             infoFile << "Top matches saved: " << topN << endl;
             infoFile << "Total tests: " << totalTests << endl;
+            infoFile << "Total test time: " << fixed << setprecision(2) << (totalTestTime / 1000.0) << " seconds" << endl;
             infoFile << "Output format: " << (useJson ? "JSON" : "CSV") << endl;
         }
         
