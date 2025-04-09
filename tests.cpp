@@ -470,42 +470,224 @@ bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>&
     return false;
 }
 
-// Main function with interactive menu
-int main() {
+// JSON parsing for configuration
+bool parseConfigFile(const string& configFile, map<string, string>& configParams) {
+    cout << "Reading JSON configuration from: " << configFile << endl;
+    
+    try {
+        // Read the JSON file
+        ifstream file(configFile);
+        if (!file) {
+            cerr << "Error: Could not open JSON configuration file: " << configFile << endl;
+            return false;
+        }
+        
+        json config;
+        file >> config;
+        
+        // Extract parameters from JSON
+        if (config.contains("input")) {
+            if (config["input"].contains("sample_file"))
+                configParams["sample_file"] = config["input"]["sample_file"];
+            if (config["input"].contains("db_file"))
+                configParams["db_file"] = config["input"]["db_file"];
+        }
+        
+        if (config.contains("parameters")) {
+            if (config["parameters"].contains("context_size")) {
+                if (config["parameters"]["context_size"].contains("min"))
+                    configParams["min_k"] = to_string(config["parameters"]["context_size"]["min"].get<int>());
+                if (config["parameters"]["context_size"].contains("max"))
+                    configParams["max_k"] = to_string(config["parameters"]["context_size"]["max"].get<int>());
+            }
+            
+            if (config["parameters"].contains("alpha")) {
+                if (config["parameters"]["alpha"].contains("min"))
+                    configParams["min_alpha"] = to_string(config["parameters"]["alpha"]["min"].get<double>());
+                if (config["parameters"]["alpha"].contains("max"))
+                    configParams["max_alpha"] = to_string(config["parameters"]["alpha"]["max"].get<double>());
+                if (config["parameters"]["alpha"].contains("ticks"))
+                    configParams["alpha_ticks"] = to_string(config["parameters"]["alpha"]["ticks"].get<int>());
+            }
+        }
+        
+        if (config.contains("output")) {
+            if (config["output"].contains("top_n"))
+                configParams["top_n"] = to_string(config["output"]["top_n"].get<int>());
+            if (config["output"].contains("use_json"))
+                configParams["use_json"] = config["output"]["use_json"].get<bool>() ? "true" : "false";
+        }
+        
+        if (config.contains("analysis")) {
+            if (config["analysis"].contains("analyze_symbol_info"))
+                configParams["analyze_symbol_info"] = config["analysis"]["analyze_symbol_info"].get<bool>() ? "true" : "false";
+            if (config["analysis"].contains("num_orgs_to_analyze"))
+                configParams["num_orgs_to_analyze"] = to_string(config["analysis"]["num_orgs_to_analyze"].get<int>());
+        }
+        
+        if (config.contains("model")) {
+            if (config["model"].contains("test_save_load"))
+                configParams["test_model_save_load"] = config["model"]["test_save_load"].get<bool>() ? "true" : "false";
+            if (config["model"].contains("use_json"))
+                configParams["use_json_model"] = config["model"]["use_json"].get<bool>() ? "true" : "false";
+        }
+        
+        // Print all loaded configuration parameters
+        cout << "Loaded configuration parameters:" << endl;
+        for (const auto& param : configParams) {
+            cout << "  " << param.first << " = " << param.second << endl;
+        }
+        
+        return true;
+    }
+    catch (const json::exception& e) {
+        cerr << "Error parsing JSON configuration file: " << e.what() << endl;
+        return false;
+    }
+}
+
+// Convert string to boolean
+bool stringToBool(const string& value) {
+    string lowerValue = value;
+    transform(lowerValue.begin(), lowerValue.end(), lowerValue.begin(), ::tolower);
+    return (lowerValue == "true" || lowerValue == "yes" || lowerValue == "y" || lowerValue == "1");
+}
+
+// Function to print usage instructions
+void printUsage(const string& programName) {
+    cout << "Usage: " << programName << " [--config <config_file_path>]" << endl;
+    cout << "If --config is provided, the program will use parameters from the specified JSON file." << endl;
+    cout << "Otherwise, it will run in interactive mode." << endl;
+    cout << "\nExample JSON configuration file format:" << endl;
+    cout << "{\n";
+    cout << "  \"input\": {\n";
+    cout << "    \"sample_file\": \"samples/meta.txt\",\n";
+    cout << "    \"db_file\": \"samples/db.txt\"\n";
+    cout << "  },\n";
+    cout << "  \"parameters\": {\n";
+    cout << "    \"context_size\": {\n";
+    cout << "      \"min\": 3,\n";
+    cout << "      \"max\": 6\n";
+    cout << "    },\n";
+    cout << "    \"alpha\": {\n";
+    cout << "      \"min\": 0.001,\n";
+    cout << "      \"max\": 0.5,\n";
+    cout << "      \"ticks\": 5\n";
+    cout << "    }\n";
+    cout << "  },\n";
+    cout << "  \"output\": {\n";
+    cout << "    \"top_n\": 10,\n";
+    cout << "    \"use_json\": true\n";
+    cout << "  }\n";
+    cout << "}" << endl;
+}
+
+// Main function with support for config file
+int main(int argc, char** argv) {
     cout << "===============================================" << endl;
     cout << "   MetaClass NRC Parameter Testing Utility    " << endl;
     cout << "===============================================" << endl;
     
-    // Default files
-    string sampleFile = "samples/meta.txt";
-    string dbFile = "samples/db.txt";
+    // Check for command-line arguments
+    bool useConfigFile = false;
+    string configFilePath;
     
-    // Check if default files exist
-    if (!filesystem::exists(sampleFile) || !filesystem::exists(dbFile)) {
-        cout << "Default test files not found." << endl;
-        sampleFile = getStringInput("Enter metagenomic sample file path: ");
-        dbFile = getStringInput("Enter reference database file path: ");
-    } else {
-        cout << "Default files found:" << endl;
-        cout << "- Sample: " << sampleFile << endl;
-        cout << "- Database: " << dbFile << endl;
-        
-        if (!askYesNo("Use default files?")) {
-            sampleFile = getStringInput("Enter metagenomic sample file path: ");
-            dbFile = getStringInput("Enter reference database file path: ");
+    for (int i = 1; i < argc; i++) {
+        string arg = argv[i];
+        if (arg == "--config" && i + 1 < argc) {
+            useConfigFile = true;
+            configFilePath = argv[i + 1];
+            i++; // Skip the next argument as we've already processed it
+        } else if (arg == "--help" || arg == "-h") {
+            printUsage(argv[0]);
+            return 0;
         }
     }
     
-    // Get parameter ranges
-    cout << "\nParameter Range Setup:" << endl;
-    cout << "----------------------" << endl;
-    int minK = getIntInput("Enter minimum context size (k): ", 1, 20);
-    int maxK = getIntInput("Enter maximum context size (k): ", minK, 20);
+    // Default values
+    string sampleFile = "samples/meta.txt";
+    string dbFile = "samples/db.txt";
+    int minK = 3;
+    int maxK = 6;
+    double minAlpha = 0.001;
+    double maxAlpha = 0.5;
+    int alphaTicks = 5;
+    int topN = 10;
+    bool useJson = true;
+    bool analyzeSymbolInfo = false;
+    int numOrgsToAnalyze = 3;
+    bool runModelSaveLoadTest = false;  // Renamed from testModelSaveLoad to avoid name collision with function
+    bool useJsonModel = true;
     
-    double minAlpha = getDoubleInput("Enter minimum alpha value: ", 0.0, 1.0);
-    double maxAlpha = getDoubleInput("Enter maximum alpha value: ", minAlpha, 1.0);
-    int alphaTicks = getIntInput("Enter number of alpha values to test (1-20): ", 1, 20);
-    
+    if (useConfigFile) {
+        // Parse config file
+        map<string, string> configParams;
+        if (!parseConfigFile(configFilePath, configParams)) {
+            cerr << "Failed to parse configuration file. Exiting." << endl;
+            return 1;
+        }
+        
+        // Extract configuration parameters
+        if (configParams.count("sample_file")) sampleFile = configParams["sample_file"];
+        if (configParams.count("db_file")) dbFile = configParams["db_file"];
+        if (configParams.count("min_k")) minK = stoi(configParams["min_k"]);
+        if (configParams.count("max_k")) maxK = stoi(configParams["max_k"]);
+        if (configParams.count("min_alpha")) minAlpha = stod(configParams["min_alpha"]);
+        if (configParams.count("max_alpha")) maxAlpha = stod(configParams["max_alpha"]);
+        if (configParams.count("alpha_ticks")) alphaTicks = stoi(configParams["alpha_ticks"]);
+        if (configParams.count("top_n")) topN = stoi(configParams["top_n"]);
+        if (configParams.count("use_json")) useJson = stringToBool(configParams["use_json"]);
+        if (configParams.count("analyze_symbol_info")) analyzeSymbolInfo = stringToBool(configParams["analyze_symbol_info"]);
+        if (configParams.count("num_orgs_to_analyze")) numOrgsToAnalyze = stoi(configParams["num_orgs_to_analyze"]);
+        if (configParams.count("test_model_save_load")) runModelSaveLoadTest = stringToBool(configParams["test_model_save_load"]);
+        if (configParams.count("use_json_model")) useJsonModel = stringToBool(configParams["use_json_model"]);
+        
+        // Validate paths
+        if (!filesystem::exists(sampleFile)) {
+            cerr << "Error: Sample file does not exist: " << sampleFile << endl;
+            return 1;
+        }
+        
+        if (!filesystem::exists(dbFile)) {
+            cerr << "Error: Database file does not exist: " << dbFile << endl;
+            return 1;
+        }
+        
+        cout << "\nRunning with parameters from configuration file." << endl;
+    } else {
+        // Interactive mode - use existing code flow
+        // Check if default files exist
+        if (!filesystem::exists(sampleFile) || !filesystem::exists(dbFile)) {
+            cout << "Default test files not found." << endl;
+            sampleFile = getStringInput("Enter metagenomic sample file path: ");
+            dbFile = getStringInput("Enter reference database file path: ");
+        } else {
+            cout << "Default files found:" << endl;
+            cout << "- Sample: " << sampleFile << endl;
+            cout << "- Database: " << dbFile << endl;
+            
+            if (!askYesNo("Use default files?")) {
+                sampleFile = getStringInput("Enter metagenomic sample file path: ");
+                dbFile = getStringInput("Enter reference database file path: ");
+            }
+        }
+        
+        // Get parameter ranges
+        cout << "\nParameter Range Setup:" << endl;
+        cout << "----------------------" << endl;
+        minK = getIntInput("Enter minimum context size (k): ", 1, 20);
+        maxK = getIntInput("Enter maximum context size (k): ", minK, 20);
+        
+        minAlpha = getDoubleInput("Enter minimum alpha value: ", 0.0, 1.0);
+        maxAlpha = getDoubleInput("Enter maximum alpha value: ", minAlpha, 1.0);
+        alphaTicks = getIntInput("Enter number of alpha values to test (1-20): ", 1, 20);
+        
+        topN = getIntInput("Enter number of top matches to save for each test: ", 1, 100);
+        
+        // Ask for output format
+        useJson = askYesNo("\nSave results as JSON? (No for CSV)");
+    }
+
     // Generate all parameter combinations
     vector<int> kValues;
     for (int k = minK; k <= maxK; k++) {
@@ -519,10 +701,7 @@ int main() {
     cout << "\nWill perform " << totalTests << " tests (" 
          << kValues.size() << " k-values × " << alphaValues.size() << " alpha-values)" << endl;
     
-    int topN = getIntInput("Enter number of top matches to save for each test: ", 1, 100);
-    
-    // Ask for output format and file
-    bool useJson = askYesNo("\nSave results as JSON? (No for CSV)");
+    // Setup result directories
     string baseOutputDir = "results";
     
     // Create results directory if it doesn't exist
@@ -691,7 +870,7 @@ int main() {
 
         
     // Ask if user wants to analyze symbol information for top organisms
-    if (!allResults.empty() && askYesNo("\nWould you like to analyze symbol information for top organisms?")) {
+    if (!allResults.empty() && (analyzeSymbolInfo || (!useConfigFile && askYesNo("\nWould you like to analyze symbol information for top organisms?")))) {
         // Get best k and alpha values (simplistic approach - use the first test's values)
         int bestK = allResults[0].first.first;
         double bestAlpha = allResults[0].first.second;
@@ -711,9 +890,14 @@ int main() {
         
         cout << "\nUsing best performing parameters: k=" << bestK << ", alpha=" << bestAlpha << endl;
         
-        // Ask how many top organisms to analyze
-        int numOrgs = std::min(getIntInput("How many top organisms to analyze? (1-5): ", 1, 5), 
-                         static_cast<int>(allResults[bestTestIndex].second.first.size()));
+        // Determine how many top organisms to analyze
+        int numOrgs;
+        if (useConfigFile) {
+            numOrgs = std::min(numOrgsToAnalyze, static_cast<int>(allResults[bestTestIndex].second.first.size()));
+        } else {
+            numOrgs = std::min(getIntInput("How many top organisms to analyze? (1-5): ", 1, 5), 
+                          static_cast<int>(allResults[bestTestIndex].second.first.size()));
+        }
         
         vector<Reference> topRefs(allResults[bestTestIndex].second.first.begin(),
                                  allResults[bestTestIndex].second.first.begin() + numOrgs);
@@ -730,10 +914,10 @@ int main() {
     }
     
     // Ask if user wants to test model saving/loading
-    if (askYesNo("\nWould you like to test model saving and loading?")) {
+    if (runModelSaveLoadTest || (!useConfigFile && askYesNo("\nWould you like to test model saving and loading?"))) {
         string modelOutfile = "test_model";
-        bool useJsonModel = askYesNo("Use JSON format for model? (No for binary)");
-        testModelSaveLoad(sampleFile, modelOutfile, useJsonModel);
+        bool jsonModel = useConfigFile ? useJsonModel : askYesNo("Use JSON format for model? (No for binary)");
+        testModelSaveLoad(sampleFile, modelOutfile, jsonModel);
     }
     
     cout << "\nTesting complete!" << endl;
