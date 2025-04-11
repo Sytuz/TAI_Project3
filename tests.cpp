@@ -122,158 +122,6 @@ vector<Reference> runTest(const string& sampleFile, const string& dbFile, int k,
     return references;
 }
 
-// Save results to JSON file with only top matches
-bool saveResultsToJson(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
-                      const string& outputFile) {
-    json resultsJson;
-    
-    for (size_t testIdx = 0; testIdx < allResults.size(); testIdx++) {
-        const auto& test = allResults[testIdx];
-        int k = test.first.first;
-        double alpha = test.first.second;
-        const auto& references = test.second.first;
-        double execTime = test.second.second;
-        
-        json testJson;
-        testJson["k"] = k;
-        testJson["alpha"] = alpha;
-        testJson["execTime_ms"] = execTime;
-        
-        json refsJson = json::array();
-        for (size_t i = 0; i < references.size(); i++) {
-            json refJson;
-            refJson["rank"] = i + 1;
-            refJson["name"] = references[i].name;
-            refJson["nrc"] = references[i].nrc;
-            refJson["kld"] = references[i].kld;
-            refsJson.push_back(refJson);
-        }
-        
-        testJson["references"] = refsJson;
-        resultsJson.push_back(testJson);
-    }
-    
-    ofstream file(outputFile);
-    if (!file) {
-        cerr << "Error: Could not open output file: " << outputFile << endl;
-        return false;
-    }
-    
-    file << setw(4) << resultsJson << endl;
-    return true;
-}
-
-// Save results to CSV file with only top matches
-bool saveResultsToCsv(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
-                     const string& outputFile) {
-    ofstream file(outputFile);
-    if (!file) {
-        cerr << "Error: Could not open output file: " << outputFile << endl;
-        return false;
-    }
-    
-    // Write header
-    file << "test_id,k,alpha,rank,reference_name,nrc,kld,exec_time_ms" << endl;
-    
-    for (size_t testIdx = 0; testIdx < allResults.size(); testIdx++) {
-        const auto& test = allResults[testIdx];
-        int k = test.first.first;
-        double alpha = test.first.second;
-        const auto& references = test.second.first;
-        double execTime = test.second.second;
-        
-        for (size_t i = 0; i < references.size(); i++) {
-            file << testIdx + 1 << ","
-                 << k << ","
-                 << alpha << ","
-                 << i + 1 << ","
-                 << "\"" << references[i].name << "\"" << ","
-                 << references[i].nrc << ","
-                 << references[i].kld << ","
-                 << execTime << endl;
-        }
-    }
-    
-    return true;
-}
-
-// Save results to JSON file with ALL organisms
-bool saveAllResultsToJson(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
-                      const string& outputFile) {
-    json resultsJson;
-    
-    for (size_t testIdx = 0; testIdx < allResults.size(); testIdx++) {
-        const auto& test = allResults[testIdx];
-        int k = test.first.first;
-        double alpha = test.first.second;
-        const auto& references = test.second.first;
-        double execTime = test.second.second;
-        
-        json testJson;
-        testJson["k"] = k;
-        testJson["alpha"] = alpha;
-        testJson["execTime_ms"] = execTime;
-        
-        json refsJson = json::array();
-        for (size_t i = 0; i < references.size(); i++) {
-            json refJson;
-            refJson["rank"] = i + 1;
-            refJson["name"] = references[i].name;
-            refJson["nrc"] = references[i].nrc;
-            refJson["kld"] = references[i].kld;
-            refJson["compressionBits"] = references[i].compressionBits;
-            refsJson.push_back(refJson);
-        }
-        
-        testJson["references"] = refsJson;
-        resultsJson.push_back(testJson);
-    }
-    
-    ofstream file(outputFile);
-    if (!file) {
-        cerr << "Error: Could not open output file: " << outputFile << endl;
-        return false;
-    }
-    
-    file << setw(4) << resultsJson << endl;
-    return true;
-}
-
-// Save results to CSV file with ALL organisms
-bool saveAllResultsToCsv(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>>& allResults, 
-                     const string& outputFile) {
-    ofstream file(outputFile);
-    if (!file) {
-        cerr << "Error: Could not open output file: " << outputFile << endl;
-        return false;
-    }
-    
-    // Write header with compression bits
-    file << "test_id,k,alpha,rank,reference_name,nrc,kld,compression_bits,exec_time_ms" << endl;
-    
-    for (size_t testIdx = 0; testIdx < allResults.size(); testIdx++) {
-        const auto& test = allResults[testIdx];
-        int k = test.first.first;
-        double alpha = test.first.second;
-        const auto& references = test.second.first;
-        double execTime = test.second.second;
-        
-        for (size_t i = 0; i < references.size(); i++) {
-            file << testIdx + 1 << ","
-                 << k << ","
-                 << alpha << ","
-                 << i + 1 << ","
-                 << "\"" << references[i].name << "\"" << ","
-                 << references[i].nrc << ","
-                 << references[i].kld << ","
-                 << references[i].compressionBits << ","
-                 << execTime << endl;
-        }
-    }
-    
-    return true;
-}
-
 // Test model saving and loading
 void testModelSaveLoad(const string& sampleFile, const string& outFile, bool useJson = false) {
     cout << "\nTesting model saving and loading:" << endl;
@@ -317,67 +165,6 @@ void testModelSaveLoad(const string& sampleFile, const string& outFile, bool use
     cout << "Test probability for '" << testContext << "' → '" << testSymbol << "':" << endl;
     cout << "  Original model: " << origProb << endl;
     cout << "  Loaded model: " << loadedProb << endl;
-}
-
-// Function to get valid integer input
-int getIntInput(const string& prompt, int minValue = 1, int maxValue = 100) {
-    int value;
-    while (true) {
-        cout << prompt;
-        if (cin >> value && value >= minValue && value <= maxValue) {
-            break;
-        }
-        cout << "Please enter a valid integer between " << minValue << " and " << maxValue << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-    return value;
-}
-
-// Function to get valid double input
-double getDoubleInput(const string& prompt, double minValue = 0.0, double maxValue = 1.0) {
-    double value;
-    while (true) {
-        cout << prompt;
-        if (cin >> value && value >= minValue && value <= maxValue) {
-            break;
-        }
-        cout << "Please enter a valid number between " << minValue << " and " << maxValue << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-    return value;
-}
-
-// Function to get string input
-string getStringInput(const string& prompt) {
-    string value;
-    cout << prompt;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    getline(cin, value);
-    return value;
-}
-
-// Function to ask yes/no question with yes as default
-bool askYesNo(const string& prompt) {
-    char response;
-    while (true) {
-        cout << prompt << " (Y/n): ";
-        string line;
-        getline(cin, line);
-        
-        // If user just pressed enter, default to yes
-        if (line.empty()) {
-            return true;
-        }
-        
-        response = tolower(line[0]);
-        if (response == 'y' || response == 'n') {
-            break;
-        }
-        cout << "Please enter 'y' or 'n'" << endl;
-    }
-    return (response == 'y');
 }
 
 // Generate a vector of evenly spaced alpha values
@@ -468,131 +255,6 @@ bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>&
     }
     
     return false;
-}
-
-// JSON parsing for configuration
-bool parseConfigFile(const string& configFile, map<string, string>& configParams) {
-    cout << "Reading JSON configuration from: " << configFile << endl;
-    
-    try {
-        // Read the JSON file
-        ifstream file(configFile);
-        if (!file) {
-            cerr << "Error: Could not open JSON configuration file: " << configFile << endl;
-            return false;
-        }
-        
-        json config;
-        file >> config;
-        
-        // Extract parameters from JSON
-        if (config.contains("input")) {
-            if (config["input"].contains("sample_file"))
-                configParams["sample_file"] = config["input"]["sample_file"];
-            if (config["input"].contains("db_file"))
-                configParams["db_file"] = config["input"]["db_file"];
-        }
-        
-        if (config.contains("parameters")) {
-            if (config["parameters"].contains("context_size")) {
-                if (config["parameters"]["context_size"].contains("min"))
-                    configParams["min_k"] = to_string(config["parameters"]["context_size"]["min"].get<int>());
-                if (config["parameters"]["context_size"].contains("max"))
-                    configParams["max_k"] = to_string(config["parameters"]["context_size"]["max"].get<int>());
-            }
-            
-            if (config["parameters"].contains("alpha")) {
-                if (config["parameters"]["alpha"].contains("min"))
-                    configParams["min_alpha"] = to_string(config["parameters"]["alpha"]["min"].get<double>());
-                if (config["parameters"]["alpha"].contains("max"))
-                    configParams["max_alpha"] = to_string(config["parameters"]["alpha"]["max"].get<double>());
-                if (config["parameters"]["alpha"].contains("ticks"))
-                    configParams["alpha_ticks"] = to_string(config["parameters"]["alpha"]["ticks"].get<int>());
-            }
-        }
-        
-        if (config.contains("output")) {
-            if (config["output"].contains("top_n"))
-                configParams["top_n"] = to_string(config["output"]["top_n"].get<int>());
-            if (config["output"].contains("use_json"))
-                configParams["use_json"] = config["output"]["use_json"].get<bool>() ? "true" : "false";
-        }
-        
-        if (config.contains("analysis")) {
-            if (config["analysis"].contains("analyze_symbol_info"))
-                configParams["analyze_symbol_info"] = config["analysis"]["analyze_symbol_info"].get<bool>() ? "true" : "false";
-            if (config["analysis"].contains("num_orgs_to_analyze"))
-                configParams["num_orgs_to_analyze"] = to_string(config["analysis"]["num_orgs_to_analyze"].get<int>());
-            if (config["analysis"].contains("analyze_chunks"))
-                configParams["analyze_chunks"] = config["analysis"]["analyze_chunks"].get<bool>() ? "true" : "false";
-            if (config["analysis"].contains("chunk_size"))
-                configParams["chunk_size"] = to_string(config["analysis"]["chunk_size"].get<int>());
-            if (config["analysis"].contains("chunk_overlap"))
-                configParams["chunk_overlap"] = to_string(config["analysis"]["chunk_overlap"].get<int>());
-        }
-        
-        if (config.contains("model")) {
-            if (config["model"].contains("test_save_load"))
-                configParams["test_model_save_load"] = config["model"]["test_save_load"].get<bool>() ? "true" : "false";
-            if (config["model"].contains("use_json"))
-                configParams["use_json_model"] = config["model"]["use_json"].get<bool>() ? "true" : "false";
-        }
-        
-        // Print all loaded configuration parameters
-        cout << "Loaded configuration parameters:" << endl;
-        for (const auto& param : configParams) {
-            cout << "  " << param.first << " = " << param.second << endl;
-        }
-        
-        return true;
-    }
-    catch (const json::exception& e) {
-        cerr << "Error parsing JSON configuration file: " << e.what() << endl;
-        return false;
-    }
-}
-
-// Convert string to boolean
-bool stringToBool(const string& value) {
-    string lowerValue = value;
-    transform(lowerValue.begin(), lowerValue.end(), lowerValue.begin(), ::tolower);
-    return (lowerValue == "true" || lowerValue == "yes" || lowerValue == "y" || lowerValue == "1");
-}
-
-// Function to print usage instructions
-void printUsage(const string& programName) {
-    cout << "Usage: " << programName << " [--config <config_file_path>]" << endl;
-    cout << "If --config is provided, the program will use parameters from the specified JSON file." << endl;
-    cout << "Otherwise, it will run in interactive mode." << endl;
-    cout << "\nExample JSON configuration file format:" << endl;
-    cout << "{\n";
-    cout << "  \"input\": {\n";
-    cout << "    \"sample_file\": \"samples/meta.txt\",\n";
-    cout << "    \"db_file\": \"samples/db.txt\"\n";
-    cout << "  },\n";
-    cout << "  \"parameters\": {\n";
-    cout << "    \"context_size\": {\n";
-    cout << "      \"min\": 3,\n";
-    cout << "      \"max\": 6\n";
-    cout << "    },\n";
-    cout << "    \"alpha\": {\n";
-    cout << "      \"min\": 0.001,\n";
-    cout << "      \"max\": 0.5,\n";
-    cout << "      \"ticks\": 5\n";
-    cout << "    }\n";
-    cout << "  },\n";
-    cout << "  \"output\": {\n";
-    cout << "    \"top_n\": 10,\n";
-    cout << "    \"use_json\": true\n";
-    cout << "  },\n";
-    cout << "  \"analysis\": {\n";
-    cout << "    \"analyze_symbol_info\": true,\n";
-    cout << "    \"num_orgs_to_analyze\": 3,\n";
-    cout << "    \"analyze_chunks\": true,\n";
-    cout << "    \"chunk_size\": 5000,\n";
-    cout << "    \"chunk_overlap\": 1000\n";
-    cout << "  }\n";
-    cout << "}" << endl;
 }
 
 // Function to analyze sample chunks and determine best matching organisms
@@ -705,6 +367,42 @@ bool analyzeChunks(const string& sampleFile, const vector<Reference>& references
     cout << "- " << latestFile << endl;
     
     return true;
+}
+
+// Function to print usage instructions
+void printUsage(const string& programName) {
+    cout << "Usage: " << programName << " [--config <config_file_path>]" << endl;
+    cout << "If --config is provided, the program will use parameters from the specified JSON file." << endl;
+    cout << "Otherwise, it will run in interactive mode." << endl;
+    cout << "\nExample JSON configuration file format:" << endl;
+    cout << "{\n";
+    cout << "  \"input\": {\n";
+    cout << "    \"sample_file\": \"samples/meta.txt\",\n";
+    cout << "    \"db_file\": \"samples/db.txt\"\n";
+    cout << "  },\n";
+    cout << "  \"parameters\": {\n";
+    cout << "    \"context_size\": {\n";
+    cout << "      \"min\": 3,\n";
+    cout << "      \"max\": 6\n";
+    cout << "    },\n";
+    cout << "    \"alpha\": {\n";
+    cout << "      \"min\": 0.001,\n";
+    cout << "      \"max\": 0.5,\n";
+    cout << "      \"ticks\": 5\n";
+    cout << "    }\n";
+    cout << "  },\n";
+    cout << "  \"output\": {\n";
+    cout << "    \"top_n\": 10,\n";
+    cout << "    \"use_json\": true\n";
+    cout << "  },\n";
+    cout << "  \"analysis\": {\n";
+    cout << "    \"analyze_symbol_info\": true,\n";
+    cout << "    \"num_orgs_to_analyze\": 3,\n";
+    cout << "    \"analyze_chunks\": true,\n";
+    cout << "    \"chunk_size\": 5000,\n";
+    cout << "    \"chunk_overlap\": 1000\n";
+    cout << "  }\n";
+    cout << "}" << endl;
 }
 
 // Main function with support for config file
