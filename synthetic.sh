@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# notes - if it is the first time running do:
+# git clone https://github.com/bioinformatics-ua/gto.git
+# cd gto/src/
+# make
+
+echo "If it is the first time running, please clone the gto repository and compile it."
+# run the following commands:
+# git clone https://github.com/bioinformatics-ua/gto.git
+# cd gto/src/
+# make
+
 # create directory if it does not exist
 if [ ! -d "samples/generated" ]; then
     mkdir -p samples/generated
