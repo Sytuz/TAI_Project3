@@ -32,12 +32,12 @@ for i in $(seq 1 100); do
     # create header for this sequence
     echo "@Sequence_$i" >> db_synthetic.txt
 
-    # generate mutated sequence from base sequences
+    # generate mutated sequence and save to temporary file
     cat base_sequences.txt | ../../gto/bin/gto_genomic_dna_mutate -m $mut -d $del -i $ins |
-    head -100 >> db_synthetic.txt
+    head -n 100 > seq_$i.txt
 
-    # add blank line after sequence
-    echo "" >> db_synthetic.txt
+    # add sequence to database file
+    cat seq_$i.txt >> db_synthetic.txt
 
     # add sequence number to the list for later selection
     echo $i >> seq_numbers.txt
@@ -48,19 +48,16 @@ echo "Selecting 20 sequences for meta file..."
 # randomly select 20 sequence numbers
 shuf -n 20 seq_numbers.txt > selected_seq_numbers.txt
 
-# process each selected sequence
+# process each selected sequence - extract only the sequence data without headers
 while read seq_num; do
     echo "Adding sequence $seq_num to meta file"
 
-    # extract sequence header and add _meta suffix
-    grep -A 1 "@Sequence_$seq_num" db_synthetic.txt |
-    sed "s/@Sequence_$seq_num/@Sequence_${seq_num}_meta/" >> meta_synthetic.txt
+    # add the sequence to meta file
+    cat seq_$seq_num.txt >> meta_synthetic.txt
 
-    # add black line
-    echo "" >> meta_synthetic.txt
 done < selected_seq_numbers.txt
 
 # clean up temporary files
-rm seq_numbers.txt selected_seq_numbers.txt base_sequences.txt
+rm base_sequences.txt seq_*.txt
 
 echo "Done! Generated 100 database sequences and selected 20 for meta file."
