@@ -523,6 +523,12 @@ bool parseConfigFile(const string& configFile, map<string, string>& configParams
                 configParams["analyze_symbol_info"] = config["analysis"]["analyze_symbol_info"].get<bool>() ? "true" : "false";
             if (config["analysis"].contains("num_orgs_to_analyze"))
                 configParams["num_orgs_to_analyze"] = to_string(config["analysis"]["num_orgs_to_analyze"].get<int>());
+            if (config["analysis"].contains("analyze_chunks"))
+                configParams["analyze_chunks"] = config["analysis"]["analyze_chunks"].get<bool>() ? "true" : "false";
+            if (config["analysis"].contains("chunk_size"))
+                configParams["chunk_size"] = to_string(config["analysis"]["chunk_size"].get<int>());
+            if (config["analysis"].contains("chunk_overlap"))
+                configParams["chunk_overlap"] = to_string(config["analysis"]["chunk_overlap"].get<int>());
         }
         
         if (config.contains("model")) {
@@ -578,8 +584,127 @@ void printUsage(const string& programName) {
     cout << "  \"output\": {\n";
     cout << "    \"top_n\": 10,\n";
     cout << "    \"use_json\": true\n";
+    cout << "  },\n";
+    cout << "  \"analysis\": {\n";
+    cout << "    \"analyze_symbol_info\": true,\n";
+    cout << "    \"num_orgs_to_analyze\": 3,\n";
+    cout << "    \"analyze_chunks\": true,\n";
+    cout << "    \"chunk_size\": 5000,\n";
+    cout << "    \"chunk_overlap\": 1000\n";
     cout << "  }\n";
     cout << "}" << endl;
+}
+
+// Function to analyze sample chunks and determine best matching organisms
+bool analyzeChunks(const string& sampleFile, const vector<Reference>& references, int k, double alpha,
+                 int chunkSize, int overlap, const string& timestampDir, const string& latestDir) {
+    // Read the sample DNA sequence
+    string sample = readDNASequence(sampleFile);
+    if (sample.empty()) {
+        cerr << "Error: Empty sample" << endl;
+        return false;
+    }
+    
+    // Create chunks with overlap
+    vector<pair<int, string>> chunks;  // position, sequence
+    for (int i = 0; i <= static_cast<int>(sample.length()) - chunkSize; i += (chunkSize - overlap)) {
+        chunks.push_back({i, sample.substr(i, chunkSize)});
+    }
+    
+    cout << "\nDivided sample into " << chunks.size() << " chunks (size: " << chunkSize 
+         << ", overlap: " << overlap << " nucleotides)" << endl;
+    
+    // Compute NRC for each chunk against each reference
+    json resultsJson;
+    resultsJson["k"] = k;
+    resultsJson["alpha"] = alpha;
+    resultsJson["chunk_size"] = chunkSize;
+    resultsJson["overlap"] = overlap;
+    resultsJson["sample_length"] = sample.length();
+    resultsJson["chunk_count"] = chunks.size();
+    
+    json chunksJson = json::array();
+    
+    for (size_t i = 0; i < chunks.size(); ++i) {
+        const auto& chunk = chunks[i];
+        
+        // Train model on this chunk
+        FCMModel chunkModel(k, alpha);
+        chunkModel.learn(chunk.second);
+        chunkModel.lockModel();
+        DNACompressor compressor(chunkModel);
+        
+        json chunkJson;
+        chunkJson["position"] = chunk.first;
+        chunkJson["length"] = chunk.second.length();
+        
+        // Find best matching reference for this chunk
+        vector<pair<string, double>> chunkResults;
+        double bestNrc = numeric_limits<double>::max();
+        string bestReference = "";
+        
+        for (const auto& ref : references) {
+            double nrc = compressor.calculateNRC(ref.sequence);
+            chunkResults.push_back({ref.name, nrc});
+            
+            if (nrc < bestNrc) {
+                bestNrc = nrc;
+                bestReference = ref.name;
+            }
+        }
+        
+        chunkJson["best_match"] = bestReference;
+        chunkJson["best_nrc"] = bestNrc;
+        
+        // Add top 3 matches
+        json matchesJson = json::array();
+        sort(chunkResults.begin(), chunkResults.end(), 
+             [](const auto& a, const auto& b) { return a.second < b.second; });
+        
+        for (size_t j = 0; j < min(size_t(3), chunkResults.size()); ++j) {
+            json matchJson;
+            matchJson["name"] = chunkResults[j].first;
+            matchJson["nrc"] = chunkResults[j].second;
+            matchesJson.push_back(matchJson);
+        }
+        
+        chunkJson["top_matches"] = matchesJson;
+        chunksJson.push_back(chunkJson);
+        
+        // Progress report
+        if (i % 10 == 0 || i == chunks.size() - 1) {
+            cout << "\rProcessed " << i + 1 << " of " << chunks.size() << " chunks (" 
+                 << fixed << setprecision(1) << (100.0 * (i + 1) / chunks.size()) << "%)" << flush;
+        }
+    }
+    cout << endl;
+    
+    resultsJson["chunks"] = chunksJson;
+    
+    // Save to both timestamp and latest directories
+    string timestampFile = timestampDir + "/chunk_analysis.json";
+    string latestFile = latestDir + "/chunk_analysis.json";
+    
+    ofstream fileTimestamp(timestampFile);
+    if (!fileTimestamp) {
+        cerr << "Error: Could not open output file: " << timestampFile << endl;
+        return false;
+    }
+    
+    ofstream fileLatest(latestFile);
+    if (!fileLatest) {
+        cerr << "Error: Could not open output file: " << latestFile << endl;
+        return false;
+    }
+    
+    fileTimestamp << setw(4) << resultsJson << endl;
+    fileLatest << setw(4) << resultsJson << endl;
+    
+    cout << "Chunk analysis saved to: " << endl;
+    cout << "- " << timestampFile << endl;
+    cout << "- " << latestFile << endl;
+    
+    return true;
 }
 
 // Main function with support for config file
@@ -618,6 +743,9 @@ int main(int argc, char** argv) {
     int numOrgsToAnalyze = 3;
     bool runModelSaveLoadTest = false;  // Renamed from testModelSaveLoad to avoid name collision with function
     bool useJsonModel = true;
+    bool shouldAnalyzeChunks = false;  // Renamed from analyzeChunks to avoid conflict with function
+    int chunkSize = 5000;
+    int chunkOverlap = 1000;
     
     if (useConfigFile) {
         // Parse config file
@@ -641,6 +769,9 @@ int main(int argc, char** argv) {
         if (configParams.count("num_orgs_to_analyze")) numOrgsToAnalyze = stoi(configParams["num_orgs_to_analyze"]);
         if (configParams.count("test_model_save_load")) runModelSaveLoadTest = stringToBool(configParams["test_model_save_load"]);
         if (configParams.count("use_json_model")) useJsonModel = stringToBool(configParams["use_json_model"]);
+        if (configParams.count("analyze_chunks")) shouldAnalyzeChunks = stringToBool(configParams["analyze_chunks"]);
+        if (configParams.count("chunk_size")) chunkSize = stoi(configParams["chunk_size"]);
+        if (configParams.count("chunk_overlap")) chunkOverlap = stoi(configParams["chunk_overlap"]);
         
         // Validate paths
         if (!filesystem::exists(sampleFile)) {
@@ -918,6 +1049,38 @@ int main(int argc, char** argv) {
         string modelOutfile = "test_model";
         bool jsonModel = useConfigFile ? useJsonModel : askYesNo("Use JSON format for model? (No for binary)");
         testModelSaveLoad(sampleFile, modelOutfile, jsonModel);
+    }
+    
+    // Ask if user wants to analyze chunks
+    if (shouldAnalyzeChunks || (!useConfigFile && askYesNo("\nWould you like to analyze sample chunks?"))) {
+        // Get best k and alpha values (simplistic approach - use the first test's values)
+        int bestK = allResults[0].first.first;
+        double bestAlpha = allResults[0].first.second;
+        
+        // Find best test result based on top match's NRC
+        double bestNrc = std::numeric_limits<double>::max();
+        size_t bestTestIndex = 0;
+        
+        for (size_t i = 0; i < allResults.size(); i++) {
+            if (!allResults[i].second.first.empty() && allResults[i].second.first[0].nrc < bestNrc) {
+                bestNrc = allResults[i].second.first[0].nrc;
+                bestTestIndex = i;
+                bestK = allResults[i].first.first;
+                bestAlpha = allResults[i].first.second;
+            }
+        }
+        
+        cout << "\nUsing best performing parameters: k=" << bestK << ", alpha=" << bestAlpha << endl;
+        
+        // Determine chunk size and overlap
+        if (!useConfigFile) {
+            chunkSize = getIntInput("Enter chunk size: ", 100, 100000);
+            chunkOverlap = getIntInput("Enter chunk overlap: ", 0, chunkSize - 1);
+        }
+        
+        // Perform chunk analysis
+        analyzeChunks(sampleFile, allResults[bestTestIndex].second.first, bestK, bestAlpha, 
+                      chunkSize, chunkOverlap, timestampDir, latestDir);
     }
     
     cout << "\nTesting complete!" << endl;

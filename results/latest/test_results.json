@@ -1,7 +1,7 @@
 [
     {
         "alpha": 0.01,
-        "execTime_ms": 20971.152886,
+        "execTime_ms": 21304.692594,
         "k": 10,
         "references": [
             {
@@ -1681,7 +1681,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 18074.955287,
+        "execTime_ms": 19691.852697,
         "k": 10,
         "references": [
             {
@@ -3361,7 +3361,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 18048.191446,
+        "execTime_ms": 18241.321043,
         "k": 10,
         "references": [
             {
@@ -5041,7 +5041,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 18676.179471,
+        "execTime_ms": 19300.60234,
         "k": 10,
         "references": [
             {
@@ -6721,7 +6721,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 18914.013114,
+        "execTime_ms": 19127.313328,
         "k": 10,
         "references": [
             {
@@ -8401,7 +8401,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 21203.158805,
+        "execTime_ms": 21798.141535,
         "k": 11,
         "references": [
             {
@@ -10081,7 +10081,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 20362.922477,
+        "execTime_ms": 21306.926066,
         "k": 11,
         "references": [
             {
@@ -11761,7 +11761,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 20549.200006,
+        "execTime_ms": 20580.187547,
         "k": 11,
         "references": [
             {
@@ -13441,7 +13441,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 20092.909317,
+        "execTime_ms": 19910.494436,
         "k": 11,
         "references": [
             {
@@ -15121,7 +15121,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 19744.533459,
+        "execTime_ms": 20787.308967,
         "k": 11,
         "references": [
             {
@@ -16801,7 +16801,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 23679.914854,
+        "execTime_ms": 22526.076753,
         "k": 12,
         "references": [
             {
@@ -18481,7 +18481,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 23868.676112,
+        "execTime_ms": 22440.786003,
         "k": 12,
         "references": [
             {
@@ -20161,7 +20161,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 24022.635075,
+        "execTime_ms": 22572.949579,
         "k": 12,
         "references": [
             {
@@ -21841,7 +21841,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 23126.303571,
+        "execTime_ms": 22801.263871,
         "k": 12,
         "references": [
             {
@@ -23521,7 +23521,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 22895.44405,
+        "execTime_ms": 22962.846824,
         "k": 12,
         "references": [
             {
@@ -25201,7 +25201,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 23394.666216,
+        "execTime_ms": 22907.260355,
         "k": 13,
         "references": [
             {
@@ -26881,7 +26881,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 22839.788642,
+        "execTime_ms": 23322.744413,
         "k": 13,
         "references": [
             {
@@ -28561,7 +28561,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 22864.537811,
+        "execTime_ms": 22697.182933,
         "k": 13,
         "references": [
             {
@@ -30241,7 +30241,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 23526.712454,
+        "execTime_ms": 23487.053378,
         "k": 13,
         "references": [
             {
@@ -31921,7 +31921,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 22892.414921,
+        "execTime_ms": 22817.398407,
         "k": 13,
         "references": [
             {
@@ -33601,7 +33601,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 23292.151191,
+        "execTime_ms": 23925.647434,
         "k": 14,
         "references": [
             {
@@ -35281,7 +35281,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 23522.275388,
+        "execTime_ms": 23266.357817,
         "k": 14,
         "references": [
             {
@@ -36961,7 +36961,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 23951.688742,
+        "execTime_ms": 23464.319509,
         "k": 14,
         "references": [
             {
@@ -38641,7 +38641,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 24095.783015,
+        "execTime_ms": 23406.030833,
         "k": 14,
         "references": [
             {
@@ -40321,7 +40321,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 23879.085795,
+        "execTime_ms": 23422.077173,
         "k": 14,
         "references": [
             {
@@ -42001,7 +42001,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 25681.563924,
+        "execTime_ms": 23372.162779,
         "k": 15,
         "references": [
             {
@@ -43681,7 +43681,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 25660.108682,
+        "execTime_ms": 24236.284706,
         "k": 15,
         "references": [
             {
@@ -45361,7 +45361,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 24348.194215,
+        "execTime_ms": 23913.718383,
         "k": 15,
         "references": [
             {
@@ -47041,7 +47041,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 24236.015729,
+        "execTime_ms": 24549.324868,
         "k": 15,
         "references": [
             {
@@ -48721,7 +48721,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 23565.898365,
+        "execTime_ms": 24364.543598,
         "k": 15,
         "references": [
             {

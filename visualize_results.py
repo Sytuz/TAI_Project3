@@ -585,6 +585,11 @@ def main():
         plot_parameter_influence(df, output_dir)
         plot_nrc_boxplot_by_k(df, output_dir)
         
+        # Add chunk analysis visualization if available
+        chunk_data_file = os.path.join(input_folder, 'chunk_analysis.json')
+        if os.path.exists(chunk_data_file):
+            plot_chunk_analysis(chunk_data_file, output_dir)
+
         # Generate summary statistics
         top_organism = Counter(df[df['rank'] == 1]['name']).most_common(1)[0][0]
         best_nrc = df[df['rank'] == 1]['nrc'].min()
@@ -605,6 +610,142 @@ def main():
     print(f"Best parameters: k={best_row['k']}, alpha={best_row['alpha']}")
     
     print(f"\nVisualization complete. Results saved to both directories.")
+
+def plot_chunk_analysis(chunk_file, output_dir):
+    """
+    Create visualization of best matching organisms across sequence positions 
+    from chunk analysis data.
+    """
+    print(f"Creating chunk analysis visualization...")
+    
+    # Load chunk analysis data
+    with open(chunk_file, 'r') as f:
+        chunk_data = json.load(f)
+    
+    # Extract chunks
+    chunks = chunk_data.get('chunks', [])
+    if not chunks:
+        print("No chunk data found.")
+        return
+    
+    # Get unique organisms
+    organisms = sorted(list(set(chunk['best_match'] for chunk in chunks)))
+    organism_mapping = {org: i for i, org in enumerate(organisms)}
+    
+    # Create positions and values for plotting
+    positions = []
+    end_positions = []
+    org_indices = []
+    nrc_values = []
+    
+    for chunk in chunks:
+        positions.append(chunk['position'])
+        end_positions.append(chunk['position'] + chunk['length'])
+        org_indices.append(organism_mapping[chunk['best_match']])
+        nrc_values.append(chunk['best_nrc'])
+    
+    # Create plot
+    plt.figure(figsize=(15, 8))
+    
+    # Create colormap with distinct colors
+    cmap = plt.cm.get_cmap('tab20', len(organisms))
+    
+    # Plot each chunk as a horizontal line
+    for i in range(len(positions)):
+        plt.hlines(
+            y=org_indices[i], 
+            xmin=positions[i], 
+            xmax=end_positions[i],
+            linewidth=6, 
+            color=cmap(org_indices[i]),
+            alpha=0.8
+        )
+    
+    # Add color bar to show NRC values
+    scatter = plt.scatter(
+        positions, 
+        org_indices, 
+        c=nrc_values, 
+        cmap='viridis', 
+        s=1,  # Small point size
+        alpha=0  # Invisible points, just for the colorbar
+    )
+    cbar = plt.colorbar(scatter)
+    cbar.set_label('NRC Score')
+    
+    # Format plot
+    plt.yticks(range(len(organisms)), organisms, fontsize=8)
+    plt.xlabel('Sequence Position (nucleotides)')
+    plt.ylabel('Best Matching Organism')
+    plt.title('Best Matching Organisms Across Sequence Positions')
+    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+    
+    # Compress long organism names
+    fig = plt.gcf()
+    fig.canvas.draw()
+    ylabels = [item.get_text() for item in plt.gca().get_yticklabels()]
+    compressed_labels = []
+    for label in ylabels:
+        if len(label) > 50:
+            parts = label.split(' ')
+            if len(parts) > 2:
+                compressed_labels.append(f"{parts[0]} {parts[1]}...")
+            else:
+                compressed_labels.append(label[:47] + "...")
+        else:
+            compressed_labels.append(label)
+    plt.yticks(range(len(organisms)), compressed_labels, fontsize=8)
+    
+    # Add chunk size and overlap information in the corner
+    plt.annotate(
+        f"Chunk size: {chunk_data.get('chunk_size', 'N/A')}, "
+        f"Overlap: {chunk_data.get('overlap', 'N/A')} nucleotides", 
+        xy=(0.02, 0.02), 
+        xycoords='axes fraction', 
+        fontsize=8, 
+        bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8)
+    )
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save figure
+    output_file = os.path.join(output_dir, 'chunk_analysis_visualization.png')
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    
+    # Create a higher-resolution version for detailed viewing
+    plt.figure(figsize=(20, 10))
+    for i in range(len(positions)):
+        plt.hlines(
+            y=org_indices[i], 
+            xmin=positions[i], 
+            xmax=end_positions[i],
+            linewidth=8, 
+            color=cmap(org_indices[i]),
+            alpha=0.8
+        )
+    scatter = plt.scatter(positions, org_indices, c=nrc_values, cmap='viridis', s=1, alpha=0)
+    cbar = plt.colorbar(scatter)
+    cbar.set_label('NRC Score')
+    plt.yticks(range(len(organisms)), compressed_labels, fontsize=8)
+    plt.xlabel('Sequence Position (nucleotides)')
+    plt.ylabel('Best Matching Organism')
+    plt.title('Best Matching Organisms Across Sequence Positions (High Resolution)')
+    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+    plt.annotate(
+        f"Chunk size: {chunk_data.get('chunk_size', 'N/A')}, "
+        f"Overlap: {chunk_data.get('overlap', 'N/A')} nucleotides", 
+        xy=(0.02, 0.02), 
+        xycoords='axes fraction', 
+        fontsize=8, 
+        bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8)
+    )
+    plt.tight_layout()
+    output_file_hires = os.path.join(output_dir, 'chunk_analysis_visualization_hires.png')
+    plt.savefig(output_file_hires, dpi=600, bbox_inches='tight')
+    
+    plt.close('all')
+    print(f"Chunk analysis visualizations saved to {output_dir}")
 
 if __name__ == "__main__":
     main()
