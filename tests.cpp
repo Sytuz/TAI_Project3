@@ -755,8 +755,8 @@ int main(int argc, char** argv) {
         cout << "Running synthetic data evaluation..." << endl;
 
         // Default k and alpha values for synthetic data evaluation
-        int k = 5;
-        double alpha = 0.1;
+        int k = 13;
+        double alpha = 0.01;
 
         // Ask for k and alpha values if not in config mode
         if (!useConfigFile) {
@@ -774,6 +774,8 @@ int main(int argc, char** argv) {
 
         // Run the evaluation
         evaluateSyntheticData(syntheticSampleFile, syntheticDbFile, syntheticGroundTruthFile, k, alpha, syntheticThreshold);
+
+        cout << "\nTesting complete!" << endl;
         return 0;
     }
 
