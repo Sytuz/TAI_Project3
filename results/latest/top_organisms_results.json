@@ -1,7 +1,7 @@
 [
     {
         "alpha": 0.01,
-        "execTime_ms": 21304.692594,
+        "execTime_ms": 20264.782548,
         "k": 10,
         "references": [
             {
@@ -98,7 +98,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 19691.852697,
+        "execTime_ms": 18558.960517,
         "k": 10,
         "references": [
             {
@@ -195,7 +195,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 18241.321043,
+        "execTime_ms": 18658.123007,
         "k": 10,
         "references": [
             {
@@ -292,7 +292,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 19300.60234,
+        "execTime_ms": 14384.448429,
         "k": 10,
         "references": [
             {
@@ -389,7 +389,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 19127.313328,
+        "execTime_ms": 9468.155175,
         "k": 10,
         "references": [
             {
@@ -486,7 +486,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 21798.141535,
+        "execTime_ms": 10681.03075,
         "k": 11,
         "references": [
             {
@@ -583,7 +583,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 21306.926066,
+        "execTime_ms": 10606.411755,
         "k": 11,
         "references": [
             {
@@ -680,7 +680,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 20580.187547,
+        "execTime_ms": 10740.931953,
         "k": 11,
         "references": [
             {
@@ -777,7 +777,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 19910.494436,
+        "execTime_ms": 10998.317612,
         "k": 11,
         "references": [
             {
@@ -874,7 +874,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 20787.308967,
+        "execTime_ms": 10901.98984,
         "k": 11,
         "references": [
             {
@@ -971,7 +971,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 22526.076753,
+        "execTime_ms": 11895.552552,
         "k": 12,
         "references": [
             {
@@ -1068,7 +1068,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 22440.786003,
+        "execTime_ms": 11779.756106,
         "k": 12,
         "references": [
             {
@@ -1165,7 +1165,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 22572.949579,
+        "execTime_ms": 11823.725887,
         "k": 12,
         "references": [
             {
@@ -1262,7 +1262,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 22801.263871,
+        "execTime_ms": 12415.244719,
         "k": 12,
         "references": [
             {
@@ -1359,7 +1359,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 22962.846824,
+        "execTime_ms": 11870.308037,
         "k": 12,
         "references": [
             {
@@ -1456,7 +1456,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 22907.260355,
+        "execTime_ms": 11868.614798,
         "k": 13,
         "references": [
             {
@@ -1553,7 +1553,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 23322.744413,
+        "execTime_ms": 12445.49009,
         "k": 13,
         "references": [
             {
@@ -1650,7 +1650,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 22697.182933,
+        "execTime_ms": 11978.101306,
         "k": 13,
         "references": [
             {
@@ -1747,7 +1747,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 23487.053378,
+        "execTime_ms": 12345.173047,
         "k": 13,
         "references": [
             {
@@ -1844,7 +1844,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 22817.398407,
+        "execTime_ms": 12643.996165,
         "k": 13,
         "references": [
             {
@@ -1941,7 +1941,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 23925.647434,
+        "execTime_ms": 14971.119761,
         "k": 14,
         "references": [
             {
@@ -2038,7 +2038,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 23266.357817,
+        "execTime_ms": 15949.504078,
         "k": 14,
         "references": [
             {
@@ -2135,7 +2135,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 23464.319509,
+        "execTime_ms": 15375.633692,
         "k": 14,
         "references": [
             {
@@ -2232,7 +2232,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 23406.030833,
+        "execTime_ms": 14571.399059,
         "k": 14,
         "references": [
             {
@@ -2329,7 +2329,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 23422.077173,
+        "execTime_ms": 14028.204667,
         "k": 14,
         "references": [
             {
@@ -2426,7 +2426,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 23372.162779,
+        "execTime_ms": 14125.823992,
         "k": 15,
         "references": [
             {
@@ -2523,7 +2523,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 24236.284706,
+        "execTime_ms": 14292.268384,
         "k": 15,
         "references": [
             {
@@ -2620,7 +2620,7 @@
     },
     {
         "alpha": 0.03,
-        "execTime_ms": 23913.718383,
+        "execTime_ms": 14077.137548,
         "k": 15,
         "references": [
             {
@@ -2717,7 +2717,7 @@
     },
     {
         "alpha": 0.04,
-        "execTime_ms": 24549.324868,
+        "execTime_ms": 13298.783442,
         "k": 15,
         "references": [
             {
@@ -2814,7 +2814,7 @@
     },
     {
         "alpha": 0.05,
-        "execTime_ms": 24364.543598,
+        "execTime_ms": 13487.974253,
         "k": 15,
         "references": [
             {
@@ -2905,6 +2905,2431 @@
                 "kld": 2294.0,
                 "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
                 "nrc": 0.9870912220309811,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 15167.69558,
+        "k": 16,
+        "references": [
+            {
+                "kld": 717.0566367784933,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.023236222883035826,
+                "rank": 1
+            },
+            {
+                "kld": 6824.576650177733,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.0277230644759418,
+                "rank": 2
+            },
+            {
+                "kld": 1554.5461753234438,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.028255965096725334,
+                "rank": 3
+            },
+            {
+                "kld": 264.3369098764281,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.10658746365985058,
+                "rank": 4
+            },
+            {
+                "kld": 284.7703441871264,
+                "name": "Super MUL 720\r",
+                "nrc": 0.19775718346328192,
+                "rank": 5
+            },
+            {
+                "kld": 22519.723694828466,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4087622170385172,
+                "rank": 6
+            },
+            {
+                "kld": 1434.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9781718963165075,
+                "rank": 7
+            },
+            {
+                "kld": 1620.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9806295399515739,
+                "rank": 8
+            },
+            {
+                "kld": 1934.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9837232960325534,
+                "rank": 9
+            },
+            {
+                "kld": 2160.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9854014598540146,
+                "rank": 10
+            },
+            {
+                "kld": 2204.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9856887298747764,
+                "rank": 11
+            },
+            {
+                "kld": 2214.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9857524487978628,
+                "rank": 12
+            },
+            {
+                "kld": 2242.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859278803869833,
+                "rank": 13
+            },
+            {
+                "kld": 2292.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9862306368330465,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9864636209813875,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 14668.770129,
+        "k": 16,
+        "references": [
+            {
+                "kld": 906.6125315764345,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.02929034100751321,
+                "rank": 1
+            },
+            {
+                "kld": 8281.011992099178,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03355806961075005,
+                "rank": 2
+            },
+            {
+                "kld": 1884.102783433051,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.034236597161425776,
+                "rank": 3
+            },
+            {
+                "kld": 277.4441156916283,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11187262729501252,
+                "rank": 4
+            },
+            {
+                "kld": 291.46310675833024,
+                "name": "Super MUL 720\r",
+                "nrc": 0.202404935248841,
+                "rank": 5
+            },
+            {
+                "kld": 22722.750130228087,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.41244672576438846,
+                "rank": 6
+            },
+            {
+                "kld": 1434.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9781718963165075,
+                "rank": 7
+            },
+            {
+                "kld": 1620.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9806295399515739,
+                "rank": 8
+            },
+            {
+                "kld": 1934.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9837232960325534,
+                "rank": 9
+            },
+            {
+                "kld": 2160.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9854014598540146,
+                "rank": 10
+            },
+            {
+                "kld": 2204.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9856887298747764,
+                "rank": 11
+            },
+            {
+                "kld": 2214.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9857524487978628,
+                "rank": 12
+            },
+            {
+                "kld": 2242.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859278803869833,
+                "rank": 13
+            },
+            {
+                "kld": 2292.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9862306368330465,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9864636209813875,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.03,
+        "execTime_ms": 14980.098802,
+        "k": 16,
+        "references": [
+            {
+                "kld": 1092.4638347582502,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.035226153132631145,
+                "rank": 1
+            },
+            {
+                "kld": 9708.307606682172,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03927639575000651,
+                "rank": 2
+            },
+            {
+                "kld": 2207.4078111728973,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.040103781665231104,
+                "rank": 3
+            },
+            {
+                "kld": 290.29718414843114,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11705531618888651,
+                "rank": 4
+            },
+            {
+                "kld": 298.02203420563984,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20695974597613717,
+                "rank": 5
+            },
+            {
+                "kld": 22921.84893395976,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.41605995926452155,
+                "rank": 6
+            },
+            {
+                "kld": 1434.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9781718963165075,
+                "rank": 7
+            },
+            {
+                "kld": 1620.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9806295399515739,
+                "rank": 8
+            },
+            {
+                "kld": 1934.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9837232960325534,
+                "rank": 9
+            },
+            {
+                "kld": 2160.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9854014598540146,
+                "rank": 10
+            },
+            {
+                "kld": 2204.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9856887298747764,
+                "rank": 11
+            },
+            {
+                "kld": 2214.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9857524487978628,
+                "rank": 12
+            },
+            {
+                "kld": 2242.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859278803869833,
+                "rank": 13
+            },
+            {
+                "kld": 2292.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9862306368330465,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9864636209813875,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.04,
+        "execTime_ms": 17075.285711,
+        "k": 16,
+        "references": [
+            {
+                "kld": 1274.7753649764154,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.04104892245876555,
+                "rank": 1
+            },
+            {
+                "kld": 11107.828981898743,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.04488351000407364,
+                "rank": 2
+            },
+            {
+                "kld": 2524.7265445463577,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.045862332710797774,
+                "rank": 3
+            },
+            {
+                "kld": 302.9074124773427,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.12214008567634825,
+                "rank": 4
+            },
+            {
+                "kld": 304.45361384338213,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21142612072457184,
+                "rank": 5
+            },
+            {
+                "kld": 23117.19098575236,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4196050184656364,
+                "rank": 6
+            },
+            {
+                "kld": 1434.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9781718963165075,
+                "rank": 7
+            },
+            {
+                "kld": 1620.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9806295399515739,
+                "rank": 8
+            },
+            {
+                "kld": 1934.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9837232960325534,
+                "rank": 9
+            },
+            {
+                "kld": 2160.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9854014598540146,
+                "rank": 10
+            },
+            {
+                "kld": 2204.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9856887298747764,
+                "rank": 11
+            },
+            {
+                "kld": 2214.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9857524487978628,
+                "rank": 12
+            },
+            {
+                "kld": 2242.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859278803869833,
+                "rank": 13
+            },
+            {
+                "kld": 2292.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9862306368330465,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9864636209813875,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.05,
+        "execTime_ms": 16380.651098,
+        "k": 16,
+        "references": [
+            {
+                "kld": 1453.698803749087,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.04676349267711468,
+                "rank": 1
+            },
+            {
+                "kld": 12480.828146082755,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.05038442529665764,
+                "rank": 2
+            },
+            {
+                "kld": 2836.3040068619716,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.051516696707916566,
+                "rank": 3
+            },
+            {
+                "kld": 315.285203182937,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.12713113031570455,
+                "rank": 4
+            },
+            {
+                "kld": 310.7637736802924,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21580817616687026,
+                "rank": 5
+            },
+            {
+                "kld": 23308.933822580042,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4230847621766082,
+                "rank": 6
+            },
+            {
+                "kld": 1434.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9781718963165075,
+                "rank": 7
+            },
+            {
+                "kld": 1620.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9806295399515739,
+                "rank": 8
+            },
+            {
+                "kld": 1934.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9837232960325534,
+                "rank": 9
+            },
+            {
+                "kld": 2160.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9854014598540146,
+                "rank": 10
+            },
+            {
+                "kld": 2204.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9856887298747764,
+                "rank": 11
+            },
+            {
+                "kld": 2214.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9857524487978628,
+                "rank": 12
+            },
+            {
+                "kld": 2242.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9859278803869833,
+                "rank": 13
+            },
+            {
+                "kld": 2292.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9862306368330465,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9864636209813875,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 16045.196067,
+        "k": 17,
+        "references": [
+            {
+                "kld": 719.722053945338,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.023184740152458676,
+                "rank": 1
+            },
+            {
+                "kld": 6976.290342912454,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.02828516532835869,
+                "rank": 2
+            },
+            {
+                "kld": 1570.720935412999,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.028549374146360152,
+                "rank": 3
+            },
+            {
+                "kld": 264.9345216923698,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.10682843616627867,
+                "rank": 4
+            },
+            {
+                "kld": 284.8731241446886,
+                "name": "Super MUL 720\r",
+                "nrc": 0.19782855843381084,
+                "rank": 5
+            },
+            {
+                "kld": 23500.206076972754,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4265003257951697,
+                "rank": 6
+            },
+            {
+                "kld": 1432.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9768076398362893,
+                "rank": 7
+            },
+            {
+                "kld": 1618.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9794188861985472,
+                "rank": 8
+            },
+            {
+                "kld": 1932.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.982706002034588,
+                "rank": 9
+            },
+            {
+                "kld": 2158.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9844890510948905,
+                "rank": 10
+            },
+            {
+                "kld": 2202.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9847942754919499,
+                "rank": 11
+            },
+            {
+                "kld": 2212.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9848619768477292,
+                "rank": 12
+            },
+            {
+                "kld": 2240.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9850483729111698,
+                "rank": 13
+            },
+            {
+                "kld": 2290.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9853700516351118,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9856175972927242,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 15059.991439,
+        "k": 17,
+        "references": [
+            {
+                "kld": 911.4405616427663,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.029307098535816055,
+                "rank": 1
+            },
+            {
+                "kld": 8447.998512794678,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03418120550508344,
+                "rank": 2
+            },
+            {
+                "kld": 1903.7102072495782,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.03459218721457971,
+                "rank": 3
+            },
+            {
+                "kld": 278.1633175405938,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11216262804056291,
+                "rank": 4
+            },
+            {
+                "kld": 291.62523644299677,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2025175253076372,
+                "rank": 5
+            },
+            {
+                "kld": 23699.485030558684,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4301167185416395,
+                "rank": 6
+            },
+            {
+                "kld": 1432.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9768076398362893,
+                "rank": 7
+            },
+            {
+                "kld": 1618.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9794188861985472,
+                "rank": 8
+            },
+            {
+                "kld": 1932.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.982706002034588,
+                "rank": 9
+            },
+            {
+                "kld": 2158.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9844890510948905,
+                "rank": 10
+            },
+            {
+                "kld": 2202.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9847942754919499,
+                "rank": 11
+            },
+            {
+                "kld": 2212.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9848619768477292,
+                "rank": 12
+            },
+            {
+                "kld": 2240.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9850483729111698,
+                "rank": 13
+            },
+            {
+                "kld": 2290.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9853700516351118,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9856175972927242,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.03,
+        "execTime_ms": 15280.353165,
+        "k": 17,
+        "references": [
+            {
+                "kld": 1099.370165850841,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.035308465227532976,
+                "rank": 1
+            },
+            {
+                "kld": 9889.98511516692,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.039958238337954824,
+                "rank": 2
+            },
+            {
+                "kld": 2230.3088978450837,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.040519031076931854,
+                "rank": 3
+            },
+            {
+                "kld": 291.13252494891003,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.1173921471568209,
+                "rank": 4
+            },
+            {
+                "kld": 298.2409093858809,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20711174262908244,
+                "rank": 5
+            },
+            {
+                "kld": 23894.859763522778,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4336622616811789,
+                "rank": 6
+            },
+            {
+                "kld": 1432.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9768076398362893,
+                "rank": 7
+            },
+            {
+                "kld": 1618.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9794188861985472,
+                "rank": 8
+            },
+            {
+                "kld": 1932.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.982706002034588,
+                "rank": 9
+            },
+            {
+                "kld": 2158.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9844890510948905,
+                "rank": 10
+            },
+            {
+                "kld": 2202.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9847942754919499,
+                "rank": 11
+            },
+            {
+                "kld": 2212.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9848619768477292,
+                "rank": 12
+            },
+            {
+                "kld": 2240.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9850483729111698,
+                "rank": 13
+            },
+            {
+                "kld": 2290.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9853700516351118,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9856175972927242,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.04,
+        "execTime_ms": 14877.658685,
+        "k": 17,
+        "references": [
+            {
+                "kld": 1283.6808343946104,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.04119426776843587,
+                "rank": 1
+            },
+            {
+                "kld": 11303.650751922974,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.04562187145424928,
+                "rank": 2
+            },
+            {
+                "kld": 2550.790937473569,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.04633487669516891,
+                "rank": 3
+            },
+            {
+                "kld": 303.8537960574717,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.12252169195865842,
+                "rank": 4
+            },
+            {
+                "kld": 304.7267969301021,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2116158312014608,
+                "rank": 5
+            },
+            {
+                "kld": 24086.5019481503,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4371400705157543,
+                "rank": 6
+            },
+            {
+                "kld": 1432.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9768076398362893,
+                "rank": 7
+            },
+            {
+                "kld": 1618.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9794188861985472,
+                "rank": 8
+            },
+            {
+                "kld": 1932.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.982706002034588,
+                "rank": 9
+            },
+            {
+                "kld": 2158.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9844890510948905,
+                "rank": 10
+            },
+            {
+                "kld": 2202.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9847942754919499,
+                "rank": 11
+            },
+            {
+                "kld": 2212.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9848619768477292,
+                "rank": 12
+            },
+            {
+                "kld": 2240.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9850483729111698,
+                "rank": 13
+            },
+            {
+                "kld": 2290.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9853700516351118,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9856175972927242,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.05,
+        "execTime_ms": 14768.630103,
+        "k": 17,
+        "references": [
+            {
+                "kld": 1464.5289078399937,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.04696949853901609,
+                "rank": 1
+            },
+            {
+                "kld": 12690.27929328162,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.05117724527423422,
+                "rank": 2
+            },
+            {
+                "kld": 2865.4091653384153,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.052044312300713054,
+                "rank": 3
+            },
+            {
+                "kld": 316.33785453439697,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.12755558650580856,
+                "rank": 4
+            },
+            {
+                "kld": 311.08897811336544,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2160340125787265,
+                "rank": 5
+            },
+            {
+                "kld": 24274.569744774933,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.44055301515405093,
+                "rank": 6
+            },
+            {
+                "kld": 1432.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9768076398362893,
+                "rank": 7
+            },
+            {
+                "kld": 1618.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9794188861985472,
+                "rank": 8
+            },
+            {
+                "kld": 1932.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.982706002034588,
+                "rank": 9
+            },
+            {
+                "kld": 2158.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9844890510948905,
+                "rank": 10
+            },
+            {
+                "kld": 2202.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9847942754919499,
+                "rank": 11
+            },
+            {
+                "kld": 2212.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9848619768477292,
+                "rank": 12
+            },
+            {
+                "kld": 2240.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9850483729111698,
+                "rank": 13
+            },
+            {
+                "kld": 2290.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9853700516351118,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9856175972927242,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 14648.87707,
+        "k": 18,
+        "references": [
+            {
+                "kld": 729.9357566682125,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.0233087162047564,
+                "rank": 1
+            },
+            {
+                "kld": 7146.157757968529,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.02891645782955243,
+                "rank": 2
+            },
+            {
+                "kld": 1595.2048746668088,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.028993568576250187,
+                "rank": 3
+            },
+            {
+                "kld": 265.15770424374614,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.10691842913054338,
+                "rank": 4
+            },
+            {
+                "kld": 284.99446019176264,
+                "name": "Super MUL 720\r",
+                "nrc": 0.1979128195776127,
+                "rank": 5
+            },
+            {
+                "kld": 24458.192362983857,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4438846419315401,
+                "rank": 6
+            },
+            {
+                "kld": 1430.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.975443383356071,
+                "rank": 7
+            },
+            {
+                "kld": 1616.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9782082324455206,
+                "rank": 8
+            },
+            {
+                "kld": 1930.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9816887080366226,
+                "rank": 9
+            },
+            {
+                "kld": 2156.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9835766423357665,
+                "rank": 10
+            },
+            {
+                "kld": 2200.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9838998211091234,
+                "rank": 11
+            },
+            {
+                "kld": 2210.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9839715048975958,
+                "rank": 12
+            },
+            {
+                "kld": 2238.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9841688654353562,
+                "rank": 13
+            },
+            {
+                "kld": 2288.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9845094664371773,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9847715736040609,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 15272.85005,
+        "k": 18,
+        "references": [
+            {
+                "kld": 923.7250263895968,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.029496903384518047,
+                "rank": 1
+            },
+            {
+                "kld": 8633.057751089029,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03487327177303703,
+                "rank": 2
+            },
+            {
+                "kld": 1931.6168202344663,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.035098381361087894,
+                "rank": 3
+            },
+            {
+                "kld": 278.52573790856553,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11230876528571308,
+                "rank": 4
+            },
+            {
+                "kld": 291.80621713899205,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20264320634652286,
+                "rank": 5
+            },
+            {
+                "kld": 24653.762466837998,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4474336197489844,
+                "rank": 6
+            },
+            {
+                "kld": 1430.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.975443383356071,
+                "rank": 7
+            },
+            {
+                "kld": 1616.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9782082324455206,
+                "rank": 8
+            },
+            {
+                "kld": 1930.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9816887080366226,
+                "rank": 9
+            },
+            {
+                "kld": 2156.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9835766423357665,
+                "rank": 10
+            },
+            {
+                "kld": 2200.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9838998211091234,
+                "rank": 11
+            },
+            {
+                "kld": 2210.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9839715048975958,
+                "rank": 12
+            },
+            {
+                "kld": 2238.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9841688654353562,
+                "rank": 13
+            },
+            {
+                "kld": 2288.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9845094664371773,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9847715736040609,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.03,
+        "execTime_ms": 15599.014334,
+        "k": 18,
+        "references": [
+            {
+                "kld": 1113.6426362637253,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.0355614585599592,
+                "rank": 1
+            },
+            {
+                "kld": 10089.651368358445,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.040708737728581856,
+                "rank": 2
+            },
+            {
+                "kld": 2261.4969029750073,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.04108466190731256,
+                "rank": 3
+            },
+            {
+                "kld": 291.6275649286401,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11759176005187387,
+                "rank": 4
+            },
+            {
+                "kld": 298.47892124443314,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20727702864196615,
+                "rank": 5
+            },
+            {
+                "kld": 24845.451098390393,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.45091216155190894,
+                "rank": 6
+            },
+            {
+                "kld": 1430.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.975443383356071,
+                "rank": 7
+            },
+            {
+                "kld": 1616.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9782082324455206,
+                "rank": 8
+            },
+            {
+                "kld": 1930.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9816887080366226,
+                "rank": 9
+            },
+            {
+                "kld": 2156.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9835766423357665,
+                "rank": 10
+            },
+            {
+                "kld": 2200.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9838998211091234,
+                "rank": 11
+            },
+            {
+                "kld": 2210.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9839715048975958,
+                "rank": 12
+            },
+            {
+                "kld": 2238.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9841688654353562,
+                "rank": 13
+            },
+            {
+                "kld": 2288.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9845094664371773,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9847715736040609,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.04,
+        "execTime_ms": 14854.22548,
+        "k": 18,
+        "references": [
+            {
+                "kld": 1299.8636593620652,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.0415079722621685,
+                "rank": 1
+            },
+            {
+                "kld": 11517.374678363594,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.046428605296095146,
+                "rank": 2
+            },
+            {
+                "kld": 2585.1279305573703,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.04695754226623869,
+                "rank": 3
+            },
+            {
+                "kld": 304.4752983102607,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.12277229770575035,
+                "rank": 4
+            },
+            {
+                "kld": 305.019393546694,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21181902329631666,
+                "rank": 5
+            },
+            {
+                "kld": 25033.43079819605,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.45432339839150354,
+                "rank": 6
+            },
+            {
+                "kld": 1430.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.975443383356071,
+                "rank": 7
+            },
+            {
+                "kld": 1616.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9782082324455206,
+                "rank": 8
+            },
+            {
+                "kld": 1930.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9816887080366226,
+                "rank": 9
+            },
+            {
+                "kld": 2156.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9835766423357665,
+                "rank": 10
+            },
+            {
+                "kld": 2200.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9838998211091234,
+                "rank": 11
+            },
+            {
+                "kld": 2210.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9839715048975958,
+                "rank": 12
+            },
+            {
+                "kld": 2238.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9841688654353562,
+                "rank": 13
+            },
+            {
+                "kld": 2288.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9845094664371773,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9847715736040609,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.05,
+        "execTime_ms": 14950.374184,
+        "k": 18,
+        "references": [
+            {
+                "kld": 1482.549054174638,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.04734158430753093,
+                "rank": 1
+            },
+            {
+                "kld": 12917.543690414243,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.0520381435436982,
+                "rank": 2
+            },
+            {
+                "kld": 2902.770768074188,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.05272175630165641,
+                "rank": 3
+            },
+            {
+                "kld": 317.08007635821775,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.1278548694992852,
+                "rank": 4
+            },
+            {
+                "kld": 311.43386435802483,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21627351691529612,
+                "rank": 5
+            },
+            {
+                "kld": 25217.860418444514,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.45767021291926047,
+                "rank": 6
+            },
+            {
+                "kld": 1430.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.975443383356071,
+                "rank": 7
+            },
+            {
+                "kld": 1616.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9782082324455206,
+                "rank": 8
+            },
+            {
+                "kld": 1930.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9816887080366226,
+                "rank": 9
+            },
+            {
+                "kld": 2156.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9835766423357665,
+                "rank": 10
+            },
+            {
+                "kld": 2200.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9838998211091234,
+                "rank": 11
+            },
+            {
+                "kld": 2210.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9839715048975958,
+                "rank": 12
+            },
+            {
+                "kld": 2238.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9841688654353562,
+                "rank": 13
+            },
+            {
+                "kld": 2288.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9845094664371773,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9847715736040609,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 14910.598652,
+        "k": 19,
+        "references": [
+            {
+                "kld": 740.1304049959523,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.023634257408222323,
+                "rank": 1
+            },
+            {
+                "kld": 1619.3134610455038,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.02938542919184075,
+                "rank": 2
+            },
+            {
+                "kld": 7311.712943720951,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.02956415649599255,
+                "rank": 3
+            },
+            {
+                "kld": 265.39349629192725,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.1070135065693261,
+                "rank": 4
+            },
+            {
+                "kld": 285.15048303660785,
+                "name": "Super MUL 720\r",
+                "nrc": 0.19802116877542203,
+                "rank": 5
+            },
+            {
+                "kld": 25393.723969029445,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.46081595414345683,
+                "rank": 6
+            },
+            {
+                "kld": 1428.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9740791268758526,
+                "rank": 7
+            },
+            {
+                "kld": 1614.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9769975786924939,
+                "rank": 8
+            },
+            {
+                "kld": 1928.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9806714140386572,
+                "rank": 9
+            },
+            {
+                "kld": 2154.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9826642335766423,
+                "rank": 10
+            },
+            {
+                "kld": 2198.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.983005366726297,
+                "rank": 11
+            },
+            {
+                "kld": 2208.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9830810329474622,
+                "rank": 12
+            },
+            {
+                "kld": 2236.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9832893579595426,
+                "rank": 13
+            },
+            {
+                "kld": 2286.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9836488812392427,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9839255499153976,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 14756.096033,
+        "k": 19,
+        "references": [
+            {
+                "kld": 935.9556361246475,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.029887458044597408,
+                "rank": 1
+            },
+            {
+                "kld": 1959.2195770579604,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.03555365254342434,
+                "rank": 2
+            },
+            {
+                "kld": 8813.951934769982,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03558239896832639,
+                "rank": 3
+            },
+            {
+                "kld": 278.9015282666034,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11246029365588978,
+                "rank": 4
+            },
+            {
+                "kld": 292.02233637457044,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20279328914900768,
+                "rank": 5
+            },
+            {
+                "kld": 25585.627304474707,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.46429839408548473,
+                "rank": 6
+            },
+            {
+                "kld": 1428.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9740791268758526,
+                "rank": 7
+            },
+            {
+                "kld": 1614.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9769975786924939,
+                "rank": 8
+            },
+            {
+                "kld": 1928.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9806714140386572,
+                "rank": 9
+            },
+            {
+                "kld": 2154.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9826642335766423,
+                "rank": 10
+            },
+            {
+                "kld": 2198.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.983005366726297,
+                "rank": 11
+            },
+            {
+                "kld": 2208.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9830810329474622,
+                "rank": 12
+            },
+            {
+                "kld": 2236.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9832893579595426,
+                "rank": 13
+            },
+            {
+                "kld": 2286.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9836488812392427,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9839255499153976,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.03,
+        "execTime_ms": 14810.102734,
+        "k": 19,
+        "references": [
+            {
+                "kld": 1127.8251202005656,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.036014341557048135,
+                "rank": 1
+            },
+            {
+                "kld": 10285.28795680401,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.041476904717665894,
+                "rank": 2
+            },
+            {
+                "kld": 2292.4485911890065,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.04160070756703938,
+                "rank": 3
+            },
+            {
+                "kld": 292.1367129485598,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11779706167280943,
+                "rank": 4
+            },
+            {
+                "kld": 298.75250491875386,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2074670173046884,
+                "rank": 5
+            },
+            {
+                "kld": 25773.67356995531,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4677108403795513,
+                "rank": 6
+            },
+            {
+                "kld": 1428.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9740791268758526,
+                "rank": 7
+            },
+            {
+                "kld": 1614.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9769975786924939,
+                "rank": 8
+            },
+            {
+                "kld": 1928.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9806714140386572,
+                "rank": 9
+            },
+            {
+                "kld": 2154.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9826642335766423,
+                "rank": 10
+            },
+            {
+                "kld": 2198.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.983005366726297,
+                "rank": 11
+            },
+            {
+                "kld": 2208.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9830810329474622,
+                "rank": 12
+            },
+            {
+                "kld": 2236.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9832893579595426,
+                "rank": 13
+            },
+            {
+                "kld": 2286.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9836488812392427,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9839255499153976,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.04,
+        "execTime_ms": 15297.459793,
+        "k": 19,
+        "references": [
+            {
+                "kld": 1315.9192209919777,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.04202066742214748,
+                "rank": 1
+            },
+            {
+                "kld": 11727.193462412315,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.047253569044431426,
+                "rank": 2
+            },
+            {
+                "kld": 2619.2924849967526,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.047531892806533166,
+                "rank": 3
+            },
+            {
+                "kld": 305.11162521487194,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.1230288811350293,
+                "rank": 4
+            },
+            {
+                "kld": 305.34797753444144,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2120472066211409,
+                "rank": 5
+            },
+            {
+                "kld": 25958.03597680914,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4710564362648235,
+                "rank": 6
+            },
+            {
+                "kld": 1428.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9740791268758526,
+                "rank": 7
+            },
+            {
+                "kld": 1614.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9769975786924939,
+                "rank": 8
+            },
+            {
+                "kld": 1928.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9806714140386572,
+                "rank": 9
+            },
+            {
+                "kld": 2154.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9826642335766423,
+                "rank": 10
+            },
+            {
+                "kld": 2198.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.983005366726297,
+                "rank": 11
+            },
+            {
+                "kld": 2208.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9830810329474622,
+                "rank": 12
+            },
+            {
+                "kld": 2236.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9832893579595426,
+                "rank": 13
+            },
+            {
+                "kld": 2286.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9836488812392427,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9839255499153976,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.05,
+        "execTime_ms": 14757.910182,
+        "k": 19,
+        "references": [
+            {
+                "kld": 1500.4036784902823,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.047911728141853974,
+                "rank": 1
+            },
+            {
+                "kld": 13141.017422093819,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.052917792930605966,
+                "rank": 2
+            },
+            {
+                "kld": 2940.020414656883,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.05335209259712456,
+                "rank": 3
+            },
+            {
+                "kld": 317.83781815075304,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.12816041054466235,
+                "rank": 4
+            },
+            {
+                "kld": 311.81513611084495,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21653828896586538,
+                "rank": 5
+            },
+            {
+                "kld": 26138.87389483662,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4743380738002443,
+                "rank": 6
+            },
+            {
+                "kld": 1428.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9740791268758526,
+                "rank": 7
+            },
+            {
+                "kld": 1614.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9769975786924939,
+                "rank": 8
+            },
+            {
+                "kld": 1928.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9806714140386572,
+                "rank": 9
+            },
+            {
+                "kld": 2154.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9826642335766423,
+                "rank": 10
+            },
+            {
+                "kld": 2198.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.983005366726297,
+                "rank": 11
+            },
+            {
+                "kld": 2208.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9830810329474622,
+                "rank": 12
+            },
+            {
+                "kld": 2236.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9832893579595426,
+                "rank": 13
+            },
+            {
+                "kld": 2286.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9836488812392427,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9839255499153976,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.01,
+        "execTime_ms": 14644.767772,
+        "k": 20,
+        "references": [
+            {
+                "kld": 752.3374796679012,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.02402406053352464,
+                "rank": 1
+            },
+            {
+                "kld": 1644.7194507888914,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.029846467731081454,
+                "rank": 2
+            },
+            {
+                "kld": 7483.71655204745,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03023561809187149,
+                "rank": 3
+            },
+            {
+                "kld": 265.57159959444004,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.1070853224171134,
+                "rank": 4
+            },
+            {
+                "kld": 285.3840195115685,
+                "name": "Super MUL 720\r",
+                "nrc": 0.1981833468830335,
+                "rank": 5
+            },
+            {
+                "kld": 26300.489047069983,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.47727087879849744,
+                "rank": 6
+            },
+            {
+                "kld": 1426.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9727148703956344,
+                "rank": 7
+            },
+            {
+                "kld": 1612.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9757869249394673,
+                "rank": 8
+            },
+            {
+                "kld": 1926.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9796541200406917,
+                "rank": 9
+            },
+            {
+                "kld": 2152.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9817518248175182,
+                "rank": 10
+            },
+            {
+                "kld": 2196.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9821109123434705,
+                "rank": 11
+            },
+            {
+                "kld": 2206.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9821905609973286,
+                "rank": 12
+            },
+            {
+                "kld": 2234.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9824098504837291,
+                "rank": 13
+            },
+            {
+                "kld": 2284.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9827882960413081,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9830795262267343,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.02,
+        "execTime_ms": 15030.447351,
+        "k": 20,
+        "references": [
+            {
+                "kld": 950.1944888271707,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.030342141040590877,
+                "rank": 1
+            },
+            {
+                "kld": 1988.107090494682,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.03607786975092794,
+                "rank": 2
+            },
+            {
+                "kld": 9001.370107172927,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.03631558041008459,
+                "rank": 3
+            },
+            {
+                "kld": 279.2208062881554,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11258903479361239,
+                "rank": 4
+            },
+            {
+                "kld": 292.3166223889467,
+                "name": "Super MUL 720\r",
+                "nrc": 0.20299765443676918,
+                "rank": 5
+            },
+            {
+                "kld": 26488.807179097395,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.480688258612443,
+                "rank": 6
+            },
+            {
+                "kld": 1426.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9727148703956344,
+                "rank": 7
+            },
+            {
+                "kld": 1612.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9757869249394673,
+                "rank": 8
+            },
+            {
+                "kld": 1926.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9796541200406917,
+                "rank": 9
+            },
+            {
+                "kld": 2152.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9817518248175182,
+                "rank": 10
+            },
+            {
+                "kld": 2196.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9821109123434705,
+                "rank": 11
+            },
+            {
+                "kld": 2206.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9821905609973286,
+                "rank": 12
+            },
+            {
+                "kld": 2234.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9824098504837291,
+                "rank": 13
+            },
+            {
+                "kld": 2284.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9827882960413081,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9830795262267343,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.03,
+        "execTime_ms": 14866.062193,
+        "k": 20,
+        "references": [
+            {
+                "kld": 1144.0112164545744,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.03653120502153959,
+                "rank": 1
+            },
+            {
+                "kld": 2324.6715867149637,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.042185453248563064,
+                "rank": 2
+            },
+            {
+                "kld": 10487.51716909455,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.04226938960740699,
+                "rank": 3
+            },
+            {
+                "kld": 292.5904975798037,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.11798003934669815,
+                "rank": 4
+            },
+            {
+                "kld": 299.10486587300653,
+                "name": "Super MUL 720\r",
+                "nrc": 0.2077117124118088,
+                "rank": 5
+            },
+            {
+                "kld": 26673.291845458287,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4840360731219591,
+                "rank": 6
+            },
+            {
+                "kld": 1426.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9727148703956344,
+                "rank": 7
+            },
+            {
+                "kld": 1612.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9757869249394673,
+                "rank": 8
+            },
+            {
+                "kld": 1926.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9796541200406917,
+                "rank": 9
+            },
+            {
+                "kld": 2152.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9817518248175182,
+                "rank": 10
+            },
+            {
+                "kld": 2196.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9821109123434705,
+                "rank": 11
+            },
+            {
+                "kld": 2206.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9821905609973286,
+                "rank": 12
+            },
+            {
+                "kld": 2234.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9824098504837291,
+                "rank": 13
+            },
+            {
+                "kld": 2284.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9827882960413081,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9830795262267343,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.04,
+        "execTime_ms": 15295.939253,
+        "k": 20,
+        "references": [
+            {
+                "kld": 1333.9733499287076,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.042597181949441294,
+                "rank": 1
+            },
+            {
+                "kld": 11943.667063270932,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.04810308860059055,
+                "rank": 2
+            },
+            {
+                "kld": 2654.7141941718055,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.048174685046490036,
+                "rank": 3
+            },
+            {
+                "kld": 305.69371111007024,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.12326359318954477,
+                "rank": 4
+            },
+            {
+                "kld": 305.75590820335424,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21233049180788588,
+                "rank": 5
+            },
+            {
+                "kld": 26854.116950867006,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.48731747814879006,
+                "rank": 6
+            },
+            {
+                "kld": 1426.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9727148703956344,
+                "rank": 7
+            },
+            {
+                "kld": 1612.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9757869249394673,
+                "rank": 8
+            },
+            {
+                "kld": 1926.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9796541200406917,
+                "rank": 9
+            },
+            {
+                "kld": 2152.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9817518248175182,
+                "rank": 10
+            },
+            {
+                "kld": 2196.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9821109123434705,
+                "rank": 11
+            },
+            {
+                "kld": 2206.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9821905609973286,
+                "rank": 12
+            },
+            {
+                "kld": 2234.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9824098504837291,
+                "rank": 13
+            },
+            {
+                "kld": 2284.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9827882960413081,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9830795262267343,
+                "rank": 15
+            }
+        ]
+    },
+    {
+        "alpha": 0.05,
+        "execTime_ms": 15565.980404,
+        "k": 20,
+        "references": [
+            {
+                "kld": 1520.2514422645897,
+                "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                "nrc": 0.048545518018411976,
+                "rank": 1
+            },
+            {
+                "kld": 13371.202159445,
+                "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                "nrc": 0.053822212100474824,
+                "rank": 2
+            },
+            {
+                "kld": 2978.5124479227543,
+                "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.05405060153019602,
+                "rank": 3
+            },
+            {
+                "kld": 318.54241511506126,
+                "name": "Super ISS Si1240\r",
+                "nrc": 0.128444522223819,
+                "rank": 4
+            },
+            {
+                "kld": 312.2762853080821,
+                "name": "Super MUL 720\r",
+                "nrc": 0.21685853146394649,
+                "rank": 5
+            },
+            {
+                "kld": 27031.44239822434,
+                "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                "nrc": 0.4905353754259786,
+                "rank": 6
+            },
+            {
+                "kld": 1426.0,
+                "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
+                "nrc": 0.9727148703956344,
+                "rank": 7
+            },
+            {
+                "kld": 1612.0,
+                "name": "gi|20806045|ref|NC_003847.1| Panicum mosaic satellite virus, complete genome\r",
+                "nrc": 0.9757869249394673,
+                "rank": 8
+            },
+            {
+                "kld": 1926.0,
+                "name": "gi|632842269|ref|NC_024075.1| Cat Que Virus strain VN04-2108 nucleoprotein gene, complete cds\r",
+                "nrc": 0.9796541200406917,
+                "rank": 9
+            },
+            {
+                "kld": 2152.0,
+                "name": "NC_029618.1 Lake Sarah-associated circular molecule 7 \r",
+                "nrc": 0.9817518248175182,
+                "rank": 10
+            },
+            {
+                "kld": 2196.0,
+                "name": "gi|561142803|ref|NC_022962.1| Olive viral satellite RNA isolate Caltabellotta1 from Italy, complete genome\r",
+                "nrc": 0.9821109123434705,
+                "rank": 11
+            },
+            {
+                "kld": 2206.0,
+                "name": "gi|1003725989|ref|NC_029640.1| Lake Sarah-associated circular molecule 11 isolate LSaCM-11-LSWA-2013, complete sequence\r",
+                "nrc": 0.9821905609973286,
+                "rank": 12
+            },
+            {
+                "kld": 2234.0,
+                "name": "gi|1003725912|ref|NC_029632.1| Lake Sarah-associated circular molecule 9 isolate LSaCM-9-LSLA-2013, complete sequence\r",
+                "nrc": 0.9824098504837291,
+                "rank": 13
+            },
+            {
+                "kld": 2284.0,
+                "name": "gi|20428608|ref|NC_003769.1| Rice ragged stunt virus non-structural protein Pns10 gene, complete cds\r",
+                "nrc": 0.9827882960413081,
+                "rank": 14
+            },
+            {
+                "kld": 2317.0,
+                "name": "gi|1003725824|ref|NC_029621.1| Lake Sarah-associated circular molecule 8 isolate LSaCM-8-LSGA-2013, complete sequence\r",
+                "nrc": 0.9830795262267343,
                 "rank": 15
             }
         ]
