@@ -257,6 +257,85 @@ bool analyzeSymbolInformation(const string& sampleFile, const vector<Reference>&
     return false;
 }
 
+// Worker function to process chunk batches in parallel
+void processChunkBatch(const vector<pair<int, string>>& chunks, size_t start, size_t end, 
+                      const vector<Reference>& references, int k, double alpha,
+                      vector<json>& chunkResults, mutex& mtx,
+                      vector<bool>& completedChunks) {
+    // Redirect stdout to suppress FCM model outputs
+    streambuf* oldCout = cout.rdbuf();
+    ostringstream capturedOutput;
+    cout.rdbuf(capturedOutput.rdbuf());
+    
+    try {
+        for (size_t i = start; i < end && i < chunks.size(); ++i) {
+            const auto& chunk = chunks[i];
+            
+            // Train model on this chunk
+            FCMModel chunkModel(k, alpha);
+            chunkModel.learn(chunk.second);
+            chunkModel.lockModel();
+            DNACompressor compressor(chunkModel);
+            
+            json chunkJson;
+            chunkJson["position"] = chunk.first;
+            chunkJson["length"] = chunk.second.length();
+            
+            // Find best matching reference for this chunk
+            vector<pair<string, double>> matchScores;
+
+            double bestNrc = numeric_limits<double>::max();
+            string bestReference = "";
+            
+            for (const auto& ref : references) {
+                double nrc = compressor.calculateNRC(ref.sequence);
+                matchScores.push_back({ref.name, nrc});
+                
+                if (nrc < bestNrc) {
+                    bestNrc = nrc;
+                    bestReference = ref.name;
+                }
+            }
+            
+            chunkJson["best_match"] = bestReference;
+            chunkJson["best_nrc"] = bestNrc;
+            
+            // Add top 3 matches
+            json matchesJson = json::array();
+            sort(matchScores.begin(), matchScores.end(), 
+                [](const auto& a, const auto& b) { return a.second < b.second; });
+            
+            for (size_t j = 0; j < min(size_t(3), matchScores.size()); ++j) {
+                json matchJson;
+                matchJson["name"] = matchScores[j].first;
+                matchJson["nrc"] = matchScores[j].second;
+                matchesJson.push_back(matchJson);
+            }
+            
+            chunkJson["top_matches"] = matchesJson;
+            
+            // Thread-safe update of results array and mark chunk as completed
+            {
+                lock_guard<mutex> lock(mtx);
+                chunkResults[i] = chunkJson;
+                completedChunks[i] = true;
+            }
+        }
+    }
+    catch (const exception& e) {
+        // Thread-safe error reporting
+        lock_guard<mutex> lock(mtx);
+        cerr << "Error in worker thread processing chunks " << start << " to " << end << ": " << e.what() << endl;
+    }
+    catch (...) {
+        lock_guard<mutex> lock(mtx);
+        cerr << "Unknown error in worker thread processing chunks " << start << " to " << end << endl;
+    }
+    
+    // Restore stdout
+    cout.rdbuf(oldCout);
+}
+
 // Function to analyze sample chunks and determine best matching organisms
 bool analyzeChunks(const string& sampleFile, const vector<Reference>& references, int k, double alpha,
                  int chunkSize, int overlap, const string& timestampDir, const string& latestDir) {
@@ -285,63 +364,154 @@ bool analyzeChunks(const string& sampleFile, const vector<Reference>& references
     resultsJson["sample_length"] = sample.length();
     resultsJson["chunk_count"] = chunks.size();
     
-    json chunksJson = json::array();
+    // Prepare results array with initialized JSON objects (not just placeholders)
+    vector<json> chunkResultsArray(chunks.size());
+    for(size_t i = 0; i < chunks.size(); i++) {
+        chunkResultsArray[i] = json::object();
+    }
     
-    for (size_t i = 0; i < chunks.size(); ++i) {
-        const auto& chunk = chunks[i];
+    // Track completed chunks
+    vector<bool> completedChunks(chunks.size(), false);
+    
+    // Set up parallel processing
+    unsigned int threadCount = max(2u, thread::hardware_concurrency());
+    cout << "Using " << threadCount << " threads for parallel chunk analysis..." << endl;
+    
+    vector<thread> threads;
+    mutex mtx;
+    
+    size_t batchSize = (chunks.size() + threadCount - 1) / threadCount;
+
+    // Launch threads
+    for (unsigned int t = 0; t < threadCount; ++t) {
+        size_t start = t * batchSize;
+        size_t end = min((t + 1) * batchSize, chunks.size());
         
-        // Train model on this chunk
-        FCMModel chunkModel(k, alpha);
-        chunkModel.learn(chunk.second);
-        chunkModel.lockModel();
-        DNACompressor compressor(chunkModel);
+        if (start >= chunks.size()) break;
         
-        json chunkJson;
-        chunkJson["position"] = chunk.first;
-        chunkJson["length"] = chunk.second.length();
-        
-        // Find best matching reference for this chunk
-        vector<pair<string, double>> chunkResults;
-        double bestNrc = numeric_limits<double>::max();
-        string bestReference = "";
-        
-        for (const auto& ref : references) {
-            double nrc = compressor.calculateNRC(ref.sequence);
-            chunkResults.push_back({ref.name, nrc});
-            
-            if (nrc < bestNrc) {
-                bestNrc = nrc;
-                bestReference = ref.name;
+        threads.push_back(thread(processChunkBatch,
+                               ref(chunks),
+                               start,
+                               end,
+                               ref(references),
+                               k,
+                               alpha,
+                               ref(chunkResultsArray),
+                               ref(mtx),
+                               ref(completedChunks)
+        ));
+    }
+    
+    // Show progress indicator while threads are working
+    int lastProgress = -1;
+    auto startTime = chrono::steady_clock::now();
+    const auto maxTime = chrono::minutes(30); // Set a maximum time limit for processing
+    bool timeout = false;
+    
+    while (true) {
+        // Count completed chunks
+        size_t completed = 0;
+        {
+            lock_guard<mutex> lock(mtx);
+            for (bool isComplete : completedChunks) {
+                if (isComplete) {
+                    completed++;
+                }
             }
         }
         
-        chunkJson["best_match"] = bestReference;
-        chunkJson["best_nrc"] = bestNrc;
-        
-        // Add top 3 matches
-        json matchesJson = json::array();
-        sort(chunkResults.begin(), chunkResults.end(), 
-             [](const auto& a, const auto& b) { return a.second < b.second; });
-        
-        for (size_t j = 0; j < min(size_t(3), chunkResults.size()); ++j) {
-            json matchJson;
-            matchJson["name"] = chunkResults[j].first;
-            matchJson["nrc"] = chunkResults[j].second;
-            matchesJson.push_back(matchJson);
+        int progress = static_cast<int>((100.0 * completed) / chunks.size());
+        if (progress != lastProgress) {
+            cout << "\rProgress: " << progress << "%" << flush;
+            lastProgress = progress;
         }
         
-        chunkJson["top_matches"] = matchesJson;
-        chunksJson.push_back(chunkJson);
+        // Check for timeout
+        auto currentTime = chrono::steady_clock::now();
+        if (chrono::duration_cast<chrono::seconds>(currentTime - startTime) > maxTime) {
+            cout << "\nWarning: Processing timeout reached after " 
+                 << chrono::duration_cast<chrono::minutes>(currentTime - startTime).count() 
+                 << " minutes." << endl;
+            timeout = true;
+            break;
+        }
         
-        // Progress report
-        if (i % 10 == 0 || i == chunks.size() - 1) {
-            cout << "\rProcessed " << i + 1 << " of " << chunks.size() << " chunks (" 
-                 << fixed << setprecision(1) << (100.0 * (i + 1) / chunks.size()) << "%)" << flush;
+        // Check if all chunks are processed or if processing is stuck
+        if (completed == chunks.size()) {
+            break;
+        }
+        
+        // If progress is stuck at a high percentage for too long, print diagnostic info
+        static auto lastProgressTime = startTime;
+        static int lastProgressValue = 0;
+        
+        if (progress > 90 && progress == lastProgressValue) {
+            auto stuckTime = chrono::duration_cast<chrono::seconds>(currentTime - lastProgressTime).count();
+            if (stuckTime > 60) { // If stuck for more than 1 minute
+                cout << "\nWarning: Progress appears to be stuck at " << progress << "% for " 
+                     << stuckTime << " seconds." << endl;
+                
+                // Print info about incomplete chunks
+                cout << "Chunks not yet completed: ";
+                int incompleteCount = 0;
+                {
+                    lock_guard<mutex> lock(mtx);
+                    for (size_t i = 0; i < completedChunks.size(); i++) {
+                        if (!completedChunks[i]) {
+                            if (incompleteCount < 5) {
+                                cout << i << " ";
+                            }
+                            incompleteCount++;
+                        }
+                    }
+                }
+                cout << "and " << (incompleteCount > 5 ? (incompleteCount - 5) : 0) << " more" << endl;
+                
+                // Reset the timer but keep tracking
+                lastProgressTime = currentTime;
+            }
+        } else if (progress != lastProgressValue) {
+            lastProgressTime = currentTime;
+            lastProgressValue = progress;
+        }
+        
+        // Sleep briefly to avoid CPU hogging
+        this_thread::sleep_for(chrono::milliseconds(500));
+    }
+    
+    // Force threads to finish if a timeout occurred
+    if (timeout) {
+        cout << "Attempting to save partial results..." << endl;
+    }
+    
+    // Wait for all threads to complete or detach them if a timeout occurred
+    for (auto& t : threads) {
+        if (t.joinable()) {
+            if (timeout) {
+                t.detach(); // Detach thread if we're in a timeout situation
+            } else {
+                t.join();   // Otherwise wait for it to finish normally
+            }
         }
     }
-    cout << endl;
+    
+    // Build final JSON array from results, including only completed chunks
+    json chunksJson = json::array();
+    size_t validChunks = 0;
+    
+    for (size_t i = 0; i < chunks.size(); i++) {
+        if (completedChunks[i] && chunkResultsArray[i].contains("position")) {
+            chunksJson.push_back(chunkResultsArray[i]);
+            validChunks++;
+        }
+    }
+    
+    cout << "\r" << (timeout ? "Partial" : "Complete") << " chunk analysis finished with " 
+         << validChunks << " of " << chunks.size() << " chunks processed." << endl;
     
     resultsJson["chunks"] = chunksJson;
+    resultsJson["completed"] = !timeout;
+    resultsJson["processed_chunks"] = validChunks;
     
     // Save to both timestamp and latest directories
     string timestampFile = timestampDir + "/chunk_analysis.json";
@@ -366,7 +536,7 @@ bool analyzeChunks(const string& sampleFile, const vector<Reference>& references
     cout << "- " << timestampFile << endl;
     cout << "- " << latestFile << endl;
     
-    return true;
+    return !timeout; // Return true only if not timed out
 }
 
 // Function to print usage instructions

@@ -6,7 +6,7 @@
   "parameters": {
     "context_size": {
       "min": 10,
-      "max": 15
+      "max": 20
     },
     "alpha": {
       "min": 0.01,
@@ -22,8 +22,8 @@
     "analyze_symbol_info": true,
     "num_orgs_to_analyze": 5,
     "analyze_chunks": true,
-    "chunk_size": 25000,
-    "chunk_overlap": 1000
+    "chunk_size": 2500,
+    "chunk_overlap": 250
   },
   "model": {
     "test_save_load": false,
