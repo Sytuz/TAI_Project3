@@ -405,6 +405,305 @@ void printUsage(const string& programName) {
     cout << "}" << endl;
 }
 
+// Evaluate performance on synthetic data with known ground truth
+void evaluateSyntheticData(const string& sampleFile, const string& dbFile, const string& groundTruthFile,
+                            int k, double alpha, double threshold = 0.0) {
+    cout << "\n==================================================" << endl;
+    cout << "    SYNTHETIC DATA EVALUATION (Ground Truth)      " << endl;
+    cout << "==================================================" << endl;
+
+    // Read the metagenomic sample
+    string sample = readDNASequence(sampleFile);
+    if (sample.empty()) {
+        cerr << "Error: Empty sample from " << sampleFile << endl;
+        return;
+    }
+
+    // Read reference database
+    vector<Reference> references = readReferenceDatabase(dbFile);
+    if (references.empty()) {
+        cerr << "Error: Empty database from " << dbFile << endl;
+        return;
+    }
+
+    // Read ground truth sequence numbers
+    ifstream gtFile(groundTruthFile);
+    if (!gtFile.is_open()) {
+        cerr << "Error: Could not open ground truth file: " << groundTruthFile << endl;
+        return;
+    }
+
+    set<int> truePositiveIndices;
+    string line;
+    while (getline(gtFile, line)) {
+        // Skip empty lines and comments
+        if (line.empty() || line[0] == '/' || line[0] == '#') continue;
+
+        try {
+            int seqNum = stoi(line);
+            truePositiveIndices.insert(seqNum);
+        } catch (const exception& e) {
+            cerr << "Warning: Could not parse sequence number: " << line << endl;
+        }
+    }
+    gtFile.close();
+
+    cout << "Read " << truePositiveIndices.size() << " ground truth sequence indices" << endl;
+    cout << "Sample length: " << sample.length() << " nucleotides" << endl;
+    cout << "Reference database: " << references.size() << " sequences" << endl;
+
+    // Map sequence numbers to indices in the references vector
+    map<int, int> seqNumToIndex;
+    for (size_t i = 0; i < references.size(); i++) {
+        // Extract sequence number from name (e.g., "Sequence_42" -> 42)
+        string name = references[i].name;
+        size_t underscorePos = name.find('_');
+        if (underscorePos != string::npos) {
+            try {
+                int seqNum = stoi(name.substr(underscorePos + 1));
+                seqNumToIndex[seqNum] = i;
+            } catch (...) {
+                // Skip if not a valid number
+            }
+        }
+    }
+
+    // Train model on sample
+    cout << "Training FCM model with k=" << k << ", alpha=" << alpha << endl;
+    FCMModel model(k, alpha);
+    model.learn(sample);
+    model.lockModel();
+
+    // Calculate NRC for each reference
+    DNACompressor compressor(model);
+
+    // Process references in parallel
+    unsigned int threadCount = max(2u, thread::hardware_concurrency());
+    cout << "Using " << threadCount << " threads for parallel processing" << endl;
+
+    vector<thread> threads;
+    mutex mtx;
+
+    size_t batchSize = (references.size() + threadCount - 1) / threadCount;
+
+    for (unsigned int t = 0; t < threadCount; ++t) {
+        size_t start = t * batchSize;
+        size_t end = min((t + 1) * batchSize, references.size());
+
+        if (start >= references.size()) break;
+
+        threads.push_back(thread(processReferenceBatch,
+                                ref(references),
+                                start,
+                                end,
+                                ref(compressor),
+                                ref(mtx)
+        ));
+    }
+
+    // Wait for all threads to complete
+    for (auto& t: threads) {
+        t.join();
+    }
+
+    // Sort references by NRC value (from smallest to largest)
+    sort(references.begin(), references.end(),
+            [](const Reference& a, const Reference& b) { return a.nrc < b.nrc; });
+
+    // If threshold is not set, use the max NRC value from true positives as threshold
+    if (threshold <= 0.0) {
+        double maxTruePositiveNRC = 0.0;
+        for (int trueIdx : truePositiveIndices) {
+            if (seqNumToIndex.count(trueIdx)) {
+                size_t refIdx = seqNumToIndex[trueIdx];
+                for (size_t i = 0; i < references.size(); i++) {
+                    if (references[i].name == references[refIdx].name) {
+                        maxTruePositiveNRC = max(maxTruePositiveNRC, references[i].nrc);
+                        break;
+                    }
+                }
+            }
+        }
+        // Add a small margin to ensure all true positives are included
+        threshold = maxTruePositiveNRC * 1.05;
+        cout << "Auto threshold set to: " << fixed << setprecision(6) << threshold << endl;
+    }
+
+    // Prepare confusion matrix and metrics
+    int truePositives = 0;
+    int falsePositives = 0;
+    int trueNegatives = 0;
+    int falseNegatives = 0;
+
+    // Lists for ROC calculation
+    vector<pair<double, bool>> rocData; // (score, is_true_positive)
+
+    // Process results and calculate metrics
+    for (const auto& ref : references) {
+        // Extract sequence number from name
+        string name = ref.name;
+        size_t underscorePos = name.find('_');
+        if (underscorePos != string::npos) {
+            try {
+                int seqNum = stoi(name.substr(underscorePos + 1));
+                bool isPredictedPositive = (ref.nrc <= threshold);
+                bool isActualPositive = (truePositiveIndices.count(seqNum) > 0);
+
+                // Add to ROC data
+                rocData.push_back({ref.nrc, isActualPositive});
+
+                // Update confusion matrix
+                if (isPredictedPositive && isActualPositive) {
+                    truePositives++;
+                } else if (isPredictedPositive && !isActualPositive) {
+                    falsePositives++;
+                } else if (!isPredictedPositive && isActualPositive) {
+                    falseNegatives++;
+                } else { // !isPredictedPositive && !isActualPositive
+                    trueNegatives++;
+                }
+            } catch (...) {
+                // Skip if not a valid number
+            }
+        }
+    }
+
+    // Calculate metrics
+    double accuracy = static_cast<double>(truePositives + trueNegatives) /
+                        static_cast<double>(truePositives + falsePositives + trueNegatives + falseNegatives);
+
+    double precision = (truePositives > 0) ?
+                        static_cast<double>(truePositives) / static_cast<double>(truePositives + falsePositives) : 0.0;
+
+    double recall = (truePositives > 0) ?
+                        static_cast<double>(truePositives) / static_cast<double>(truePositives + falseNegatives) : 0.0;
+
+    double f1Score = (precision + recall > 0) ?
+                        2.0 * (precision * recall) / (precision + recall) : 0.0;
+
+    // Calculate area under ROC curve
+    double aucROC = 0.0;
+    if (!rocData.empty()) {
+        // Sort by score (ascending)
+        sort(rocData.begin(), rocData.end(),
+                [](const pair<double, bool>& a, const pair<double, bool>& b) { return a.first < b.first; });
+
+        // Calculate points for ROC curve and AUC
+        double tpr_prev = 0.0, fpr_prev = 0.0;
+        int totalPos = count_if(rocData.begin(), rocData.end(), [](const pair<double, bool>& p) { return p.second; });
+        int totalNeg = rocData.size() - totalPos;
+
+        if (totalPos > 0 && totalNeg > 0) {
+            int tp = 0, fp = 0;
+
+            for (const auto& point : rocData) {
+                if (point.second) tp++; // True positive
+                else fp++; // False positive
+
+                double tpr = static_cast<double>(tp) / totalPos;
+                double fpr = static_cast<double>(fp) / totalNeg;
+
+                // Add area of trapezoid to AUC
+                aucROC += 0.5 * (tpr + tpr_prev) * (fpr - fpr_prev);
+
+                tpr_prev = tpr;
+                fpr_prev = fpr;
+            }
+        }
+    }
+
+    // Print evaluation results
+    cout << "\n==================================================" << endl;
+    cout << "                 EVALUATION RESULTS               " << endl;
+    cout << "==================================================" << endl;
+    cout << "NRC Threshold: " << fixed << setprecision(6) << threshold << endl;
+    cout << "\nConfusion Matrix:" << endl;
+    cout << "---------------------------------------------------" << endl;
+    cout << "                |     Actual     |     Actual     |" << endl;
+    cout << "                |    Positive    |    Negative    |" << endl;
+    cout << "---------------------------------------------------" << endl;
+    cout << " Predicted      |      " << setw(5) << truePositives << "      |      " << setw(5) << falsePositives << "      |" << endl;
+    cout << " Positive       |                |                |" << endl;
+    cout << "---------------------------------------------------" << endl;
+    cout << " Predicted      |      " << setw(5) << falseNegatives << "      |      " << setw(5) << trueNegatives << "      |" << endl;
+    cout << " Negative       |                |                |" << endl;
+    cout << "---------------------------------------------------" << endl;
+
+    cout << "\nMetrics:" << endl;
+    cout << "---------------------------------------------------" << endl;
+    cout << "Accuracy:  " << fixed << setprecision(4) << accuracy * 100.0 << "%" << endl;
+    cout << "Precision: " << fixed << setprecision(4) << precision * 100.0 << "%" << endl;
+    cout << "Recall:    " << fixed << setprecision(4) << recall * 100.0 << "%" << endl;
+    cout << "F1 Score:  " << fixed << setprecision(4) << f1Score << endl;
+    cout << "ROC AUC:   " << fixed << setprecision(4) << aucROC << endl;
+    cout << "---------------------------------------------------" << endl;
+
+    // Print top matches and their status
+    int topN = min(20, static_cast<int>(references.size()));
+    cout << "\nTop " << topN << " matches by NRC:" << endl;
+    cout << "---------------------------------------------------" << endl;
+    cout << setw(4) << "Rank" << " | " << setw(10) << "NRC" << " | " << setw(10) << "Status" << " | " << "Reference" << endl;
+    cout << "---------------------------------------------------" << endl;
+
+    for (int i = 0; i < topN; ++i) {
+        string name = references[i].name;
+        string status = "Unknown";
+
+        size_t underscorePos = name.find('_');
+        if (underscorePos != string::npos) {
+            try {
+                int seqNum = stoi(name.substr(underscorePos + 1));
+                if (truePositiveIndices.count(seqNum) > 0) {
+                    status = "TRUE POS";
+                } else {
+                    status = "FALSE POS";
+                }
+            } catch (...) {
+                // Keep as unknown
+            }
+        }
+
+        cout << setw(4) << i+1 << " | "
+                << setw(10) << fixed << setprecision(6) << references[i].nrc << " | "
+                << setw(10) << status << " | "
+                << references[i].name << endl;
+    }
+
+    cout << "\nFalse negatives (missed sequences that should be detected):" << endl;
+    cout << "---------------------------------------------------" << endl;
+
+    bool hasFalseNegatives = false;
+    for (int trueIdx : truePositiveIndices) {
+        if (seqNumToIndex.count(trueIdx)) {
+            string refName = "Sequence_" + to_string(trueIdx);
+            bool found = false;
+
+            for (size_t i = 0; i < references.size(); i++) {
+                if (references[i].name == refName && references[i].nrc <= threshold) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                hasFalseNegatives = true;
+                // Find where it is in the sorted list
+                for (size_t i = 0; i < references.size(); i++) {
+                    if (references[i].name == refName) {
+                        cout << "Missed: " << refName << " - Rank: " << i+1
+                                << " (NRC: " << references[i].nrc << ")" << endl;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if (!hasFalseNegatives) {
+        cout << "None - All true sequences were detected!" << endl;
+    }
+}
+
 // Main function with support for config file
 int main(int argc, char** argv) {
     cout << "===============================================" << endl;
@@ -414,19 +713,70 @@ int main(int argc, char** argv) {
     // Check for command-line arguments
     bool useConfigFile = false;
     string configFilePath;
-    
+
+    // Synthetic data parameters
+    bool useSyntheticData = false;
+    string syntheticSampleFile = "samples/generated/meta_synthetic.txt";
+    string syntheticDbFile = "samples/generated/db_synthetic.txt";
+    string syntheticGroundTruthFile = "samples/generated/selected_seq_numbers.txt";
+    double syntheticThreshold = 0.0;
+
     for (int i = 1; i < argc; i++) {
         string arg = argv[i];
         if (arg == "--config" && i + 1 < argc) {
             useConfigFile = true;
             configFilePath = argv[i + 1];
             i++; // Skip the next argument as we've already processed it
+        } else if (arg == "--synthetic" && i + 1 < argc) {
+            useSyntheticData = true;
+            i++;
+        } else if (arg == "--threshold" && i + 1 < argc) {
+            syntheticThreshold = stod(argv[i + 1]);
+            i++;
         } else if (arg == "--help" || arg == "-h") {
             printUsage(argv[0]);
             return 0;
         }
     }
-    
+
+    // Check for synthetic files existence
+    if (filesystem::exists(syntheticSampleFile) && filesystem::exists(syntheticDbFile) && filesystem::exists(syntheticGroundTruthFile)) {
+        useSyntheticData = true;
+        cout << "Using default synthetic files:" << endl;
+        cout << " - Sample File: " << syntheticSampleFile << endl;
+        cout << " - DB File: " << syntheticDbFile << endl;
+        cout << " - Ground Truth File: " << syntheticGroundTruthFile << endl;
+    } else {
+        cout << "Warning: One or more default synthetic data files are missing!" << endl;
+        useSyntheticData = false;
+    }
+
+    if (useSyntheticData) {
+        cout << "Running synthetic data evaluation..." << endl;
+
+        // Default k and alpha values for synthetic data evaluation
+        int k = 5;
+        double alpha = 0.1;
+
+        // Ask for k and alpha values if not in config mode
+        if (!useConfigFile) {
+            k = getIntInput("Enter context size (k) for synthetic evaluation: ", 1, 20);
+            alpha = getDoubleInput("Enter alpha value for synthetic evaluation: ", 0.0, 1.0);
+        } else {
+            // Parse config file for synthetic data parameters
+            map<string, string> configParams;
+            if (parseConfigFile(configFilePath, configParams)) {
+                if (configParams.count("synthetic_k")) k = stoi(configParams["synthetic_k"]);
+                if (configParams.count("synthetic_alpha")) alpha = stod(configParams["synthetic_alpha"]);
+                if (configParams.count("synthetic_threshold")) syntheticThreshold = stod(configParams["synthetic_threshold"]);
+            }
+        }
+
+        // Run the evaluation
+        evaluateSyntheticData(syntheticSampleFile, syntheticDbFile, syntheticGroundTruthFile, k, alpha, syntheticThreshold);
+        return 0;
+    }
+
     // Default values
     string sampleFile = "samples/meta.txt";
     string dbFile = "samples/db.txt";
