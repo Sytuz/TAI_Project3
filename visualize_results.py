@@ -644,57 +644,78 @@ def plot_chunk_analysis(chunk_file, output_dir):
         org_indices.append(organism_mapping[chunk['best_match']])
         nrc_values.append(chunk['best_nrc'])
     
+    # Find min and max NRC for normalization
+    min_nrc = min(nrc_values)
+    max_nrc = max(nrc_values)
+    
     # Create plot
     plt.figure(figsize=(15, 8))
     
-    # Create colormap with distinct colors
-    cmap = plt.cm.get_cmap('tab20', len(organisms))
+    # Use only one colormap for NRC intensity
+    nrc_cmap = plt.cm.get_cmap('viridis')
     
-    # Plot each chunk as a horizontal line
+    # Plot each chunk as a patch with color representing NRC intensity
+    from matplotlib.patches import Rectangle
+    
+    # Create a scatter for NRC colorbar
+    scatter = plt.scatter([], [], c=[], cmap=nrc_cmap, vmin=min_nrc, vmax=max_nrc)
+    
+    # Plot each chunk with NRC value represented by color
     for i in range(len(positions)):
-        plt.hlines(
-            y=org_indices[i], 
-            xmin=positions[i], 
-            xmax=end_positions[i],
-            linewidth=6, 
-            color=cmap(org_indices[i]),
-            alpha=0.8
+        # Normalize NRC value to 0-1 range for color mapping
+        norm_nrc = (nrc_values[i] - min_nrc) / (max_nrc - min_nrc) if max_nrc > min_nrc else 0.5
+        
+        # Create a patch for this chunk
+        chunk_width = end_positions[i] - positions[i]
+        rect = Rectangle(
+            (positions[i], org_indices[i] - 0.4),
+            chunk_width,
+            0.8,
+            color=nrc_cmap(norm_nrc),
+            alpha=0.8  # Fixed alpha since color already represents NRC
         )
+        
+        plt.gca().add_patch(rect)
+        
+        # Add NRC value text if chunk is wide enough
+        if chunk_width > (max(positions) - min(positions)) * 0.05:  # Only add text if chunk is wide enough
+            plt.text(
+                positions[i] + chunk_width/2,
+                org_indices[i],
+                f"{nrc_values[i]:.3f}",
+                ha='center',
+                va='center',
+                fontsize=8,
+                color='black',
+                bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="gray", alpha=0.7)
+            )
     
-    # Add color bar to show NRC values
-    scatter = plt.scatter(
-        positions, 
-        org_indices, 
-        c=nrc_values, 
-        cmap='viridis', 
-        s=1,  # Small point size
-        alpha=0  # Invisible points, just for the colorbar
-    )
+    # Add a colorbar for NRC values
     cbar = plt.colorbar(scatter)
     cbar.set_label('NRC Score')
     
+    # Compress long organism names
+    compressed_labels = []
+    for org in organisms:
+        if len(org) > 50:
+            parts = org.split(' ')
+            if len(parts) > 2:
+                compressed_labels.append(f"{parts[0]} {parts[1]}...")
+            else:
+                compressed_labels.append(org[:47] + "...")
+        else:
+            compressed_labels.append(org)
+    
     # Format plot
-    plt.yticks(range(len(organisms)), organisms, fontsize=8)
+    plt.yticks(range(len(organisms)), compressed_labels, fontsize=8)
     plt.xlabel('Sequence Position (nucleotides)')
     plt.ylabel('Best Matching Organism')
     plt.title('Best Matching Organisms Across Sequence Positions')
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
     
-    # Compress long organism names
-    fig = plt.gcf()
-    fig.canvas.draw()
-    ylabels = [item.get_text() for item in plt.gca().get_yticklabels()]
-    compressed_labels = []
-    for label in ylabels:
-        if len(label) > 50:
-            parts = label.split(' ')
-            if len(parts) > 2:
-                compressed_labels.append(f"{parts[0]} {parts[1]}...")
-            else:
-                compressed_labels.append(label[:47] + "...")
-        else:
-            compressed_labels.append(label)
-    plt.yticks(range(len(organisms)), compressed_labels, fontsize=8)
+    # Set appropriate axis limits
+    plt.xlim(min(positions), max(end_positions))
+    plt.ylim(-0.5, len(organisms) - 0.5)
     
     # Add chunk size and overlap information in the corner
     plt.annotate(
@@ -703,6 +724,16 @@ def plot_chunk_analysis(chunk_file, output_dir):
         xy=(0.02, 0.02), 
         xycoords='axes fraction', 
         fontsize=8, 
+        bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8)
+    )
+    
+    # Update explanation of visualization
+    plt.annotate(
+        f"Color represents NRC score (higher score = better match)", 
+        xy=(0.98, 0.02), 
+        xycoords='axes fraction', 
+        fontsize=8,
+        ha='right',
         bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8)
     )
     
@@ -715,23 +746,51 @@ def plot_chunk_analysis(chunk_file, output_dir):
     
     # Create a higher-resolution version for detailed viewing
     plt.figure(figsize=(20, 10))
+    
+    # Plot each chunk in high-res version
     for i in range(len(positions)):
-        plt.hlines(
-            y=org_indices[i], 
-            xmin=positions[i], 
-            xmax=end_positions[i],
-            linewidth=8, 
-            color=cmap(org_indices[i]),
-            alpha=0.8
+        # Normalize NRC value to 0-1 range for color mapping
+        norm_nrc = (nrc_values[i] - min_nrc) / (max_nrc - min_nrc) if max_nrc > min_nrc else 0.5
+        
+        # Create a patch for this chunk
+        chunk_width = end_positions[i] - positions[i]
+        rect = Rectangle(
+            (positions[i], org_indices[i] - 0.4),
+            chunk_width,
+            0.8,
+            color=nrc_cmap(norm_nrc),
+            alpha=0.8  # Fixed alpha since color already represents NRC
         )
-    scatter = plt.scatter(positions, org_indices, c=nrc_values, cmap='viridis', s=1, alpha=0)
+        
+        plt.gca().add_patch(rect)
+        
+        # Add NRC value text
+        plt.text(
+            positions[i] + chunk_width/2,
+            org_indices[i],
+            f"{nrc_values[i]:.3f}",
+            ha='center',
+            va='center',
+            fontsize=8,
+            color='black',
+            bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="gray", alpha=0.7)
+        )
+    
+    # Add colorbar for high-res version
+    scatter = plt.scatter([], [], c=[], cmap=nrc_cmap, vmin=min_nrc, vmax=max_nrc)
     cbar = plt.colorbar(scatter)
     cbar.set_label('NRC Score')
+    
+    # Format high-res plot
     plt.yticks(range(len(organisms)), compressed_labels, fontsize=8)
     plt.xlabel('Sequence Position (nucleotides)')
     plt.ylabel('Best Matching Organism')
     plt.title('Best Matching Organisms Across Sequence Positions (High Resolution)')
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+    plt.xlim(min(positions), max(end_positions))
+    plt.ylim(-0.5, len(organisms) - 0.5)
+    
+    # Add annotations to high-res version
     plt.annotate(
         f"Chunk size: {chunk_data.get('chunk_size', 'N/A')}, "
         f"Overlap: {chunk_data.get('overlap', 'N/A')} nucleotides", 
@@ -740,6 +799,15 @@ def plot_chunk_analysis(chunk_file, output_dir):
         fontsize=8, 
         bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8)
     )
+    plt.annotate(
+        f"Color represents NRC score (higher score = better match)", 
+        xy=(0.98, 0.02), 
+        xycoords='axes fraction', 
+        fontsize=8,
+        ha='right',
+        bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8)
+    )
+    
     plt.tight_layout()
     output_file_hires = os.path.join(output_dir, 'chunk_analysis_visualization_hires.png')
     plt.savefig(output_file_hires, dpi=600, bbox_inches='tight')
