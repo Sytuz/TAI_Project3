@@ -11,10 +11,12 @@ MUT_RATE_MIN=0.05
 MUT_RATE_MAX=0.25
 DEL_RATE_MAX=0.05
 INS_RATE_MAX=0.05
-OUTPUT_DIR="samples/generated"
-LINE_WIDTH=72
-GTO_PATH="../../gto/bin" # Path to GTO tools, due to the cd command
-GTO_REPO_FILES="gto/bin" # Path to GTO repository files
+LINE_WIDTH=72 # same as samples db and meta
+
+# WARNING: The below paths assume the script is run from the root directory
+OUTPUT_DIR="data/generated"
+GTO_PATH="../../external/gto/bin" # Path to GTO tools, due to the cd command
+GTO_REPO_FILES="external/gto/bin" # Path to GTO repository files
 
 # Display usage information
 usage() {

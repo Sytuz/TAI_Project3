@@ -800,9 +800,9 @@ int main(int argc, char **argv)
 
     // Synthetic data parameters
     bool useSyntheticData = false;
-    string syntheticSampleFile = "samples/generated/meta_synthetic.txt";
-    string syntheticDbFile = "samples/generated/db_synthetic.txt";
-    string syntheticGroundTruthFile = "samples/generated/selected_seq_numbers.txt";
+    string syntheticSampleFile = "../data/generated/meta_synthetic.txt";
+    string syntheticDbFile = "../data/generated/db_synthetic.txt";
+    string syntheticGroundTruthFile = "../data/generated/selected_seq_numbers.txt";
     double syntheticThreshold = 0.0;
 
     for (int i = 1; i < argc; i++)
@@ -887,8 +887,8 @@ int main(int argc, char **argv)
     }
 
     // Default values
-    string sampleFile = "samples/meta.txt";
-    string dbFile = "samples/db.txt";
+    string sampleFile = "../data/samples/meta.txt";
+    string dbFile = "..data/samples/db.txt";
     int minK = 3;
     int maxK = 6;
     double minAlpha = 0.001;

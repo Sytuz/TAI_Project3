@@ -61,7 +61,25 @@ The program takes a metagenomic sample that may contain unknown genetic sequence
 
 ## Usage
 
-### Running MetaClass
+## TEMPORARY INSTRUCTIONS
+- During refactor process to cmake, the project is now ran this way
+```bash
+# Make sure to have cmake installed (should be by default)
+sudo apt install cmake
+
+# Building the project
+mkdir -p build
+cd build
+cmake ..
+cmake --build .
+
+# Running the application
+./apps/MetaClass -d ../data/samples/db.txt -s ../data/samples/meta.txt -k 10 -a 0.1 -t 20
+```
+- Note: tests.cpp will be changed, so no command given, but default path for input have been updated
+
+
+### Running MetaClass - TO BE CHANGED
 A simple Makefile is provided. From the project root directory, compile and build all executables by running:
 ```bash
 make
@@ -103,7 +121,7 @@ For complete usage information:
 ## Data Sources
 - The genetic sequences used in this project are synthetic DNA sequences for testing purposes.
 
-## Project Structure
+## Project Structure - TO BE CHANGED
 - `FCMModel.*`: Implementation of the Finite Context Model (inherited from Project 1)
 - `MetaClass.cpp`: Main implementation of the metagenomic classifier using NRC
 - `tests.cpp`: Test suite for validating model functionality and NRC calculations

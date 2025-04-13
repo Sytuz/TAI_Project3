@@ -31,11 +31,11 @@ void printHelp(const char* programName) {
     cout << "  --json                     Use JSON format for model saving/loading (default is binary)" << endl;
     cout << "  -p, --threads <count>      Number of parallel threads to use (default: hardware cores)" << endl;
     cout << "\nExamples:" << endl;
-    cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt" << endl;
-    cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt -k 8 -a 0.05 -t 10" << endl;
-    cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt -m model" << endl;
-    cout << "  " << programName << " -d samples/db.txt -l model.bson" << endl;
-    cout << "  " << programName << " -d samples/db.txt -s samples/meta.txt -m model --json" << endl;
+    cout << "  " << programName << " -d ../data/samples/db.txt -s ../data/samples/meta.txt" << endl;
+    cout << "  " << programName << " -d ../data/samples/db.txt -s ../data/samples/meta.txt -k 8 -a 0.05 -t 10" << endl;
+    cout << "  " << programName << " -d ../data/samples/db.txt -s ../data/samples/meta.txt -m ../data/models/model" << endl;
+    cout << "  " << programName << " -d ../data/samples/db.txt -l ../data/models/model.bson" << endl;
+    cout << "  " << programName << " -d ../data/samples/db.txt -s ../data/samples/meta.txt -m ../data/models/model --json" << endl;
 }
 
 // Worker function for parallel processing
