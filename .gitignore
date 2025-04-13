@@ -17,6 +17,12 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+# Python environment
+venv/
+
+# Python cache
+__pycache__/
+
 # Prerequisites
 *.d
 
