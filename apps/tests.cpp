@@ -36,41 +36,12 @@ void processReferenceBatch(vector<Reference> &references, size_t start, size_t e
     }
 }
 
-// Utility function to read DNA sequences
-string readDNASequence(const string &filename)
-{
-    ifstream file(filename);
-    string sequence;
-    string line;
-
-    if (!file.is_open())
-    {
-        cerr << "Error opening file: " << filename << endl;
-        return "";
-    }
-
-    while (getline(file, line))
-    {
-        for (char c : line)
-        {
-            if (c == 'A' || c == 'a' || c == 'C' || c == 'c' ||
-                c == 'G' || c == 'g' || c == 'T' || c == 't')
-            {
-                sequence += toupper(c);
-            }
-        }
-    }
-
-    file.close();
-    return sequence;
-}
-
 // Run test with specific parameters and return results
 vector<Reference> runTest(const string &sampleFile, const string &dbFile, int k, double alpha, int topN, double &execTime)
 {
     auto startTime = high_resolution_clock::now();
 
-    string sample = readDNASequence(sampleFile);
+    string sample = readMetagenomicSample(sampleFile);
     vector<Reference> references = readReferenceDatabase(dbFile);
 
     if (sample.empty() || references.empty())
@@ -133,54 +104,6 @@ vector<Reference> runTest(const string &sampleFile, const string &dbFile, int k,
     return references;
 }
 
-// Test model saving and loading
-void testModelSaveLoad(const string &sampleFile, const string &outFile, bool useJson = false)
-{
-    cout << "\nTesting model saving and loading:" << endl;
-    cout << "--------------------------------" << endl;
-
-    // Train model
-    string sample = readDNASequence(sampleFile);
-    if (sample.empty())
-    {
-        cerr << "Error: Empty sample" << endl;
-        return;
-    }
-
-    FCMModel model(10, 0.1);
-    model.learn(sample);
-
-    // Save model
-    cout << "Saving model to: " << outFile << endl;
-    string savedFile = model.exportModel(outFile, !useJson);
-    cout << "Model saved as: " << savedFile << endl;
-
-    // Load model
-    FCMModel loadedModel;
-    cout << "Loading model from: " << savedFile << endl;
-    loadedModel.importModel(savedFile, !useJson);
-
-    cout << "Original model parameters: k=" << model.getK() << ", alpha=" << model.getAlpha() << endl;
-    cout << "Loaded model parameters: k=" << loadedModel.getK() << ", alpha=" << loadedModel.getAlpha() << endl;
-
-    // Verify by comparing a few probabilities
-    string testContext = "ACGT";
-    string testSymbol = "A";
-
-    if (sample.length() >= 5)
-    {
-        testContext = sample.substr(0, 4);
-        testSymbol = string(1, sample[4]);
-    }
-
-    double origProb = model.getProbability(testContext, testSymbol);
-    double loadedProb = loadedModel.getProbability(testContext, testSymbol);
-
-    cout << "Test probability for '" << testContext << "' → '" << testSymbol << "':" << endl;
-    cout << "  Original model: " << origProb << endl;
-    cout << "  Loaded model: " << loadedProb << endl;
-}
-
 // Generate a vector of evenly spaced alpha values
 vector<double> generateAlphaValues(double minAlpha, double maxAlpha, int numTicks)
 {
@@ -209,7 +132,7 @@ bool analyzeSymbolInformation(const string &sampleFile, const vector<Reference> 
     cout << "Analyzing symbol information for top matches" << endl;
     cout << "=============================================" << endl;
 
-    string sample = readDNASequence(sampleFile);
+    string sample = readMetagenomicSample(sampleFile);
     if (sample.empty())
     {
         cerr << "Error: Empty sample" << endl;
@@ -365,7 +288,7 @@ bool analyzeChunks(const string &sampleFile, const vector<Reference> &references
                    int chunkSize, int overlap, const string &timestampDir, const string &latestDir) {
     cout << "\nStarting chunk analysis..." << endl;
 
-    string sample = readDNASequence(sampleFile);
+    string sample = readMetagenomicSample(sampleFile);
     if (sample.empty()) {
         cerr << "Error: Sample is empty.\n";
         return false;
@@ -443,7 +366,7 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
     cout << "==================================================" << endl;
 
     // Read the metagenomic sample
-    string sample = readDNASequence(sampleFile);
+    string sample = readMetagenomicSample(sampleFile);
     if (sample.empty())
     {
         cerr << "Error: Empty sample from " << sampleFile << endl;
@@ -981,7 +904,6 @@ int main(int argc, char **argv)
     bool useJson = true;
     bool analyzeSymbolInfo = false;
     int numOrgsToAnalyze = 3;
-    bool runModelSaveLoadTest = false; // Renamed from testModelSaveLoad to avoid name collision with function
     bool useJsonModel = true;
     bool shouldAnalyzeChunks = false; // Renamed from analyzeChunks to avoid conflict with function
     int chunkSize = 5000;
@@ -1020,8 +942,6 @@ int main(int argc, char **argv)
             analyzeSymbolInfo = stringToBool(configParams["analyze_symbol_info"]);
         if (configParams.count("num_orgs_to_analyze"))
             numOrgsToAnalyze = stoi(configParams["num_orgs_to_analyze"]);
-        if (configParams.count("test_model_save_load"))
-            runModelSaveLoadTest = stringToBool(configParams["test_model_save_load"]);
         if (configParams.count("use_json_model"))
             useJsonModel = stringToBool(configParams["use_json_model"]);
         if (configParams.count("analyze_chunks"))
@@ -1332,14 +1252,6 @@ int main(int argc, char **argv)
     else
     {
         cerr << "\nFailed to save results" << endl;
-    }
-
-    // Ask if user wants to test model saving/loading
-    if (runModelSaveLoadTest || (!useConfigFile && askYesNo("\nWould you like to test model saving and loading?")))
-    {
-        string modelOutfile = "test_model";
-        bool jsonModel = useConfigFile ? useJsonModel : askYesNo("Use JSON format for model? (No for binary)");
-        testModelSaveLoad(sampleFile, modelOutfile, jsonModel);
     }
 
     // Ask if user wants to analyze chunks
