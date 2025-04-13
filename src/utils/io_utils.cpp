@@ -197,6 +197,51 @@ bool stringToBool(const string &value)
     return (lowerValue == "true" || lowerValue == "yes" || lowerValue == "y" || lowerValue == "1");
 }
 
+// Save results to JSON file with only top matches
+bool saveResultsToJson(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>> &allResults,
+                       const string &outputFile)
+{
+    json resultsJson;
+
+    for (size_t testIdx = 0; testIdx < allResults.size(); testIdx++)
+    {
+        const auto &test = allResults[testIdx];
+        int k = test.first.first;
+        double alpha = test.first.second;
+        const auto &references = test.second.first;
+        double execTime = test.second.second;
+
+        json testJson;
+        testJson["k"] = k;
+        testJson["alpha"] = alpha;
+        testJson["execTime_ms"] = execTime;
+
+        json refsJson = json::array();
+        for (size_t i = 0; i < references.size(); i++)
+        {
+            json refJson;
+            refJson["rank"] = i + 1;
+            refJson["name"] = references[i].name;
+            refJson["nrc"] = references[i].nrc;
+            refJson["kld"] = references[i].kld;
+            refsJson.push_back(refJson);
+        }
+
+        testJson["references"] = refsJson;
+        resultsJson.push_back(testJson);
+    }
+
+    ofstream file(outputFile);
+    if (!file)
+    {
+        cerr << "Error: Could not open output file: " << outputFile << endl;
+        return false;
+    }
+
+    file << setw(4) << resultsJson << endl;
+    return true;
+}
+
 // Save results to CSV file with only top matches
 bool saveResultsToCsv(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>> &allResults,
                       const string &outputFile)
