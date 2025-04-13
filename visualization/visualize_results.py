@@ -1,8 +1,6 @@
 import os
 import argparse
 import shutil
-import json
-from collections import Counter
 
 # Import our modules
 from data_handler import (
@@ -21,8 +19,8 @@ from plot_chunk_analysis import plot_chunk_analysis
 def main():
     # Set up command line argument parsing
     parser = argparse.ArgumentParser(description='Visualize NRC results from JSON data.')
-    parser.add_argument('--input', '-i', type=str, default='../results/latest',
-                        help='Path to the test results folder (default: results/latest)')
+    parser.add_argument('--input', '-i', type=str, default='..\\results\\latest',
+                        help='Path to the test results folder (default: ..\\results\\latest)')
     parser.add_argument('--output', '-o', type=str, default='visualization_results',
                         help='Base directory for visualization results (default: visualization_results)')
     args = parser.parse_args()
@@ -99,7 +97,7 @@ def main():
         # Generate summary statistics
         stats = generate_summary_statistics(df, top_organisms_results_filepath, timestamp, output_dir)
     
-    print("=== SUMMARY STATISTICS ===")
+    print("\n=== SUMMARY STATISTICS ===")
     print(f"Most frequent top-ranking organism: {stats['top_organism']}")
     print(f"Best NRC value: {stats['best_nrc']:.6f}")
     print(f"Best parameters: k={stats['best_k']}, alpha={stats['best_alpha']}")
