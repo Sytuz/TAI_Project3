@@ -23,7 +23,7 @@ def load_organism_symbols(filepath):
                 file_path = os.path.join(symbol_info_dir, filename)
                 try:
                     # Extract organism name from filename (remove .csv extension)
-                    organism_name = '_'.join(filename.split('_')[1:]).split(',')[0].replace('.csv', '')
+                    organism_name = filename.split(',')[0].replace('.csv', '')
                     # Load CSV into dataframe
                     organism_df = pd.read_csv(file_path)
                     

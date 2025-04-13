@@ -38,6 +38,9 @@ def plot_info_profile(organisms_data, output_dir):
         # Clean up the organism name, by removing the last character
         organism = organism[:-1]
         
+        # Extract the rank of the organism
+        rank = organism.split('_')[0]
+        
         # Create plot with just the final processed data
         plt.figure(figsize=(12, 6))
         plt.plot(positions, combined_info, linestyle='-', color='black')
@@ -47,7 +50,7 @@ def plot_info_profile(organisms_data, output_dir):
         plt.grid(True, linestyle='--', alpha=0.7)
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, f'info_profile_processed_{organism}.png'))
+        plt.savefig(os.path.join(output_dir, f'{rank}_info_profile_processed_{'_'.join(organism.split('_')[1:])}.png'))
         plt.close()
 
 def plot_cross_comparison(input_folder, output_dir):
