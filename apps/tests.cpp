@@ -894,7 +894,7 @@ int main(int argc, char **argv)
 
     // Default values
     string sampleFile = "../data/samples/meta.txt";
-    string dbFile = "..data/samples/db.txt";
+    string dbFile = "../data/samples/db.txt";
     int minK = 3;
     int maxK = 6;
     double minAlpha = 0.001;
