@@ -787,6 +787,89 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
     }
 }
 
+// Function to perform cross-comparison between top organisms
+void performCrossComparison(const vector<Reference>& topReferences, int k, double alpha,
+                            const string& timestampDir, const string& latestDir) {
+    cout << "\n====================================================" << endl;
+    cout << "Performing cross-comparison of top organisms" << endl;
+    cout << "====================================================" << endl;
+
+    int numRefs = topReferences.size();
+    cout << "Comparing " << numRefs << " top organisms to each other" << endl;
+
+    // Initialize matrices for storing NRC and KLD values
+    vector<vector<double>> nrcMatrix(numRefs, vector<double>(numRefs, 0.0));
+    vector<vector<double>> kldMatrix(numRefs, vector<double>(numRefs, 0.0));
+
+    // For each pair of organisms, calculate NRC and KLD
+    for (int i = 0; i < numRefs; i++) {
+        const Reference& ref1 = topReferences[i];
+
+        // Create model from this organism's sequence
+        FCMModel model(k, alpha);
+        model.learn(ref1.sequence);
+        model.lockModel();
+
+        DNACompressor compressor(model);
+
+        cout << "\rProcessing organism " << (i+1) << "/" << numRefs << " as reference..." << flush;
+
+        // Calculate NRC when this organism is the reference model
+        for (int j = 0; j < numRefs; j++) {
+            const Reference& ref2 = topReferences[j];
+
+            // Calculate NRC and KLD
+            double nrc = compressor.calculateNRC(ref2.sequence);
+            double kld = compressor.calculateKLD(ref2.sequence);
+
+            nrcMatrix[i][j] = nrc;
+            kldMatrix[i][j] = kld;
+        }
+    }
+    cout << endl;
+
+    // Create JSON object for the results
+    json crossComparisonJson;
+    crossComparisonJson["k"] = k;
+    crossComparisonJson["alpha"] = alpha;
+
+    // Add organism names
+    json organisms = json::array();
+    for (const auto& ref : topReferences) {
+        organisms.push_back(ref.name);
+    }
+    crossComparisonJson["organisms"] = organisms;
+
+    // Add NRC matrix
+    json nrcMatrixJson = json::array();
+    for (const auto& row : nrcMatrix) {
+        nrcMatrixJson.push_back(row);
+    }
+    crossComparisonJson["nrc_matrix"] = nrcMatrixJson;
+
+    // Add KLD matrix
+    json kldMatrixJson = json::array();
+    for (const auto& row : kldMatrix) {
+        kldMatrixJson.push_back(row);
+    }
+    crossComparisonJson["kld_matrix"] = kldMatrixJson;
+
+    // Save the cross-comparison results to both directories
+    string timestampFile = timestampDir + "/cross_comparison.json";
+    string latestFile = latestDir + "/cross_comparison.json";
+
+    ofstream out1(timestampFile), out2(latestFile);
+    if (out1 && out2) {
+        out1 << setw(4) << crossComparisonJson << endl;
+        out2 << setw(4) << crossComparisonJson << endl;
+        cout << "Cross-comparison results saved to:\n";
+        cout << "- " << timestampFile << endl;
+        cout << "- " << latestFile << endl;
+    } else {
+        cerr << "Error: Failed to save cross-comparison results" << endl;
+    }
+}
+
 // Main function with support for config file
 int main(int argc, char **argv)
 {
@@ -832,9 +915,9 @@ int main(int argc, char **argv)
     }
 
     // Only check for synthetic files if no config file is provided or explicit synthetic flag is set
-    if (!useConfigFile && !useSyntheticData) {
+    if (!useConfigFile && useSyntheticData) {
         // Check for synthetic files existence
-        if (filesystem::exists(syntheticSampleFile) && filesystem::exists(syntheticDbFile) && 
+        if (filesystem::exists(syntheticSampleFile) && filesystem::exists(syntheticDbFile) &&
             filesystem::exists(syntheticGroundTruthFile))
         {
             useSyntheticData = true;
@@ -1293,6 +1376,36 @@ int main(int argc, char **argv)
         // Perform chunk analysis
         analyzeChunks(sampleFile, allResults[bestTestIndex].second.first, bestK, bestAlpha,
                       chunkSize, chunkOverlap, timestampDir, latestDir);
+    }
+
+    // Ask if user wants to do cross-comparison of top organisms
+    if (!allResults.empty() && (!useConfigFile && askYesNo("\nWould you like to perform cross-comparison between top organisms?"))) {
+        // Use best parameters
+        int bestK = allResults[0].first.first;
+        double bestAlpha = allResults[0].first.second;
+        double bestNrc = std::numeric_limits<double>::max();
+        size_t bestTestIndex = 0;
+
+        for (size_t i = 0; i < allResults.size(); i++) {
+            if (!allResults[i].second.first.empty() && allResults[i].second.first[0].nrc < bestNrc) {
+                bestNrc = allResults[i].second.first[0].nrc;
+                bestTestIndex = i;
+                bestK = allResults[i].first.first;
+                bestAlpha = allResults[i].first.second;
+            }
+        }
+
+        cout << "\nUsing best performing parameters: k=" << bestK << ", alpha=" << bestAlpha << endl;
+
+        // Determine how many top organisms to compare
+        int numOrgs = std::min(getIntInput("How many top organisms to compare? (5-20): ", 5, 20),
+                            static_cast<int>(allResults[bestTestIndex].second.first.size()));
+
+        vector<Reference> topRefs(allResults[bestTestIndex].second.first.begin(),
+                                allResults[bestTestIndex].second.first.begin() + numOrgs);
+
+        // Perform cross-comparison
+        performCrossComparison(topRefs, bestK, bestAlpha, timestampDir, latestDir);
     }
 
     cout << "\nTesting complete!" << endl;

@@ -513,6 +513,123 @@ def get_timestamp_from_info(input_folder):
     print(f"Warning: Could not find timestamp in info.txt, using current time: {timestamp}")
     return timestamp
 
+def plot_cross_comparison(input_folder, output_dir):
+    """Create heatmap visualization of cross-comparison between top organisms."""
+    cross_comparison_file = os.path.join(input_folder, 'cross_comparison.json')
+    if not os.path.exists(cross_comparison_file):
+        print(f"Cross-comparison file not found at {cross_comparison_file}")
+        return
+
+    print("Creating cross-comparison visualization...")
+
+    # Load cross-comparison data
+    with open(cross_comparison_file, 'r') as f:
+        cross_data = json.load(f)
+
+    if not cross_data or 'organisms' not in cross_data:
+        print("No valid cross-comparison data found.")
+        return
+
+    # Extract data
+    organisms = cross_data.get('organisms', [])
+    nrc_matrix = cross_data.get('nrc_matrix', [])
+    kld_matrix = cross_data.get('kld_matrix', [])
+    k = cross_data.get('k', 'unknown')
+    alpha = cross_data.get('alpha', 'unknown')
+
+    if not organisms or not nrc_matrix:
+        print("Missing required data in cross-comparison file.")
+        return
+
+    # Create shorter labels for the heatmap
+    short_labels = []
+    for name in organisms:
+        if "|" in name:
+            parts = name.split("|")
+            if len(parts) >= 3:
+                short_name = parts[2].strip()
+            else:
+                short_name = parts[0].strip()
+        else:
+            name_parts = name.split(" ")
+            if len(name_parts) > 2:
+                short_name = " ".join(name_parts[0:2])
+            else:
+                short_name = name
+        short_labels.append(short_name)
+
+    # Create NRC heatmap
+    plt.figure(figsize=(14, 12))
+    nrc_array = np.array(nrc_matrix)
+
+    # Calculate distance matrix from NRC (lower NRC = more similar)
+    # (normalize the values to be between 0 and 1)
+    if np.max(nrc_array) > np.min(nrc_array):
+        normalized_nrc = (nrc_array - np.min(nrc_array)) / (np.max(nrc_array) - np.min(nrc_array))
+    else:
+        normalized_nrc = nrc_array
+
+    # Create clustered heatmap with dendrograms
+    g = sns.clustermap(
+        normalized_nrc,
+        cmap='YlGnBu_r',  # reversed colormap so darker = more similar
+        annot=np.round(nrc_array, 3),  # show original NRC values
+        fmt='.3f',
+        figsize=(14, 12),
+        xticklabels=short_labels,
+        yticklabels=short_labels,
+        cbar_kws={'label': 'Normalized NRC (darker = more similar)'}
+    )
+
+    plt.suptitle(f'Cross-Comparison Between Top Organisms (k={k}, α={alpha})',
+                y=0.98, fontsize=16)
+    plt.title('Lower NRC values indicate higher similarity', fontsize=12, pad=10)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'cross_comparison_nrc_clustered.png'))
+    plt.close()
+    plt.figure(figsize=(14, 12))
+    ax = sns.heatmap(
+        nrc_array,
+        annot=True,
+        fmt='.3f',
+        cmap='YlGnBu_r',
+        xticklabels=short_labels,
+        yticklabels=short_labels
+    )
+    plt.title(f'Cross-Comparison NRC Values (k={k}, α={alpha})')
+    plt.xlabel('Target Organism (being compressed)')
+    plt.ylabel('Reference Organism (providing model)')
+    plt.xticks(rotation=45, ha='right')
+    plt.yticks(rotation=0)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'cross_comparison_nrc.png'))
+    plt.close()
+
+    # Create KLD heatmap if available
+    if kld_matrix:
+        plt.figure(figsize=(14, 12))
+        kld_array = np.array(kld_matrix)
+
+        # Create heatmap
+        ax = sns.heatmap(
+            kld_array,
+            annot=True,
+            fmt='.3f',
+            cmap='YlOrRd',
+            xticklabels=short_labels,
+            yticklabels=short_labels
+        )
+        plt.title(f'Cross-Comparison KLD Values (k={k}, α={alpha})')
+        plt.xlabel('Target Organism (being compressed)')
+        plt.ylabel('Reference Organism (providing model)')
+        plt.xticks(rotation=45, ha='right')
+        plt.yticks(rotation=0)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, 'cross_comparison_kld.png'))
+        plt.close()
+
+    print(f"Cross-comparison visualizations saved to {output_dir}")
+
 def main():
     # Set up command line argument parsing
     parser = argparse.ArgumentParser(description='Visualize NRC results from JSON data.')
@@ -584,6 +701,7 @@ def main():
         plot_rank_stability(df, output_dir)
         plot_parameter_influence(df, output_dir)
         plot_nrc_boxplot_by_k(df, output_dir)
+        plot_cross_comparison(input_folder, output_dir)
         
         # Add chunk analysis visualization if available
         chunk_data_file = os.path.join(input_folder, 'chunk_analysis.json')
