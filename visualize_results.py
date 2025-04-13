@@ -562,31 +562,6 @@ def plot_cross_comparison(input_folder, output_dir):
     plt.figure(figsize=(14, 12))
     nrc_array = np.array(nrc_matrix)
 
-    # Calculate distance matrix from NRC (lower NRC = more similar)
-    # (normalize the values to be between 0 and 1)
-    if np.max(nrc_array) > np.min(nrc_array):
-        normalized_nrc = (nrc_array - np.min(nrc_array)) / (np.max(nrc_array) - np.min(nrc_array))
-    else:
-        normalized_nrc = nrc_array
-
-    # Create clustered heatmap with dendrograms
-    g = sns.clustermap(
-        normalized_nrc,
-        cmap='YlGnBu_r',  # reversed colormap so darker = more similar
-        annot=np.round(nrc_array, 3),  # show original NRC values
-        fmt='.3f',
-        figsize=(14, 12),
-        xticklabels=short_labels,
-        yticklabels=short_labels,
-        cbar_kws={'label': 'Normalized NRC (darker = more similar)'}
-    )
-
-    plt.suptitle(f'Cross-Comparison Between Top Organisms (k={k}, α={alpha})',
-                y=0.98, fontsize=16)
-    plt.title('Lower NRC values indicate higher similarity', fontsize=12, pad=10)
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'cross_comparison_nrc_clustered.png'))
-    plt.close()
     plt.figure(figsize=(14, 12))
     ax = sns.heatmap(
         nrc_array,
@@ -702,7 +677,7 @@ def main():
         plot_parameter_influence(df, output_dir)
         plot_nrc_boxplot_by_k(df, output_dir)
         plot_cross_comparison(input_folder, output_dir)
-        
+
         # Add chunk analysis visualization if available
         chunk_data_file = os.path.join(input_folder, 'chunk_analysis.json')
         if os.path.exists(chunk_data_file):
