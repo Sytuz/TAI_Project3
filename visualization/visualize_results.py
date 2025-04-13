@@ -8,7 +8,8 @@ from data_handler import (
     get_timestamp_from_info, generate_summary_statistics
 )
 from plot_organism_info import (plot_info_profile
-                                , plot_cross_comparison)
+                                , plot_cross_comparison
+                                , plot_complexity_profile)
 from plot_nrc import (
     plot_top_organisms_nrc, plot_rank_stability, 
     plot_parameter_influence, plot_nrc_boxplot_by_k
@@ -19,8 +20,8 @@ from plot_chunk_analysis import plot_chunk_analysis
 def main():
     # Set up command line argument parsing
     parser = argparse.ArgumentParser(description='Visualize NRC results from JSON data.')
-    parser.add_argument('--input', '-i', type=str, default='..\\results\\latest',
-                        help='Path to the test results folder (default: ..\\results\\latest)')
+    parser.add_argument('--input', '-i', type=str, default='../results/latest',
+                        help='Path to the test results folder (default: ../results/latest)')
     parser.add_argument('--output', '-o', type=str, default='visualization_results',
                         help='Base directory for visualization results (default: visualization_results)')
     args = parser.parse_args()
@@ -82,6 +83,7 @@ def main():
     for output_dir in [timestamp_dir, latest_dir]:
         if organism_data:
             plot_info_profile(organism_data, output_dir)
+            plot_complexity_profile(organism_data, output_dir, nrc_threshold=0.05)
         plot_top_organisms_nrc(df, output_dir)
         plot_execution_time(df, output_dir)
         plot_rank_stability(df, output_dir)
