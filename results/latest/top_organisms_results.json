@@ -1,7 +1,7 @@
 [
     {
         "alpha": 0.01,
-        "execTime_ms": 25103.853863,
+        "execTime_ms": 26096.296762,
         "k": 13,
         "references": [
             {
@@ -98,7 +98,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 23983.784274,
+        "execTime_ms": 24001.926094,
         "k": 13,
         "references": [
             {
@@ -195,7 +195,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 23943.572704,
+        "execTime_ms": 24101.267887,
         "k": 14,
         "references": [
             {
@@ -292,7 +292,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 23327.760387,
+        "execTime_ms": 24191.441995,
         "k": 14,
         "references": [
             {
@@ -389,7 +389,7 @@
     },
     {
         "alpha": 0.01,
-        "execTime_ms": 24215.635436,
+        "execTime_ms": 24034.76486,
         "k": 15,
         "references": [
             {
@@ -486,7 +486,7 @@
     },
     {
         "alpha": 0.02,
-        "execTime_ms": 23701.957775,
+        "execTime_ms": 24677.14259,
         "k": 15,
         "references": [
             {

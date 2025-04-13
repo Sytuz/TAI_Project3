@@ -1,17 +1,17 @@
 {
     "alpha": 0.01,
-    "chunk_count": 70,
-    "chunk_size": 25000,
+    "chunk_count": 34,
+    "chunk_size": 50000,
     "chunks": [
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9124389717386152,
-            "length": 25000,
+            "best_nrc": 0.8271505804673632,
+            "length": 50000,
             "position": 0,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9124389717386152
+                    "nrc": 0.8271505804673632
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -25,13 +25,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9112824619120106,
-            "length": 25000,
-            "position": 24000,
+            "best_nrc": 0.8337763873352565,
+            "length": 50000,
+            "position": 49000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9112824619120106
+                    "nrc": 0.8337763873352565
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -45,13 +45,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9135244587290431,
-            "length": 25000,
-            "position": 48000,
+            "best_nrc": 0.8090565022549884,
+            "length": 50000,
+            "position": 98000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9135244587290431
+                    "nrc": 0.8090565022549884
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -65,13 +65,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.910565361465857,
-            "length": 25000,
-            "position": 72000,
+            "best_nrc": 0.825716604934116,
+            "length": 50000,
+            "position": 147000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.910565361465857
+                    "nrc": 0.825716604934116
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -85,13 +85,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9096597774942153,
-            "length": 25000,
-            "position": 96000,
+            "best_nrc": 0.8170286456472392,
+            "length": 50000,
+            "position": 196000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9096597774942153
+                    "nrc": 0.8170286456472392
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -105,13 +105,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.8914371640734245,
-            "length": 25000,
-            "position": 120000,
+            "best_nrc": 0.8334503475600485,
+            "length": 50000,
+            "position": 245000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.8914371640734245
+                    "nrc": 0.8334503475600485
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -125,13 +125,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.905979103557496,
-            "length": 25000,
-            "position": 144000,
+            "best_nrc": 0.8273563538279523,
+            "length": 50000,
+            "position": 294000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.905979103557496
+                    "nrc": 0.8273563538279523
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -145,13 +145,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9093196095804399,
-            "length": 25000,
-            "position": 168000,
+            "best_nrc": 0.8281986703847234,
+            "length": 50000,
+            "position": 343000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9093196095804399
+                    "nrc": 0.8281986703847234
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -165,13 +165,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9000592462267156,
-            "length": 25000,
-            "position": 192000,
+            "best_nrc": 0.8300274456713596,
+            "length": 50000,
+            "position": 392000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9000592462267156
+                    "nrc": 0.8300274456713596
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -185,13 +185,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9143768061696611,
-            "length": 25000,
-            "position": 216000,
+            "best_nrc": 0.8234537110676683,
+            "length": 50000,
+            "position": 441000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9143768061696611
+                    "nrc": 0.8234537110676683
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -205,13 +205,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9134506975198358,
-            "length": 25000,
-            "position": 240000,
+            "best_nrc": 0.8385925527451727,
+            "length": 50000,
+            "position": 490000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9134506975198358
+                    "nrc": 0.8385925527451727
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -225,293 +225,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9139131416033993,
-            "length": 25000,
-            "position": 264000,
+            "best_nrc": 0.824937468783749,
+            "length": 50000,
+            "position": 539000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9139131416033993
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9136893507712907,
-            "length": 25000,
-            "position": 288000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9136893507712907
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9118959975540911,
-            "length": 25000,
-            "position": 312000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9118959975540911
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9001195381201196,
-            "length": 25000,
-            "position": 336000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9001195381201196
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9169794179747757,
-            "length": 25000,
-            "position": 360000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9169794179747757
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9036678103603217,
-            "length": 25000,
-            "position": 384000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9036678103603217
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.903552437667067,
-            "length": 25000,
-            "position": 408000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.903552437667067
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9195391297981658,
-            "length": 25000,
-            "position": 432000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9195391297981658
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.8996354368168279,
-            "length": 25000,
-            "position": 456000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.8996354368168279
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.907330253500756,
-            "length": 25000,
-            "position": 480000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.907330253500756
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9226289623410882,
-            "length": 25000,
-            "position": 504000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9226289623410882
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9041094159319458,
-            "length": 25000,
-            "position": 528000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9041094159319458
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.8984204666801465,
-            "length": 25000,
-            "position": 552000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.8984204666801465
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9046300795781412,
-            "length": 25000,
-            "position": 576000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9046300795781412
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9135830146721546,
-            "length": 25000,
-            "position": 600000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9135830146721546
+                    "nrc": 0.824937468783749
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -525,17 +245,37 @@
         },
         {
             "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6563918812868547,
-            "length": 25000,
-            "position": 624000,
+            "best_nrc": 0.7814809182687015,
+            "length": 50000,
+            "position": 588000,
             "top_matches": [
                 {
                     "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6563918812868547
+                    "nrc": 0.7814809182687015
+                },
+                {
+                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
+                    "nrc": 0.8655761790926371
                 },
                 {
                     "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.7833510631604634
+                    "nrc": 0.865591700913386
+                }
+            ]
+        },
+        {
+            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+            "best_nrc": 0.47166703778952657,
+            "length": 50000,
+            "position": 637000,
+            "top_matches": [
+                {
+                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                    "nrc": 0.47166703778952657
+                },
+                {
+                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                    "nrc": 0.6675885762810356
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -545,113 +285,53 @@
         },
         {
             "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.703975740204138,
-            "length": 25000,
-            "position": 648000,
+            "best_nrc": 0.5115976899369982,
+            "length": 50000,
+            "position": 686000,
             "top_matches": [
                 {
                     "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.703975740204138
+                    "nrc": 0.5115976899369982
                 },
                 {
                     "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.813430209072592
+                    "nrc": 0.6965909478736717
                 },
                 {
                     "name": "Super MUL 720\r",
                     "nrc": 0.9791666666666666
-                }
-            ]
-        },
-        {
-            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6795682793335409,
-            "length": 25000,
-            "position": 672000,
-            "top_matches": [
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6795682793335409
-                },
-                {
-                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.8057882267786766
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                }
-            ]
-        },
-        {
-            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.7132359537943406,
-            "length": 25000,
-            "position": 696000,
-            "top_matches": [
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.7132359537943406
-                },
-                {
-                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.8223264311139068
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                }
-            ]
-        },
-        {
-            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6893180950807688,
-            "length": 25000,
-            "position": 720000,
-            "top_matches": [
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6893180950807688
-                },
-                {
-                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.8128104149488454
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                }
-            ]
-        },
-        {
-            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.7901117520216706,
-            "length": 25000,
-            "position": 744000,
-            "top_matches": [
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.7901117520216706
-                },
-                {
-                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-                    "nrc": 0.8235047384788244
-                },
-                {
-                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.8645928775601932
                 }
             ]
         },
         {
             "best_match": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-            "best_nrc": 0.5408217001026049,
-            "length": 25000,
-            "position": 768000,
+            "best_nrc": 0.5737743508221966,
+            "length": 50000,
+            "position": 735000,
             "top_matches": [
                 {
                     "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-                    "nrc": 0.5408217001026049
+                    "nrc": 0.5737743508221966
+                },
+                {
+                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
+                    "nrc": 0.6923101886022074
+                },
+                {
+                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
+                    "nrc": 0.8082527231827534
+                }
+            ]
+        },
+        {
+            "best_match": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+            "best_nrc": 0.2524075742678729,
+            "length": 50000,
+            "position": 784000,
+            "top_matches": [
+                {
+                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                    "nrc": 0.2524075742678729
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -660,78 +340,38 @@
                 {
                     "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
                     "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-            "best_nrc": 0.5007766210728395,
-            "length": 25000,
-            "position": 792000,
-            "top_matches": [
-                {
-                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-                    "nrc": 0.5007766210728395
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-            "best_nrc": 0.5035090222607952,
-            "length": 25000,
-            "position": 816000,
-            "top_matches": [
-                {
-                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-                    "nrc": 0.5035090222607952
-                },
-                {
-                    "name": "Super ISS Si1240\r",
-                    "nrc": 0.6105559895242526
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
                 }
             ]
         },
         {
             "best_match": "Super ISS Si1240\r",
-            "best_nrc": 0.18738567213042104,
-            "length": 25000,
-            "position": 840000,
+            "best_nrc": 0.18704725191978844,
+            "length": 50000,
+            "position": 833000,
             "top_matches": [
                 {
                     "name": "Super ISS Si1240\r",
-                    "nrc": 0.18738567213042104
+                    "nrc": 0.18704725191978844
                 },
                 {
                     "name": "Super MUL 720\r",
                     "nrc": 0.24010302724528626
                 },
                 {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9373573619473837
+                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                    "nrc": 0.8161791588107757
                 }
             ]
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9207525943569356,
-            "length": 25000,
-            "position": 864000,
+            "best_nrc": 0.8201352303412024,
+            "length": 50000,
+            "position": 882000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9207525943569356
+                    "nrc": 0.8201352303412024
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -745,13 +385,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9054387923889277,
-            "length": 25000,
-            "position": 888000,
+            "best_nrc": 0.8372530532004555,
+            "length": 50000,
+            "position": 931000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9054387923889277
+                    "nrc": 0.8372530532004555
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -765,13 +405,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9030070058037635,
-            "length": 25000,
-            "position": 912000,
+            "best_nrc": 0.8400049515914704,
+            "length": 50000,
+            "position": 980000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9030070058037635
+                    "nrc": 0.8400049515914704
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -785,13 +425,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9101665864964802,
-            "length": 25000,
-            "position": 936000,
+            "best_nrc": 0.8426109678101354,
+            "length": 50000,
+            "position": 1029000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9101665864964802
+                    "nrc": 0.8426109678101354
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -805,13 +445,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9227470148422112,
-            "length": 25000,
-            "position": 960000,
+            "best_nrc": 0.8302358356607904,
+            "length": 50000,
+            "position": 1078000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9227470148422112
+                    "nrc": 0.8302358356607904
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -825,13 +465,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9154482289172179,
-            "length": 25000,
-            "position": 984000,
+            "best_nrc": 0.8331647546653105,
+            "length": 50000,
+            "position": 1127000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9154482289172179
+                    "nrc": 0.8331647546653105
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -845,153 +485,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9162851307350252,
-            "length": 25000,
-            "position": 1008000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9162851307350252
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9114774627820487,
-            "length": 25000,
-            "position": 1032000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9114774627820487
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9262284921999556,
-            "length": 25000,
-            "position": 1056000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9262284921999556
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9131773944386992,
-            "length": 25000,
-            "position": 1080000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9131773944386992
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.906935730067235,
-            "length": 25000,
-            "position": 1104000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.906935730067235
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.908413259950171,
-            "length": 25000,
-            "position": 1128000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.908413259950171
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9182758729810545,
-            "length": 25000,
-            "position": 1152000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9182758729810545
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9188442630528417,
-            "length": 25000,
+            "best_nrc": 0.8298345315280576,
+            "length": 50000,
             "position": 1176000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9188442630528417
+                    "nrc": 0.8298345315280576
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1005,13 +505,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9029283017146542,
-            "length": 25000,
-            "position": 1200000,
+            "best_nrc": 0.8394891035727613,
+            "length": 50000,
+            "position": 1225000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9029283017146542
+                    "nrc": 0.8394891035727613
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1025,13 +525,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.91587095199489,
-            "length": 25000,
-            "position": 1224000,
+            "best_nrc": 0.8335543312805599,
+            "length": 50000,
+            "position": 1274000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.91587095199489
+                    "nrc": 0.8335543312805599
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1045,13 +545,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9167317642815782,
-            "length": 25000,
-            "position": 1248000,
+            "best_nrc": 0.8230054922937962,
+            "length": 50000,
+            "position": 1323000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9167317642815782
+                    "nrc": 0.8230054922937962
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1065,13 +565,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.901679572012469,
-            "length": 25000,
-            "position": 1272000,
+            "best_nrc": 0.8453928739609942,
+            "length": 50000,
+            "position": 1372000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.901679572012469
+                    "nrc": 0.8453928739609942
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1085,133 +585,13 @@
         },
         {
             "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9229854327649125,
-            "length": 25000,
-            "position": 1296000,
+            "best_nrc": 0.8282651269170567,
+            "length": 50000,
+            "position": 1421000,
             "top_matches": [
                 {
                     "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9229854327649125
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9118467882476206,
-            "length": 25000,
-            "position": 1320000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9118467882476206
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.905526308272899,
-            "length": 25000,
-            "position": 1344000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.905526308272899
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9137665093558849,
-            "length": 25000,
-            "position": 1368000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9137665093558849
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9182236543650365,
-            "length": 25000,
-            "position": 1392000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9182236543650365
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9129794084765471,
-            "length": 25000,
-            "position": 1416000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9129794084765471
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-            "best_nrc": 0.9118244365814328,
-            "length": 25000,
-            "position": 1440000,
-            "top_matches": [
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9118244365814328
+                    "nrc": 0.8282651269170567
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1225,37 +605,17 @@
         },
         {
             "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.7712566723297029,
-            "length": 25000,
-            "position": 1464000,
+            "best_nrc": 0.45024020219215594,
+            "length": 50000,
+            "position": 1470000,
             "top_matches": [
                 {
                     "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.7712566723297029
+                    "nrc": 0.45024020219215594
                 },
                 {
                     "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.8583855848069492
-                },
-                {
-                    "name": "NC_001348.1 Human herpesvirus 3, complete genome\r",
-                    "nrc": 0.9623948725101952
-                }
-            ]
-        },
-        {
-            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6613097006567078,
-            "length": 25000,
-            "position": 1488000,
-            "top_matches": [
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6613097006567078
-                },
-                {
-                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.7900151670631794
+                    "nrc": 0.6571639244815758
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1265,17 +625,17 @@
         },
         {
             "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6778752197682755,
-            "length": 25000,
-            "position": 1512000,
+            "best_nrc": 0.4133183994557701,
+            "length": 50000,
+            "position": 1519000,
             "top_matches": [
                 {
                     "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6778752197682755
+                    "nrc": 0.4133183994557701
                 },
                 {
                     "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.8024470612317809
+                    "nrc": 0.6354973901152896
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1285,113 +645,33 @@
         },
         {
             "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6144129188365987,
-            "length": 25000,
-            "position": 1536000,
+            "best_nrc": 0.5107696321749736,
+            "length": 50000,
+            "position": 1568000,
             "top_matches": [
                 {
                     "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6144129188365987
+                    "nrc": 0.5107696321749736
                 },
                 {
                     "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.7520583267977193
+                    "nrc": 0.6956914539062927
                 },
                 {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                }
-            ]
-        },
-        {
-            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6520930377645957,
-            "length": 25000,
-            "position": 1560000,
-            "top_matches": [
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6520930377645957
-                },
-                {
-                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.7903331121013593
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                }
-            ]
-        },
-        {
-            "best_match": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-            "best_nrc": 0.6799749645977616,
-            "length": 25000,
-            "position": 1584000,
-            "top_matches": [
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.6799749645977616
-                },
-                {
-                    "name": "gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.8005611210119349
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
+                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
+                    "nrc": 0.7828170349793016
                 }
             ]
         },
         {
             "best_match": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-            "best_nrc": 0.5055405651489213,
-            "length": 25000,
-            "position": 1608000,
+            "best_nrc": 0.28571532986948184,
+            "length": 50000,
+            "position": 1617000,
             "top_matches": [
                 {
                     "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-                    "nrc": 0.5055405651489213
-                },
-                {
-                    "name": "NC_005831.2 Human Coronavirus NL63, complete genome\r",
-                    "nrc": 0.9757588325031489
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                }
-            ]
-        },
-        {
-            "best_match": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-            "best_nrc": 0.49501508889818624,
-            "length": 25000,
-            "position": 1632000,
-            "top_matches": [
-                {
-                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-                    "nrc": 0.49501508889818624
-                },
-                {
-                    "name": "Super MUL 720\r",
-                    "nrc": 0.9791666666666666
-                },
-                {
-                    "name": "gi|693764272|ref|NC_025220.1| Sweet potato leaf curl virus associated satellite isolate 1764E13, complete sequence\r",
-                    "nrc": 0.9795361527967258
-                }
-            ]
-        },
-        {
-            "best_match": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-            "best_nrc": 0.4689760833244336,
-            "length": 25000,
-            "position": 1656000,
-            "top_matches": [
-                {
-                    "name": "OR353425.1 Octopus vulgaris mitochondrion, complete genome\r",
-                    "nrc": 0.4689760833244336
+                    "nrc": 0.28571532986948184
                 },
                 {
                     "name": "Super MUL 720\r",
@@ -1407,6 +687,6 @@
     "completed": true,
     "k": 15,
     "overlap": 1000,
-    "processed_chunks": 70,
+    "processed_chunks": 34,
     "sample_length": 1696500
 }

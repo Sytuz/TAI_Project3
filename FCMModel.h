@@ -25,8 +25,10 @@ public:
      * @brief Constructs an FCMModel object with the given parameters.
      * @param k The order of the model (length of the context).
      * @param alpha The smoothing parameter.
+     * @param verbose Whether to print verbose output during learning.
      */
-    FCMModel(int k, double alpha);
+    FCMModel(int k, double alpha, bool verbose = true)
+        : k(k), alpha(alpha), verbose(verbose) {}
 
 
     /* --- Model Management --- */
@@ -105,7 +107,7 @@ public:
      * @brief Learns from the given text by updating the model.
      * @param text The input text to learn from.
      */
-    virtual void learn(const std::string &text, bool clearLogs = false);
+    virtual void learn(const std::string &text);
 
     /**
      * @brief Computes the average information content of the given text based on the model.
@@ -195,6 +197,7 @@ private:
     int k;
     double alpha;
     bool locked = false;
+    bool verbose;
 
     std::unordered_map<std::string, std::unordered_map<std::string, int>> frequencyTable;
     std::unordered_map<std::string, std::unordered_map<std::string, float>> probabilityTable;

@@ -9,7 +9,6 @@ using json = nlohmann::json;
 
 // JSON for serialization
 FCMModel::FCMModel(): k(3), alpha(0.1) {}  // default
-FCMModel::FCMModel(int k, double alpha): k(k), alpha(alpha) {}
 
 // Helper functions
 int getAlphabetSize(const std::string &text){
@@ -49,7 +48,7 @@ std::size_t FCMModel::getTotalTransitionCount() const {
 }
 
 // Class methods
-void FCMModel::learn(const std::string &text, bool clearLogs) {
+void FCMModel::learn(const std::string &text) {
     if (locked) {
         std::cout << "Cannot learn: model is locked" << std::endl;
         return;  // Early return if locked - consider throwing an exception instead
@@ -60,13 +59,13 @@ void FCMModel::learn(const std::string &text, bool clearLogs) {
         return;  // Early return if text is empty
     }
     
-    if (!clearLogs) {
+    if (!verbose) {
         std::cout << "Learning from text of length: " << text.length() << " characters..." << std::endl;
     }
     
     // Split text into UTF-8 characters
     std::vector<std::string> characters = splitIntoUTF8Characters(text);
-    if (!clearLogs) {
+    if (!verbose) {
         std::cout << "Split into " << characters.size() << " UTF-8 characters" << std::endl;
     }
     
@@ -105,7 +104,7 @@ void FCMModel::learn(const std::string &text, bool clearLogs) {
         // }
     }
     
-    if (!clearLogs) {
+    if (!verbose) {
         std::cout << "Learning complete. Processed " << contextProcessed << " contexts." << std::endl;
         std::cout << "Model now contains " << frequencyTable.size() << " unique contexts." << std::endl;
         std::cout << "Alphabet size: " << alphabet.size() << " unique symbols." << std::endl;
@@ -163,7 +162,9 @@ double FCMModel::getProbability(const std::string &context, const std::string &s
 }
 
 void FCMModel::generateProbabilityTable() {
-    std::cout << "Generating probability table..." << std::endl;
+    if (!verbose) {
+        std::cout << "Generating probability table..." << std::endl;
+    }
     
     // Clear the current probability table
     probabilityTable.clear();
@@ -199,7 +200,9 @@ void FCMModel::generateProbabilityTable() {
         contextCount++;
     }
     
-    std::cout << "Probability table generated for " << contextCount << " contexts." << std::endl;
+    if (!verbose) {
+        std::cout << "Probability table generated for " << contextCount << " contexts." << std::endl;
+    }
 }
 
 // uses Shannon entropy (average information content per symbol)
