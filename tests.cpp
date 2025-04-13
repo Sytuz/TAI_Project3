@@ -282,445 +282,119 @@ bool analyzeSymbolInformation(const string &sampleFile, const vector<Reference> 
     return false;
 }
 
-// Worker function to process chunk batches in parallel
-void processChunkBatch(const vector<pair<int, string>> &chunks, size_t start, size_t end,
-                       const vector<Reference> &references, int k, double alpha,
-                       vector<json> &chunkResults, mutex &mtx,
-                       vector<bool> &completedChunks)
-{
-    // Create a class for RAII stdout redirection to ensure proper restoration
-    class StdoutRedirector {
-    private:
-        streambuf* original;
-    public:
-        explicit StdoutRedirector(streambuf* new_buffer) : original(cout.rdbuf()) {
-            cout.rdbuf(new_buffer);
-        }
-        ~StdoutRedirector() {
-            cout.rdbuf(original); // Always restore on destruction
-        }
-    };
-    
-    // Add protective try-catch around the entire function
+bool saveResults(const json& results, const string& timestampFile, const string& latestFile) {
     try {
-        // Redirect stdout to suppress FCM model outputs
-        ostringstream capturedOutput;
-        StdoutRedirector redirector(capturedOutput.rdbuf());
-        
-        // Process one chunk at a time with maximum safety
-        for (size_t i = start; i < end && i < chunks.size(); ++i)
-        {
-            try {
-                // Skip if already processed
-                {
-                    lock_guard<mutex> lock(mtx);
-                    if (completedChunks[i]) {
-                        continue;
-                    }
-                    // Mark as in-progress to prevent other threads from starting it
-                    completedChunks[i] = true;
-                }
-                
-                // Create a safe local copy of the chunk data
-                int position = chunks[i].first;
-                string chunkSequence;
-                
-                // Safely copy the chunk data
-                try {
-                    chunkSequence = chunks[i].second;
-                    
-                    // Validate chunk data
-                    if (chunkSequence.empty() || chunkSequence.size() > 1000000) { // Safety limit
-                        throw runtime_error("Invalid chunk size");
-                    }
-                    
-                    // Sanitize the sequence (ensure only valid DNA characters)
-                    for (char& c : chunkSequence) {
-                        if (c != 'A' && c != 'C' && c != 'G' && c != 'T') {
-                            c = 'A'; // Replace invalid characters
-                        }
-                    }
-                } catch (const exception& e) {
-                    lock_guard<mutex> lock(mtx);
-                    cerr << "Error processing chunk " << i << " data: " << e.what() << endl;
-                    
-                    // Create a minimal valid result for this chunk
-                    chunkResults[i] = {
-                        {"position", position},
-                        {"length", 0},
-                        {"error", string("Data error: ") + e.what()},
-                        {"best_match", "error"},
-                        {"best_nrc", 9999.0},
-                        {"top_matches", json::array()}
-                    };
-                    continue;
-                }
-                
-                // Create JSON result with safe defaults
-                json chunkJson = {
-                    {"position", position},
-                    {"length", chunkSequence.length()},
-                    {"best_match", "unknown"},
-                    {"best_nrc", numeric_limits<double>::max()},
-                    {"top_matches", json::array()}
-                };
-                
-                try {
-                    // Create a fresh FCM model for this chunk
-                    unique_ptr<FCMModel> chunkModel = make_unique<FCMModel>(k, alpha);
-                    
-                    // Train on chunk sequence
-                    chunkModel->learn(chunkSequence);
-                    chunkModel->lockModel();
-                    
-                    // Create compressor
-                    DNACompressor compressor(*chunkModel);
-                    
-                    // Pre-allocate space for results
-                    vector<pair<string, double>> matchScores;
-                    matchScores.reserve(references.size());
-                    
-                    double bestNrc = numeric_limits<double>::max();
-                    string bestReference = "";
-                    
-                    // Calculate NRC for each reference
-                    for (const auto &ref : references) {
-                        try {
-                            double nrc = compressor.calculateNRC(ref.sequence);
-                            matchScores.push_back({ref.name, nrc});
-                            
-                            if (nrc < bestNrc) {
-                                bestNrc = nrc;
-                                bestReference = ref.name;
-                            }
-                        } catch (...) {
-                            // Skip this reference on error
-                            continue;
-                        }
-                    }
-                    
-                    // Set results
-                    chunkJson["best_match"] = bestReference;
-                    chunkJson["best_nrc"] = bestNrc;
-                    
-                    // Add top matches if we have any
-                    if (!matchScores.empty()) {
-                        // Sort by NRC (lowest first)
-                        sort(matchScores.begin(), matchScores.end(),
-                             [](const auto &a, const auto &b) { return a.second < b.second; });
-                        
-                        json matchesJson = json::array();
-                        for (size_t j = 0; j < min(size_t(3), matchScores.size()); ++j) {
-                            json matchJson;
-                            matchJson["name"] = matchScores[j].first;
-                            matchJson["nrc"] = matchScores[j].second;
-                            matchesJson.push_back(matchJson);
-                        }
-                        
-                        chunkJson["top_matches"] = matchesJson;
-                    }
-                    
-                    // Clean up the model explicitly
-                    chunkModel.reset();
-                    
-                } catch (const exception &e) {
-                    lock_guard<mutex> lock(mtx);
-                    cerr << "Error processing chunk " << i << ": " << e.what() << endl;
-                    chunkJson["error"] = string("Processing error: ") + e.what();
-                } catch (...) {
-                    lock_guard<mutex> lock(mtx);
-                    cerr << "Unknown error processing chunk " << i << endl;
-                    chunkJson["error"] = "Unknown processing error";
-                }
-                
-                // Update results
-                {
-                    lock_guard<mutex> lock(mtx);
-                    chunkResults[i] = move(chunkJson);
-                }
-                
-                // Force cleanup of any local variables before next chunk
-                this_thread::yield();
-                
-            } catch (const exception &e) {
-                lock_guard<mutex> lock(mtx);
-                cerr << "Error in chunk processing loop for chunk " << i << ": " << e.what() << endl;
-                
-                // Make sure we have at least some result
-                chunkResults[i] = {
-                    {"position", chunks[i].first},
-                    {"error", string("Critical error: ") + e.what()}
-                };
-            } catch (...) {
-                lock_guard<mutex> lock(mtx);
-                cerr << "Unknown error in chunk processing loop for chunk " << i << endl;
-                
-                // Make sure we have at least some result
-                chunkResults[i] = {
-                    {"position", chunks[i].first},
-                    {"error", "Unknown critical error"}
-                };
-            }
+        ofstream out1(timestampFile), out2(latestFile);
+        if (!out1 || !out2) {
+            cerr << "Error: Could not open output files.\n";
+            return false;
         }
-    } catch (const exception &e) {
-        lock_guard<mutex> lock(mtx);
-        cerr << "Fatal error in worker thread: " << e.what() << endl;
-    } catch (...) {
-        lock_guard<mutex> lock(mtx);
-        cerr << "Unknown fatal error in worker thread" << endl;
-    }
-}
-
-// Function to analyze sample chunks and determine best matching organisms
-bool analyzeChunks(const string &sampleFile, const vector<Reference> &references, int k, double alpha,
-                   int chunkSize, int overlap, const string &timestampDir, const string &latestDir)
-{
-    cout << "\nPreparing for chunk analysis..." << endl;
-    
-    // Read the sample DNA sequence
-    string sample = readDNASequence(sampleFile);
-    if (sample.empty())
-    {
-        cerr << "Error: Empty sample" << endl;
-        return false;
-    }
-    
-    // Safety check - limit chunk size to something reasonable if too large
-    if (chunkSize > 50000) {
-        cout << "Warning: Chunk size " << chunkSize << " is too large. Limiting to 50000." << endl;
-        chunkSize = 50000;
-    }
-    
-    // Safety check - ensure overlap is smaller than chunk size
-    if (overlap >= chunkSize) {
-        cout << "Warning: Overlap " << overlap << " must be smaller than chunk size. Setting to " 
-             << (chunkSize / 2) << endl;
-        overlap = chunkSize / 2;
-    }
-
-    // Create chunks with overlap - using vector reserve for efficiency
-    vector<pair<int, string>> chunks; // position, sequence
-    size_t estimatedChunks = (sample.length() / (chunkSize - overlap)) + 1;
-    chunks.reserve(estimatedChunks);
-    
-    cout << "Creating " << estimatedChunks << " chunks..." << endl;
-    
-    try {
-        for (int i = 0; i <= static_cast<int>(sample.length()) - chunkSize; i += (chunkSize - overlap))
-        {
-            chunks.push_back({i, sample.substr(i, chunkSize)});
-            
-            // Limit the number of chunks for safety
-            if (chunks.size() >= 1000) {
-                cout << "Warning: Too many chunks. Limiting to 1000." << endl;
-                break;
-            }
-        }
-        
-        cout << "\nDivided sample into " << chunks.size() << " chunks (size: " << chunkSize
-             << ", overlap: " << overlap << " nucleotides)" << endl;
-             
-        // Safety check - if we have too many chunks, reduce them
-        if (chunks.size() > 100) {
-            cout << "Warning: Processing a large number of chunks may cause memory issues." << endl;
-            cout << "Consider using larger chunks with less overlap for better performance." << endl;
-        }
+        out1 << setw(4) << results << endl;
+        out2 << setw(4) << results << endl;
+        cout << "Results saved to:\n- " << timestampFile << "\n- " << latestFile << endl;
+        return true;
     } catch (const exception& e) {
-        cerr << "Error creating chunks: " << e.what() << endl;
-        return false;
-    }
-
-    // Prepare JSON result object
-    json resultsJson;
-    resultsJson["k"] = k;
-    resultsJson["alpha"] = alpha;
-    resultsJson["chunk_size"] = chunkSize;
-    resultsJson["overlap"] = overlap;
-    resultsJson["sample_length"] = sample.length();
-    resultsJson["chunk_count"] = chunks.size();
-
-    // Pre-allocate result arrays with initialized objects
-    vector<json> chunkResultsArray(chunks.size(), json::object());
-    vector<bool> completedChunks(chunks.size(), false);
-
-    // Calculate appropriate thread count - use fewer threads for many chunks to reduce memory pressure
-    unsigned int maxThreads = thread::hardware_concurrency();
-    unsigned int threadCount = min(maxThreads, 
-                                  max(2u, static_cast<unsigned int>(maxThreads / (1 + chunks.size() / 50))));
-    
-    cout << "Using " << threadCount << " threads for parallel chunk analysis..." << endl;
-
-    // Process chunks in small batches to reduce memory pressure
-    vector<thread> threads;
-    mutex mtx;
-
-    // Calculate smaller batch size to reduce memory pressure
-    size_t batchSize = min(size_t(10), (chunks.size() + threadCount - 1) / threadCount);
-    
-    // Launch threads with smaller batch sizes
-    for (unsigned int t = 0; t < threadCount; ++t)
-    {
-        size_t start = t * batchSize;
-        size_t end = min((t + 1) * batchSize, chunks.size());
-
-        if (start >= chunks.size())
-            break;
-
-        threads.push_back(thread(processChunkBatch,
-                                 ref(chunks),
-                                 start,
-                                 end,
-                                 ref(references),
-                                 k,
-                                 alpha,
-                                 ref(chunkResultsArray),
-                                 ref(mtx),
-                                 ref(completedChunks)));
-    }
-
-    // Show progress indicator with enhanced error detection
-    int lastProgress = -1;
-    int stuckCounter = 0;
-    auto startTime = chrono::steady_clock::now();
-    const auto maxTime = chrono::minutes(30); // Maximum processing time
-    bool timeout = false;
-
-    while (true)
-    {
-        // Count completed chunks
-        size_t completed = 0;
-        {
-            lock_guard<mutex> lock(mtx);
-            for (bool isComplete : completedChunks)
-            {
-                if (isComplete)
-                {
-                    completed++;
-                }
-            }
-        }
-
-        int progress = static_cast<int>((100.0 * completed) / chunks.size());
-        
-        if (progress != lastProgress)
-        {
-            cout << "\rProgress: " << progress << "% (" << completed << "/" << chunks.size() << " chunks)" << flush;
-            lastProgress = progress;
-            stuckCounter = 0;
-        }
-        else {
-            // If progress is stuck, increment counter
-            stuckCounter++;
-            
-            // If stuck for too long, print diagnostic info
-            if (stuckCounter > 60) { // 30 seconds (500ms * 60)
-                cout << "\nWarning: Progress appears to be stuck at " << progress << "% for "
-                     << (stuckCounter / 2) << " seconds." << endl;
-                stuckCounter = 0;
-            }
-        }
-
-        // Check for timeout
-        auto currentTime = chrono::steady_clock::now();
-        if (chrono::duration_cast<chrono::seconds>(currentTime - startTime) > maxTime)
-        {
-            cout << "\nWarning: Processing timeout reached after "
-                 << chrono::duration_cast<chrono::minutes>(currentTime - startTime).count()
-                 << " minutes." << endl;
-            timeout = true;
-            break;
-        }
-
-        // Check if all chunks are processed
-        if (completed == chunks.size())
-        {
-            break;
-        }
-
-        // Sleep briefly to avoid CPU hogging
-        this_thread::sleep_for(chrono::milliseconds(500));
-    }
-    
-    // Force threads to finish if a timeout occurred
-    if (timeout)
-    {
-        cout << "Attempting to save partial results..." << endl;
-    }
-    
-    cout << "\nWaiting for threads to complete..." << endl;
-
-    // Wait for all threads to complete or detach them if a timeout occurred
-    for (auto &t : threads)
-    {
-        if (t.joinable())
-        {
-            if (timeout)
-            {
-                t.detach(); // Detach thread if we're in a timeout situation
-            }
-            else
-            {
-                t.join(); // Otherwise wait for it to finish normally
-            }
-        }
-    }
-    
-    cout << "All threads completed. Building results..." << endl;
-
-    // Build final JSON array from results, including only completed chunks
-    json chunksJson = json::array();
-    size_t validChunks = 0;
-
-    for (size_t i = 0; i < chunks.size(); i++)
-    {
-        if (!chunkResultsArray[i].empty() && chunkResultsArray[i].contains("position"))
-        {
-            chunksJson.push_back(chunkResultsArray[i]);
-            validChunks++;
-        }
-    }
-
-    cout << "\r" << (timeout ? "Partial" : "Complete") << " chunk analysis finished with "
-         << validChunks << " of " << chunks.size() << " chunks processed." << endl;
-
-    resultsJson["chunks"] = chunksJson;
-    resultsJson["completed"] = !timeout;
-    resultsJson["processed_chunks"] = validChunks;
-
-    // Save to both timestamp and latest directories
-    string timestampFile = timestampDir + "/chunk_analysis.json";
-    string latestFile = latestDir + "/chunk_analysis.json";
-    
-    cout << "Saving results to files..." << endl;
-
-    try {
-        ofstream fileTimestamp(timestampFile);
-        if (!fileTimestamp)
-        {
-            cerr << "Error: Could not open output file: " << timestampFile << endl;
-            return false;
-        }
-
-        ofstream fileLatest(latestFile);
-        if (!fileLatest)
-        {
-            cerr << "Error: Could not open output file: " << latestFile << endl;
-            return false;
-        }
-
-        fileTimestamp << setw(4) << resultsJson << endl;
-        fileLatest << setw(4) << resultsJson << endl;
-
-        cout << "Chunk analysis saved to: " << endl;
-        cout << "- " << timestampFile << endl;
-        cout << "- " << latestFile << endl;
-
-        return !timeout; // Return true only if not timed out
-    }
-    catch (const exception& e) {
         cerr << "Error saving results: " << e.what() << endl;
         return false;
     }
+}
+
+vector<pair<int, string>> createChunks(const string& sequence, int& chunkSize, int& overlap) {
+    if (chunkSize > 50000) {
+        cout << "Warning: Chunk size too large. Limiting to 50000.\n";
+        chunkSize = 50000;
+    }
+    if (overlap >= chunkSize) {
+        cout << "Warning: Overlap >= chunk size. Adjusting overlap.\n";
+        overlap = chunkSize / 2;
+    }
+
+    vector<pair<int, string>> chunks;
+    for (int i = 0; i <= static_cast<int>(sequence.length()) - chunkSize; i += (chunkSize - overlap)) {
+        chunks.emplace_back(i, sequence.substr(i, chunkSize));
+        if (chunks.size() >= 1000) break;
+    }
+    return chunks;
+}
+
+json analyzeChunk(const string& chunk, int position, int k, double alpha, const vector<Reference>& refs) {
+    string sanitized = chunk;
+    for (char& c : sanitized)
+        if (c != 'A' && c != 'C' && c != 'G' && c != 'T') c = 'A';
+
+    json chunkResult = {
+        {"position", position}, {"length", sanitized.length()},
+        {"best_match", "unknown"}, {"best_nrc", numeric_limits<double>::max()},
+        {"top_matches", json::array()}
+    };
+
+    try {
+        FCMModel model(k, alpha);
+        model.learn(sanitized);
+        model.lockModel();
+        DNACompressor compressor(model);
+
+        vector<pair<string, double>> scores;
+        for (const auto& ref : refs) {
+            try {
+                double nrc = compressor.calculateNRC(ref.sequence);
+                scores.emplace_back(ref.name, nrc);
+                if (nrc < chunkResult["best_nrc"]) {
+                    chunkResult["best_nrc"] = nrc;
+                    chunkResult["best_match"] = ref.name;
+                }
+            } catch (...) {
+                cerr << "Error calculating NRC for " << ref.name << endl;
+            }
+        }
+
+        sort(scores.begin(), scores.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
+        for (size_t i = 0; i < min(size_t(3), scores.size()); ++i)
+            chunkResult["top_matches"].push_back({{"name", scores[i].first}, {"nrc", scores[i].second}});
+
+    } catch (const exception& e) {
+        chunkResult["error"] = string("Processing error: ") + e.what();
+    } catch (...) {
+        chunkResult["error"] = "Unknown processing error";
+    }
+
+    return chunkResult;
+}
+
+bool analyzeChunks(const string &sampleFile, const vector<Reference> &references, int k, double alpha,
+                   int chunkSize, int overlap, const string &timestampDir, const string &latestDir) {
+    cout << "\nStarting chunk analysis..." << endl;
+
+    string sample = readDNASequence(sampleFile);
+    if (sample.empty()) {
+        cerr << "Error: Sample is empty.\n";
+        return false;
+    }
+
+    auto chunks = createChunks(sample, chunkSize, overlap);
+    cout << "Created " << chunks.size() << " chunks.\n";
+
+    json results = {
+        {"k", k}, {"alpha", alpha},
+        {"chunk_size", chunkSize}, {"overlap", overlap},
+        {"sample_length", sample.length()},
+        {"chunk_count", chunks.size()},
+        {"chunks", json::array()},
+        {"completed", true}
+    };
+
+    for (size_t i = 0; i < chunks.size(); ++i) {
+        if (i % 10 == 0 || i == chunks.size() - 1)
+            cout << "\rProcessing chunk " << (i + 1) << "/" << chunks.size() << flush;
+
+        auto& [pos, seq] = chunks[i];
+        results["chunks"].push_back(analyzeChunk(seq, pos, k, alpha, references));
+    }
+
+    cout << "\nAnalysis complete.\n";
+    results["processed_chunks"] = results["chunks"].size();
+
+    return saveResults(results, timestampDir + "/chunk_analysis.json", latestDir + "/chunk_analysis.json");
 }
 
 // Function to print usage instructions
