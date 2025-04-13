@@ -50,7 +50,7 @@ vector<Reference> runTest(const string &sampleFile, const string &dbFile, int k,
         return {};
     }
 
-    cout << "Running test with k=" << k << ", alpha=" << alpha << endl;
+    cout << "Running test with k=" << k << ", alpha=" << fixed << setprecision(4) << alpha << endl;
     cout << "Sample length: " << sample.length() << " nucleotides" << endl;
     cout << "Number of references: " << references.size() << endl;
 
@@ -1080,7 +1080,7 @@ int main(int argc, char **argv)
         for (double alpha : alphaValues)
         {
             testCounter++;
-            cout << "\n[Test " << testCounter << "/" << totalTests << "] Running with k=" << k << ", alpha=" << alpha << endl;
+            cout << "\n[Test " << testCounter << "/" << totalTests << "] Running with k=" << k << ", alpha=" << fixed << setprecision(4) << alpha << endl;
 
             double execTime;
             vector<Reference> results = runTest(sampleFile, dbFile, k, alpha, topN, execTime);
@@ -1233,7 +1233,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            numOrgs = std::min(getIntInput("How many top organisms to analyze? (1-5): ", 1, 5),
+            numOrgs = std::min(getIntInput("How many top organisms to analyze? (1-20): ", 1, 20),
                                static_cast<int>(allResults[bestTestIndex].second.first.size()));
         }
 

@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 from scipy import signal
 import os
 import json
 import seaborn as sns
+import pandas as pd
 
 def plot_info_profile(organisms_data, output_dir):
     """Plot information profile of organisms with various filtering techniques"""
@@ -141,3 +143,99 @@ def plot_cross_comparison(input_folder, output_dir):
         plt.close()
 
     print(f"Cross-comparison visualizations saved to {output_dir}")
+
+def plot_complexity_profile(organism_data, output_dir, nrc_threshold=0.05):
+    """
+    Generate a complexity profile plot comparing two coronavirus genomes with NRC < threshold.
+    """
+    # Filter for coronavirus data files
+    coronavirus_files = [f for f in organism_data.keys() if 'coronavirus' in f.lower()]
+
+    if len(coronavirus_files) < 2:
+        print("Not enough coronavirus files found to generate complexity profile")
+        return
+
+    # Get the first two coronavirus files
+    organism1_key = coronavirus_files[0]
+    organism2_key = coronavirus_files[1]
+
+    # Get the data
+    organism1_data = organism_data[organism1_key]
+    organism2_data = organism_data[organism2_key]
+
+    # Extract positions and complexity values
+    positions1 = organism1_data.iloc[:, 0].astype(int).values
+    complexity1 = organism1_data.iloc[:, 2].astype(float).values
+
+    positions2 = organism2_data.iloc[:, 0].astype(int).values
+    complexity2 = organism2_data.iloc[:, 2].astype(float).values
+
+    # Create the plot
+    plt.figure(figsize=(14, 7))
+
+    # Plot both profiles
+    plt.plot(positions1, complexity1, 'b-', alpha=0.7, label=organism1_key)
+    plt.plot(positions2, complexity2, 'r-', alpha=0.7, label=organism2_key)
+
+    plt.xlabel('Genomic Position', fontsize=12)
+    plt.ylabel('Complexity Value', fontsize=12)
+    plt.title('Coronavirus Genome Complexity Profile Comparison', fontsize=14)
+    plt.legend(loc='best')
+    plt.grid(True, alpha=0.3)
+    plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
+
+    # Add annotations for high complexity regions
+    threshold = np.percentile(np.concatenate([complexity1, complexity2]), 95)  # Top 5% of values
+
+    high_complexity1 = positions1[complexity1 > threshold]
+    if len(high_complexity1) > 0:
+        plt.axvspan(min(high_complexity1), max(high_complexity1), alpha=0.2, color='blue')
+
+    high_complexity2 = positions2[complexity2 > threshold]
+    if len(high_complexity2) > 0:
+        plt.axvspan(min(high_complexity2), max(high_complexity2), alpha=0.2, color='red')
+
+    # Save the plot
+    plt.tight_layout()
+    output_path = os.path.join(output_dir, 'coronavirus_complexity_profile.png')
+    plt.savefig(output_path, dpi=300)
+    plt.close()
+
+    print(f"Generated coronavirus complexity profile: {output_path}")
+
+    # Create a second plot showing complexity difference
+    plt.figure(figsize=(14, 7))
+
+    # Interpolate to match positions if needed
+    if len(positions1) != len(positions2) or not np.array_equal(positions1, positions2):
+        # Use the shorter sequence length as reference
+        max_pos = min(max(positions1), max(positions2))
+        common_positions = np.arange(1, max_pos + 1)
+
+        # Interpolate values for organism1
+        complexity1_interp = np.interp(common_positions, positions1, complexity1)
+
+        # Interpolate values for organism2
+        complexity2_interp = np.interp(common_positions, positions2, complexity2)
+
+        # Calculate difference
+        diff = complexity1_interp - complexity2_interp
+        plt.plot(common_positions, diff, 'g-', alpha=0.7)
+    else:
+        # Calculate difference directly
+        diff = complexity1 - complexity2
+        plt.plot(positions1, diff, 'g-', alpha=0.7)
+
+    plt.axhline(y=0, color='r', linestyle='-', alpha=0.3)
+    plt.xlabel('Genomic Position', fontsize=12)
+    plt.ylabel('Complexity Difference', fontsize=12)
+    plt.title('Coronavirus Complexity Difference Profile', fontsize=14)
+    plt.grid(True, alpha=0.3)
+
+    # Save the difference plot
+    plt.tight_layout()
+    diff_output_path = os.path.join(output_dir, 'coronavirus_complexity_difference.png')
+    plt.savefig(diff_output_path, dpi=300)
+    plt.close()
+
+    print(f"Generated coronavirus complexity difference profile: {diff_output_path}")
