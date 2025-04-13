@@ -35,37 +35,10 @@ def plot_info_profile(organisms_data, output_dir):
         # Combine according to minimum value
         combined_info = np.minimum(filtered_info, filtered_reversed)
         
-        # Create plots
-        plt.figure(figsize=(15, 10))
+        # Clean up the organism name, by removing the last character
+        organism = organism[:-1]
         
-        # Original data
-        plt.subplot(3, 1, 1)
-        plt.plot(positions, information, linestyle='-', color='green')
-        plt.title(f'Original Information Profile for {organism}')
-        plt.ylabel('Information')
-        plt.grid(True, linestyle='--', alpha=0.7)
-        
-        # Filtered data
-        plt.subplot(3, 1, 2)
-        plt.plot(positions, filtered_info, linestyle='-', color='blue')
-        plt.title('Low-pass Filtered with Blackman Window (size 21)')
-        plt.ylabel('Information')
-        plt.grid(True, linestyle='--', alpha=0.7)
-        
-        # Combined minimum from both directions
-        plt.subplot(3, 1, 3)
-        plt.plot(positions, combined_info, linestyle='-', color='black')
-        plt.title('Combined Minimum from Both Directions')
-        plt.xlabel('Position')
-        plt.ylabel('Information')
-        plt.grid(True, linestyle='--', alpha=0.7)
-        
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, f'info_profile_{organism}.png'))
-        plt.close()
-        
-        # Also save a version with just the final processed data for cleaner visualization
+        # Create plot with just the final processed data
         plt.figure(figsize=(12, 6))
         plt.plot(positions, combined_info, linestyle='-', color='black')
         plt.title(f'Processed Information Profile for {organism}')

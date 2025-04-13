@@ -1,6 +1,5 @@
 import json
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.patches import Rectangle
 import os
 
@@ -10,9 +9,6 @@ def plot_chunk_analysis(chunk_file, output_dir):
     from chunk analysis data.
     """
     print(f"Creating chunk analysis visualization...")
-    
-    # Set a reliable font family
-    plt.rcParams['font.family'] = 'Arial'
     
     # Load chunk analysis data
     with open(chunk_file, 'r') as f:
@@ -164,6 +160,7 @@ def prepare_compressed_labels(organisms):
     """Compress long organism names for readability"""
     compressed_labels = []
     for org in organisms:
+        org = org[:-1]
         if len(org) > 50:
             parts = org.split(' ')
             if len(parts) > 2:

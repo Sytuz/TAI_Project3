@@ -29,7 +29,6 @@ def load_organism_symbols(filepath):
                     
                     # Store dataframe in dictionary with organism name as key
                     organism_data[organism_name] = organism_df
-                    print(f"Loaded symbol data for {organism_name}")
                 except Exception as e:
                     print(f"Error loading {filename}: {e}")
     else:
