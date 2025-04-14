@@ -175,6 +175,8 @@ The project is organized with the following directory structure:
     - `MetaClass.cpp`: Main application for NRC-based classification
     - `tests.cpp`: Test framework for parameter optimization and analysis
 
+- `assets/`: Directory containing the report, it's source files, the presentation and corresponding voice-over.
+
 - `configs/`: Configuration files for running tests (templates)
 
 - `data/`: Sample data files
