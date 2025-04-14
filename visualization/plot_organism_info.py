@@ -86,19 +86,12 @@ def plot_cross_comparison(input_folder, output_dir):
     # Create shorter labels for the heatmap
     short_labels = []
     for name in organisms:
-        if "|" in name:
-            parts = name.split("|")
-            if len(parts) >= 3:
-                short_name = parts[2].strip()
-            else:
-                short_name = parts[0].strip()
-        else:
-            name_parts = name.split(" ")
-            if len(name_parts) > 2:
-                short_name = " ".join(name_parts[0:2])
-            else:
-                short_name = name
-        short_labels.append(short_name)
+        if '|' in name:
+            name = ''.join(name.split('|')[-2:])
+        name = name.split(',')[0]
+        if 'NC' in name or 'OR' in name:
+            name = name.split()[0]
+        short_labels.append(name)
 
     # Create NRC heatmap
     plt.figure(figsize=(14, 12))
