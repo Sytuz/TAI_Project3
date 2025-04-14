@@ -382,10 +382,10 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
     cout << "                |     Actual     |     Actual     |" << endl;
     cout << "                |    Positive    |    Negative    |" << endl;
     cout << "---------------------------------------------------" << endl;
-    cout << " Predicted      |      " << setw(5) << truePositives << "      |      " << setw(5) << falsePositives << "      |" << endl;
+    cout << " Predicted      |      " << setw(5) << truePositives << "     |      " << setw(5) << falsePositives << "     |" << endl;
     cout << " Positive       |                |                |" << endl;
     cout << "---------------------------------------------------" << endl;
-    cout << " Predicted      |      " << setw(5) << falseNegatives << "      |      " << setw(5) << trueNegatives << "      |" << endl;
+    cout << " Predicted      |      " << setw(5) << falseNegatives << "     |      " << setw(5) << trueNegatives << "     |" << endl;
     cout << " Negative       |                |                |" << endl;
     cout << "---------------------------------------------------" << endl;
 
