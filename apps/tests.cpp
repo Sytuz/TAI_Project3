@@ -114,8 +114,8 @@ void printUsage(const string &programName)
     cout << "\nExample JSON configuration file format:" << endl;
     cout << "{\n";
     cout << "  \"input\": {\n";
-    cout << "    \"sample_file\": \"samples/meta.txt\",\n";
-    cout << "    \"db_file\": \"samples/db.txt\"\n";
+    cout << "    \"sample_file\": \"../data/samples/meta.txt\",\n";
+    cout << "    \"db_file\": \"../data/samples/db.txt\"\n";
     cout << "  },\n";
     cout << "  \"parameters\": {\n";
     cout << "    \"context_size\": {\n";
@@ -138,6 +138,8 @@ void printUsage(const string &programName)
     cout << "    \"analyze_chunks\": true,\n";
     cout << "    \"chunk_size\": 5000,\n";
     cout << "    \"chunk_overlap\": 1000\n";
+    cout << "    \"perform_cross_comparison\": true,\n";
+    cout << "    \"num_orgs_to_compare\": 20\n";
     cout << "  }\n";
     cout << "}" << endl;
 }
@@ -693,6 +695,8 @@ int main(int argc, char **argv)
     bool shouldAnalyzeChunks = false; // Renamed from analyzeChunks to avoid conflict with function
     int chunkSize = 5000;
     int chunkOverlap = 1000;
+    bool performCrossComparisonBool = false;
+    int numOrgsToCompare = 20;
 
     if (useConfigFile)
     {
@@ -735,6 +739,10 @@ int main(int argc, char **argv)
             chunkSize = stoi(configParams["chunk_size"]);
         if (configParams.count("chunk_overlap"))
             chunkOverlap = stoi(configParams["chunk_overlap"]);
+        if (configParams.count("perform_cross_comparison"))
+            performCrossComparisonBool = stringToBool(configParams["perform_cross_comparison"]);
+        if (configParams.count("num_orgs_to_compare"))
+            numOrgsToCompare = stoi(configParams["num_orgs_to_compare"]);
 
         // Validate paths
         if (!filesystem::exists(sampleFile))
@@ -805,7 +813,7 @@ int main(int argc, char **argv)
          << kValues.size() << " k-values × " << alphaValues.size() << " alpha-values)" << endl;
 
     // Setup result directories
-    string baseOutputDir = "results";
+    string baseOutputDir = "../results";
 
     // Create results directory if it doesn't exist
     if (!filesystem::exists(baseOutputDir))
@@ -1076,7 +1084,8 @@ int main(int argc, char **argv)
     }
 
     // Ask if user wants to do cross-comparison of top organisms
-    if (!allResults.empty() && (!useConfigFile && askYesNo("\nWould you like to perform cross-comparison between top organisms?"))) {
+    if (!allResults.empty() && (performCrossComparisonBool || (!useConfigFile && askYesNo("\nWould you like to perform cross-comparison between top organisms?")))) {
+
         // Use best parameters
         int bestK = allResults[0].first.first;
         double bestAlpha = allResults[0].first.second;
@@ -1095,8 +1104,15 @@ int main(int argc, char **argv)
         cout << "\nUsing best performing parameters: k=" << bestK << ", alpha=" << bestAlpha << endl;
 
         // Determine how many top organisms to compare
-        int numOrgs = std::min(getIntInput("How many top organisms to compare? (5-20): ", 5, 20),
+        int numOrgs;
+        if (useConfigFile) {
+            numOrgs = std::min(numOrgsToCompare,
                             static_cast<int>(allResults[bestTestIndex].second.first.size()));
+        }
+        else {
+            numOrgs = std::min(getIntInput("How many top organisms to compare? (5-20): ", 5, 20),
+                            static_cast<int>(allResults[bestTestIndex].second.first.size()));
+        }
 
         vector<Reference> topRefs(allResults[bestTestIndex].second.first.begin(),
                                 allResults[bestTestIndex].second.first.begin() + numOrgs);

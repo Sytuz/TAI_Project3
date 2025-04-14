@@ -1,7 +1,7 @@
 {
     "input": {
-      "sample_file": "samples/meta.txt",
-      "db_file": "samples/db.txt"
+      "sample_file": "../data/samples/meta.txt",
+      "db_file": "../data/samples/db.txt"
     },
     "parameters": {
       "context_size": {
@@ -23,7 +23,9 @@
       "num_orgs_to_analyze": 5,
       "analyze_chunks": true,
       "chunk_size": 50000,
-      "chunk_overlap": 1000
+      "chunk_overlap": 1000,
+      "perform_cross_comparison": true,
+      "num_orgs_to_compare": 20
     },
     "model": {
       "use_json": true

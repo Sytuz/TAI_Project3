@@ -5,22 +5,22 @@
   },
   "parameters": {
     "context_size": {
-      "min": 10,
+      "min": 1,
       "max": 20
     },
     "alpha": {
       "min": 0.01,
-      "max": 0.05,
-      "ticks": 5
+      "max": 1,
+      "ticks": 10
     }
   },
   "output": {
-    "top_n": 15,
+    "top_n": 20,
     "use_json": true
   },
   "analysis": {
     "analyze_symbol_info": true,
-    "num_orgs_to_analyze": 5,
+    "num_orgs_to_analyze": 10,
     "analyze_chunks": true,
     "chunk_size": 25000,
     "chunk_overlap": 1000,
