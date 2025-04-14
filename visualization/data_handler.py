@@ -46,19 +46,12 @@ def process_data(data):
         
         for ref in experiment['references']:
             # Create a shorter name for display purposes
-            full_name = ref['name']
-            if "|" in full_name:
-                parts = full_name.split("|")
-                if len(parts) >= 3:
-                    short_name = parts[2].strip()
-                else:
-                    short_name = parts[0].strip()
-            else:
-                name_parts = full_name.split(" ")
-                if len(name_parts) > 2:
-                    short_name = " ".join(name_parts[0:2])
-                else:
-                    short_name = full_name
+            short_name = ref['name']
+            if '|' in short_name:
+                short_name = ''.join(short_name.split('|')[-2:])
+            short_name = short_name.split(',')[0]
+            if 'NC' in short_name or 'OR' in short_name:
+                short_name = short_name.split()[0]
             
             results.append({
                 'alpha': alpha,
