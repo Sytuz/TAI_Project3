@@ -1,0 +1,15 @@
+=== OUTLIER ANALYSIS ===
+Total outliers detected: 160
+Number of unique outlier organisms: 2
+
+TOP OUTLIER ORGANISMS:
+ref: 100 occurrences
+OR353425.1 Octopus: 60 occurrences
+
+OUTLIERS BY K VALUE:
+k=1: 30 outliers
+k=2: 30 outliers
+k=3: 30 outliers
+k=4: 30 outliers
+k=5: 30 outliers
+k=6: 10 outliers
