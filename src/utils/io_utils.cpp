@@ -197,6 +197,23 @@ bool stringToBool(const string &value)
     return (lowerValue == "true" || lowerValue == "yes" || lowerValue == "y" || lowerValue == "1");
 }
 
+bool saveResults(const json& results, const string& timestampFile, const string& latestFile) {
+    try {
+        ofstream out1(timestampFile), out2(latestFile);
+        if (!out1 || !out2) {
+            cerr << "Error: Could not open output files.\n";
+            return false;
+        }
+        out1 << setw(4) << results << endl;
+        out2 << setw(4) << results << endl;
+        cout << "Results saved to:\n- " << timestampFile << "\n- " << latestFile << endl;
+        return true;
+    } catch (const exception& e) {
+        cerr << "Error saving results: " << e.what() << endl;
+        return false;
+    }
+}
+
 // Save results to JSON file with only top matches
 bool saveResultsToJson(const vector<pair<pair<int, double>, pair<vector<Reference>, double>>> &allResults,
                        const string &outputFile)

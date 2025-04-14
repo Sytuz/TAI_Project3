@@ -4,6 +4,7 @@ add_library(tai_src
     utils/dna_compressor.cpp
     utils/io_utils.cpp
     utils/interface_utils.cpp
+    utils/test_utils.cpp
 )
 
 # Set include directories for this library
