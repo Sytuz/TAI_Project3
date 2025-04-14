@@ -16,6 +16,7 @@ from plot_nrc import (
 )
 from plot_performance import plot_execution_time
 from plot_chunk_analysis import plot_chunk_analysis
+from table_top_organisms import create_table_top_organisms
 
 def main():
     # Set up command line argument parsing
@@ -81,6 +82,7 @@ def main():
     
     # Generate plots to both directories
     for output_dir in [timestamp_dir, latest_dir]:
+        create_table_top_organisms()
         if organism_data:
             plot_info_profile(organism_data, output_dir)
             plot_complexity_profile(organism_data, output_dir, nrc_threshold=0.05)
