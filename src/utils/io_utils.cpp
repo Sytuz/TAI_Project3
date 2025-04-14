@@ -163,6 +163,10 @@ bool parseConfigFile(const string &configFile, map<string, string> &configParams
                 configParams["chunk_size"] = to_string(config["analysis"]["chunk_size"].get<int>());
             if (config["analysis"].contains("chunk_overlap"))
                 configParams["chunk_overlap"] = to_string(config["analysis"]["chunk_overlap"].get<int>());
+            if (config["analysis"].contains("perform_cross_comparison"))
+                configParams["perform_cross_comparison"] = config["analysis"]["perform_cross_comparison"].get<bool>() ? "true" : "false";
+            if (config["analysis"].contains("num_orgs_to_compare"))
+                configParams["num_orgs_to_compare"] = to_string(config["analysis"]["num_orgs_to_compare"].get<int>());
         }
 
         if (config.contains("model"))
