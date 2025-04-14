@@ -5,10 +5,10 @@ SEQ_COUNT=100
 RANDOM_COUNT=80
 META_COUNT=10
 MUTATED_COUNT=10
-MIN_LENGTH=100
+MIN_LENGTH=1000
 MAX_LENGTH=5000
-MUT_RATE_MIN=0.05
-MUT_RATE_MAX=0.25
+MUT_RATE_MIN=0.01
+MUT_RATE_MAX=0.05
 DEL_RATE_MAX=0.05
 INS_RATE_MAX=0.05
 LINE_WIDTH=72 # same as samples db and meta
@@ -196,9 +196,27 @@ for i in $(seq $mutated_start $mutated_end); do
     echo "" >> db_synthetic.txt
 done
 
+# Create file with sequence numbers of meta and mutated sequences
+echo "Creating selected_seq_numbers.txt with sequence numbers of meta and mutated sequences..."
+> selected_seq_numbers.txt
+
+# Add meta sequence numbers
+for i in $(seq $meta_start $meta_end); do
+    echo "$i" >> selected_seq_numbers.txt
+done
+
+# Add mutated sequence numbers
+for i in $(seq $mutated_start $mutated_end); do
+    echo "$i" >> selected_seq_numbers.txt
+done
+
+echo "Selected sequence numbers saved in '$OUTPUT_DIR/selected_seq_numbers.txt'"
+
 # Clean up temporary files
 rm -f meta_seq_*.txt
 
 echo "Generation complete!"
 echo "Database with $SEQ_COUNT sequences created in '$OUTPUT_DIR/db_synthetic.txt'"
 echo "Reference sequences ($META_COUNT) saved in '$OUTPUT_DIR/meta_synthetic.txt'"
+echo "Ground truth sequences saved in '$OUTPUT_DIR/selected_seq_numbers.txt'"
+echo "Note: The database file contains random, reference, and mutated sequences."
