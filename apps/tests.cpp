@@ -607,10 +607,9 @@ int main(int argc, char **argv)
             configFilePath = argv[i + 1];
             i++; // Skip the next argument as we've already processed it
         }
-        else if (arg == "--synthetic" && i + 1 < argc)
+        else if (arg == "--synthetic" && i < argc)
         {
             useSyntheticData = true;
-            i++;
         }
         else if (arg == "--threshold" && i + 1 < argc)
         {
