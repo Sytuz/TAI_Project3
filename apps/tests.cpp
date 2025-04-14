@@ -266,28 +266,11 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
          [](const Reference &a, const Reference &b)
          { return a.nrc < b.nrc; });
 
-    // If threshold is not set, use the max NRC value from true positives as threshold
+    // If threshold is not set, use the default value
     if (threshold <= 0.0)
     {
-        double maxTruePositiveNRC = 0.0;
-        for (int trueIdx : truePositiveIndices)
-        {
-            if (seqNumToIndex.count(trueIdx))
-            {
-                size_t refIdx = seqNumToIndex[trueIdx];
-                for (size_t i = 0; i < references.size(); i++)
-                {
-                    if (references[i].name == references[refIdx].name)
-                    {
-                        maxTruePositiveNRC = max(maxTruePositiveNRC, references[i].nrc);
-                        break;
-                    }
-                }
-            }
-        }
-        // Add a small margin to ensure all true positives are included
-        threshold = maxTruePositiveNRC * 1.05;
-        cout << "Auto threshold set to: " << fixed << setprecision(6) << threshold << endl;
+        threshold = 0.5;
+        cout << "Deafault threshold set to: " << fixed << setprecision(6) << threshold << endl;
     }
 
     // Prepare confusion matrix and metrics
@@ -433,13 +416,17 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
             try
             {
                 int seqNum = stoi(name.substr(underscorePos + 1));
-                if (truePositiveIndices.count(seqNum) > 0)
-                {
+                bool isPredictedPositive = (references[i].nrc <= threshold);
+                bool isActualPositive = (truePositiveIndices.count(seqNum) > 0);
+
+                if (isPredictedPositive && isActualPositive) {
                     status = "TRUE POS";
-                }
-                else
-                {
+                } else if (isPredictedPositive && !isActualPositive) {
                     status = "FALSE POS";
+                } else if (!isPredictedPositive && isActualPositive) {
+                    status = "FALSE NEG";
+                } else {
+                    status = "TRUE NEG";
                 }
             }
             catch (...)
