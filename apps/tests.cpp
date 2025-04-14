@@ -114,8 +114,8 @@ void printUsage(const string &programName)
     cout << "\nExample JSON configuration file format:" << endl;
     cout << "{\n";
     cout << "  \"input\": {\n";
-    cout << "    \"sample_file\": \"samples/meta.txt\",\n";
-    cout << "    \"db_file\": \"samples/db.txt\"\n";
+    cout << "    \"sample_file\": \"../data/samples/meta.txt\",\n";
+    cout << "    \"db_file\": \"../data/samples/db.txt\"\n";
     cout << "  },\n";
     cout << "  \"parameters\": {\n";
     cout << "    \"context_size\": {\n";
@@ -813,7 +813,7 @@ int main(int argc, char **argv)
          << kValues.size() << " k-values × " << alphaValues.size() << " alpha-values)" << endl;
 
     // Setup result directories
-    string baseOutputDir = "results";
+    string baseOutputDir = "../results";
 
     // Create results directory if it doesn't exist
     if (!filesystem::exists(baseOutputDir))

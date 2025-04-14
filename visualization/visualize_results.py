@@ -20,8 +20,8 @@ from plot_chunk_analysis import plot_chunk_analysis
 def main():
     # Set up command line argument parsing
     parser = argparse.ArgumentParser(description='Visualize NRC results from JSON data.')
-    parser.add_argument('--input', '-i', type=str, default='../build/results/latest',
-                        help='Path to the test results folder (default: ../build/results/latest)')
+    parser.add_argument('--input', '-i', type=str, default='../results/latest',
+                        help='Path to the test results folder (default: ../results/latest)')
     parser.add_argument('--output', '-o', type=str, default='visualization_results',
                         help='Base directory for visualization results (default: visualization_results)')
     args = parser.parse_args()
