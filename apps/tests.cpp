@@ -405,6 +405,7 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
     cout << setw(4) << "Rank" << " | " << setw(10) << "NRC" << " | " << setw(10) << "Status" << " | " << "Reference" << endl;
     cout << "---------------------------------------------------" << endl;
 
+    int false_negatives = 0;
     for (int i = 0; i < topN; ++i)
     {
         string name = references[i].name;
@@ -425,6 +426,7 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
                     status = "FALSE POS";
                 } else if (!isPredictedPositive && isActualPositive) {
                     status = "FALSE NEG";
+                    false_negatives++;
                 } else {
                     status = "TRUE NEG";
                 }
@@ -441,47 +443,8 @@ void evaluateSyntheticData(const string &sampleFile, const string &dbFile, const
              << references[i].name << endl;
     }
 
-    cout << "\nFalse negatives (missed sequences that should be detected):" << endl;
     cout << "---------------------------------------------------" << endl;
-
-    bool hasFalseNegatives = false;
-    for (int trueIdx : truePositiveIndices)
-    {
-        if (seqNumToIndex.count(trueIdx))
-        {
-            string refName = "Sequence_" + to_string(trueIdx);
-            bool found = false;
-
-            for (size_t i = 0; i < references.size(); i++)
-            {
-                if (references[i].name == refName && references[i].nrc <= threshold)
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found)
-            {
-                hasFalseNegatives = true;
-                // Find where it is in the sorted list
-                for (size_t i = 0; i < references.size(); i++)
-                {
-                    if (references[i].name == refName)
-                    {
-                        cout << "Missed: " << refName << " - Rank: " << i + 1
-                             << " (NRC: " << references[i].nrc << ")" << endl;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    if (!hasFalseNegatives)
-    {
-        cout << "None - All true sequences were detected!" << endl;
-    }
+    cout << "\nFalse negatives (missed sequences that should be detected): " << false_negatives << endl;
 }
 
 // Function to perform cross-comparison between top organisms
