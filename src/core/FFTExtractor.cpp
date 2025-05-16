@@ -2,6 +2,7 @@
 #include <complex>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ vector<double> FFTExtractor::computeSpectrum(const vector<int16_t>& frame) {
         complex<double> sum(0,0);
         for (int n = 0; n < N; ++n) {
             double angle = -2 * M_PI * k * n / N;
-            sum += polar((double)frame[n], angle);
+            sum += complex<double>((double)frame[n] * cos(angle), (double)frame[n] * sin(angle));
         }
         mag[k] = abs(sum);
     }
@@ -27,7 +28,7 @@ string FFTExtractor::extractFeatures(const vector<int16_t>& samples, int channel
     if (channels == 2) {
         mono.resize(samples.size()/2);
         for (size_t i = 0; i < mono.size(); ++i) {
-            mono[i] = (samples[2*i] / 2 + samples[2*i+1] / 2);
+            mono[i] = static_cast<int16_t>((static_cast<int>(samples[2*i]) + static_cast<int>(samples[2*i+1])) / 2);
         }
     } else {
         mono = samples;
@@ -37,13 +38,17 @@ string FFTExtractor::extractFeatures(const vector<int16_t>& samples, int channel
         vector<int16_t> frame(mono.begin() + start, mono.begin() + start + frameSize);
         auto mag = computeSpectrum(frame);
         // Example feature: take the index of top 3 frequencies
+        vector<size_t> indices(mag.size());
+        for (size_t i = 0; i < indices.size(); ++i) {
+            indices[i] = i;
+        }
+        // Sort indices by magnitude
+        partial_sort(indices.begin(), indices.begin() + 3, indices.end(),
+            [&mag](size_t i1, size_t i2) { return mag[i1] > mag[i2]; });
+
+        // Output top 3 indices
         for (int k = 0; k < 3 && k < (int)mag.size(); ++k) {
-            int maxIdx = 0;
-            for (int i = 1; i < (int)mag.size(); ++i) {
-                if (mag[i] > mag[maxIdx]) maxIdx = i;
-            }
-            ss << maxIdx << (k < 2 ? " " : ""); // space-separated indices
-            mag[maxIdx] = 0; // remove for next max
+            ss << indices[k] << (k < 2 ? " " : "");
         }
         ss << "\n";
     }

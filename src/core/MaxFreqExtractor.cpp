@@ -14,7 +14,7 @@ int MaxFreqExtractor::getMaxFreqIndex(const vector<int16_t>& frame) {
         complex<double> sum(0,0);
         for (int n = 0; n < N; ++n) {
             double angle = -2 * M_PI * k * n / N;
-            sum += polar((double)frame[n], angle);
+            sum += complex<double>((double)frame[n] * cos(angle), (double)frame[n] * sin(angle));
         }
         double mag = abs(sum);
         if (mag > maxMag) {
@@ -32,7 +32,7 @@ string MaxFreqExtractor::extractFeatures(const vector<int16_t>& samples, int cha
     if (channels == 2) {
         mono.resize(samples.size()/2);
         for (size_t i = 0; i < mono.size(); ++i)
-            mono[i] = (samples[2*i] / 2 + samples[2*i+1] / 2);
+        mono[i] = static_cast<int16_t>((static_cast<int>(samples[2*i]) + static_cast<int>(samples[2*i+1])) / 2);
     } else {
         mono = samples;
     }

@@ -8,6 +8,9 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <chrono>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -30,7 +33,28 @@ int main(int argc, char* argv[]) {
     }
     string inFolder = args[0];
     string outFolder = args[1];
-    filesystem::create_directories(outFolder);
+
+    // Validate method
+    vector<string> validMethods = {"fft", "maxfreq"};
+    if (find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
+        cerr << "Error: Invalid method: " << method << endl;
+        cerr << "Valid options: fft, maxfreq" << endl;
+        return 1;
+    }
+
+    // Check if input folder exists
+    if (!filesystem::exists(inFolder) || !filesystem::is_directory(inFolder)) {
+        cerr << "Error: Input folder does not exist or is not a directory: " << inFolder << endl;
+        return 1;
+    }
+
+    // Create output directory if it doesn't exist
+    try {
+        filesystem::create_directories(outFolder);
+    } catch (const filesystem::filesystem_error& e) {
+        cerr << "Error creating output directory: " << e.what() << endl;
+        return 1;
+    }
 
     WAVReader reader;
     Segmenter seg;
@@ -41,34 +65,77 @@ int main(int argc, char* argv[]) {
     int frameSize = 1024;
     int hopSize = 512;
 
-    for (auto& entry : filesystem::directory_iterator(inFolder)) {
-        if (entry.path().extension() == ".wav") {
-            string wavFile = entry.path().string();
-            reader.load(wavFile);
-            auto samples = reader.samples();
-            int channels = reader.isStereo() ? 2 : 1;
+    // Track metrics
+    int filesProcessed = 0;
+    int filesSkipped = 0;
+    auto startTime = chrono::high_resolution_clock::now();
 
-            // Add noise if requested
-            if (addNoise) {
-                injector.addNoise(samples);
-            }
-
-            // Extract features
-            string featData;
-            if (method == "fft") {
-                featData = fftExt.extractFeatures(samples, channels, frameSize, hopSize);
-            } else {
-                featData = mfExt.extractFeatures(samples, channels, frameSize, hopSize);
-            }
-
-            // Save to output
-            string base = entry.path().stem().string();
-            string outFile = outFolder + "/" + base + "_" + method + ".feat";
-            ofstream out(outFile);
-            out << featData;
-            out.close();
-            cout << "Extracted features to " << outFile << endl;
-        }
+    cout << "Starting feature extraction using method: " << method << endl;
+    if (addNoise) {
+        cout << "Adding noise with SNR = " << snr << " dB" << endl;
     }
+
+    try {
+        for (auto& entry : filesystem::directory_iterator(inFolder)) {
+            if (entry.path().extension() == ".wav") {
+                string wavFile = entry.path().string();
+                cout << "Processing: " << wavFile << endl;
+
+                if (!reader.load(wavFile)) {
+                    cout << "  Skipping due to load error" << endl;
+                    filesSkipped++;
+                    continue;
+                }
+
+                auto samples = reader.samples();
+                int channels = reader.isStereo() ? 2 : 1;
+
+                // Add noise if requested
+                if (addNoise) {
+                    injector.addNoise(samples);
+                }
+
+                // Extract features
+                string featData;
+                auto extractStart = chrono::high_resolution_clock::now();
+                if (method == "fft") {
+                    featData = fftExt.extractFeatures(samples, channels, frameSize, hopSize);
+                } else if (method == "maxfreq") {
+                    featData = mfExt.extractFeatures(samples, channels, frameSize, hopSize);
+                }
+                auto extractEnd = chrono::high_resolution_clock::now();
+                auto extractTime = chrono::duration_cast<chrono::milliseconds>(extractEnd - extractStart).count();
+
+                cout << "  Feature extraction took " << extractTime << " ms" << endl;
+
+                // Save to output
+                string base = entry.path().stem().string();
+                string outFile = outFolder + "/" + base + "_" + method + ".feat";
+                ofstream out(outFile);
+                if (!out) {
+                    cerr << "  Error: Could not open output file: " << outFile << endl;
+                    filesSkipped++;
+                    continue;
+                }
+                out << featData;
+                out.close();
+
+                cout << "  Extracted features to " << outFile << endl;
+                filesProcessed++;
+            }
+        }
+    } catch (const filesystem::filesystem_error& e) {
+        cerr << "Error reading directory: " << e.what() << endl;
+        return 1;
+    }
+
+    auto endTime = chrono::high_resolution_clock::now();
+    auto totalTime = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
+
+    cout << "\nFeature extraction summary:" << endl;
+    cout << "  Files processed: " << filesProcessed << endl;
+    cout << "  Files skipped: " << filesSkipped << endl;
+    cout << "  Total time: " << totalTime << " seconds" << endl;
+
     return 0;
 }
