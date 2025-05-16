@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
     // Step 1: extract features
     string featFolder = prefix + "_features";
     cout << "\n==> STEP 1: Feature Extraction" << endl;
-    string cmd1 = "./extract_features --method " + method;
+    string cmd1 = "apps/extract_features --method " + method;
     if (addNoise) cmd1 += " --add-noise " + snr;
     cmd1 += " \"" + wavFolder + "\" \"" + featFolder + "\"";
     cout << "Executing: " << cmd1 << endl;
