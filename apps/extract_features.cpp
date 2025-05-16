@@ -1,4 +1,3 @@
-#include "../include/utils/CLIParser.h"
 #include "../include/utils/Segmenter.h"
 #include "../include/utils/NoiseInjector.h"
 #include "../include/core/FFTExtractor.h"
@@ -14,48 +13,22 @@
 
 using namespace std;
 
+void printUsage() {
+    cout << "Usage: extract_features [OPTIONS] <input_folder> <output_folder>\n";
+    cout << "Options:\n";
+    cout << "  --method <method>    Feature extraction method (fft, maxfreq) [default: fft]\n";
+    cout << "  --add-noise <SNR>    Add noise with specified SNR in dB [default: no noise]\n";
+    cout << "  -h, --help           Show this help message\n";
+    cout << "  -i, --input          Input folder containing WAV files\n";
+    cout << "  -o, --output         Output folder for extracted features\n";
+    cout << endl;
+}
+
 /**
- * @brief Extract features from WAV files.
- * Usage: extract_features --method [maxfreq|fft] [--add-noise SNRdb] input_folder output_folder
+ * Process all audio files in the input directory and extract features
  */
-int main(int argc, char* argv[]) {
-    CLIParser parser(argc, argv);
-    string method = parser.getOption("--method", "fft");
-    bool addNoise = parser.flagExists("--add-noise");
-    double snr = 60.0;
-    if (addNoise) {
-        snr = stod(parser.getOption("--add-noise", "60"));
-    }
-    auto args = parser.getArgs();
-    if (args.size() < 2) {
-        cout << "Usage: extract_features --method [maxfreq|fft] [--add-noise SNR] <input_wav_folder> <output_features_folder>\n";
-        return 1;
-    }
-    string inFolder = args[0];
-    string outFolder = args[1];
-
-    // Validate method
-    vector<string> validMethods = {"fft", "maxfreq"};
-    if (find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
-        cerr << "Error: Invalid method: " << method << endl;
-        cerr << "Valid options: fft, maxfreq" << endl;
-        return 1;
-    }
-
-    // Check if input folder exists
-    if (!filesystem::exists(inFolder) || !filesystem::is_directory(inFolder)) {
-        cerr << "Error: Input folder does not exist or is not a directory: " << inFolder << endl;
-        return 1;
-    }
-
-    // Create output directory if it doesn't exist
-    try {
-        filesystem::create_directories(outFolder);
-    } catch (const filesystem::filesystem_error& e) {
-        cerr << "Error creating output directory: " << e.what() << endl;
-        return 1;
-    }
-
+void processFiles(const string& inFolder, const string& outFolder, 
+                 const string& method, bool addNoise, double snr) {
     WAVReader reader;
     Segmenter seg;
     NoiseInjector injector(snr);
@@ -126,7 +99,7 @@ int main(int argc, char* argv[]) {
         }
     } catch (const filesystem::filesystem_error& e) {
         cerr << "Error reading directory: " << e.what() << endl;
-        return 1;
+        throw; // Re-throw to be handled by caller
     }
 
     auto endTime = chrono::high_resolution_clock::now();
@@ -136,6 +109,77 @@ int main(int argc, char* argv[]) {
     cout << "  Files processed: " << filesProcessed << endl;
     cout << "  Files skipped: " << filesSkipped << endl;
     cout << "  Total time: " << totalTime << " seconds" << endl;
+}
 
-    return 0;
+/**
+ * @brief Extract features from WAV files.
+ * Usage: extract_features --method [maxfreq|fft] [--add-noise SNRdb] input_folder output_folder
+ */
+int main(int argc, char* argv[]) {
+    // Default values
+    string method = "fft";
+    bool addNoise = false;
+    double snr = 60.0;
+    string inFolder;
+    string outFolder;
+    
+    // Parse command line arguments
+    for (int i = 1; i < argc; i++) {
+        string arg = argv[i];
+        
+        if (arg == "-h" || arg == "--help") {
+            printUsage();
+            return 0;
+        } else if (arg == "--method" && i + 1 < argc) {
+            method = argv[++i];
+        } else if (arg == "--add-noise" && i + 1 < argc) {
+            addNoise = true;
+            snr = stod(argv[++i]);
+        } else if ((arg == "-i" || arg == "--input") && i + 1 < argc) {
+            inFolder = argv[++i];
+        } else if ((arg == "-o" || arg == "--output") && i + 1 < argc) {
+            outFolder = argv[++i];
+        } else if (inFolder.empty()) {
+            inFolder = arg;
+        } else if (outFolder.empty()) {
+            outFolder = arg;
+        }
+    }
+    
+    // Validate required arguments
+    if (inFolder.empty() || outFolder.empty()) {
+        cerr << "Error: Missing required input or output folder\n";
+        printUsage();
+        return 1;
+    }
+
+    // Validate method
+    vector<string> validMethods = {"fft", "maxfreq"};
+    if (find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
+        cerr << "Error: Invalid method: " << method << endl;
+        cerr << "Valid options: fft, maxfreq" << endl;
+        return 1;
+    }
+
+    // Check if input folder exists
+    if (!filesystem::exists(inFolder) || !filesystem::is_directory(inFolder)) {
+        cerr << "Error: Input folder does not exist or is not a directory: " << inFolder << endl;
+        return 1;
+    }
+
+    // Create output directory if it doesn't exist
+    try {
+        filesystem::create_directories(outFolder);
+    } catch (const filesystem::filesystem_error& e) {
+        cerr << "Error creating output directory: " << e.what() << endl;
+        return 1;
+    }
+
+    try {
+        processFiles(inFolder, outFolder, method, addNoise, snr);
+        return 0;
+    } catch (const exception& e) {
+        cerr << "Error during processing: " << e.what() << endl;
+        return 1;
+    }
 }

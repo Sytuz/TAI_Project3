@@ -1,24 +1,51 @@
-#include "../include/utils/CLIParser.h"
 #include "../include/core/TreeBuilder.h"
 #include <iostream>
 #include <filesystem>
 
 using namespace std;
 
+void printUsage() {
+    cout << "Usage: build_tree <input_matrix.csv> <output_tree.newick> [OPTIONS]\n";
+    cout << "Options:\n";
+    cout << "  --output-image <file>  Generate tree visualization as PNG\n";
+    cout << "  -h, --help             Show this help message\n";
+    cout << endl;
+}
+
 /**
  * @brief Build similarity tree from NCD matrix.
  * Usage: build_tree <input_matrix.csv> <output_tree.newick> [--output-image tree.png]
  */
 int main(int argc, char* argv[]) {
-    CLIParser parser(argc, argv);
-    auto args = parser.getArgs();
-    if (args.size() < 2) {
-        cout << "Usage: build_tree <input_matrix.csv> <output_tree.newick> [--output-image tree.png]\n";
+    // Default values
+    string matrixFile;
+    string newickFile;
+    bool doImage = false;
+    string imageFile;
+    
+    // Parse command line arguments
+    for (int i = 1; i < argc; i++) {
+        string arg = argv[i];
+        
+        if (arg == "-h" || arg == "--help") {
+            printUsage();
+            return 0;
+        } else if (arg == "--output-image" && i + 1 < argc) {
+            doImage = true;
+            imageFile = argv[++i];
+        } else if (matrixFile.empty()) {
+            matrixFile = arg;
+        } else if (newickFile.empty()) {
+            newickFile = arg;
+        }
+    }
+    
+    // Validate required arguments
+    if (matrixFile.empty() || newickFile.empty()) {
+        cerr << "Error: Missing required matrix file or output tree file\n";
+        printUsage();
         return 1;
     }
-
-    string matrixFile = args[0];
-    string newickFile = args[1];
 
     // Check if input file exists
     if (!filesystem::exists(matrixFile)) {
@@ -29,13 +56,12 @@ int main(int argc, char* argv[]) {
     // Ensure output directory exists
     filesystem::path outPath(newickFile);
     try {
-        filesystem::create_directories(outPath.parent_path());
+        if (!outPath.empty() && outPath.has_parent_path()) {
+            filesystem::create_directories(outPath.parent_path());
+        }
     } catch (const filesystem::filesystem_error& e) {
         cerr << "Error creating output directory: " << e.what() << endl;
     }
-
-    bool doImage = parser.flagExists("--output-image");
-    string imageFile = parser.getOption("--output-image", "");
 
     cout << "Building tree from matrix: " << matrixFile << endl;
     cout << "Output Newick format: " << newickFile << endl;

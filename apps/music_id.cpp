@@ -1,51 +1,101 @@
-#include "../include/utils/CLIParser.h"
 #include <iostream>
 #include <filesystem>
 #include <chrono>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
+
+void printUsage() {
+    cout << "Usage: music_id [OPTIONS] <input_wav_folder> <output_prefix>\n";
+    cout << "Options:\n";
+    cout << "  --method <method>      Feature extraction method (fft, maxfreq) [default: fft]\n";
+    cout << "  --compressor <comp>    Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]\n";
+    cout << "  --add-noise <SNR>      Add noise with specified SNR in dB [default: no noise]\n";
+    cout << "  -h, --help             Show this help message\n";
+    cout << endl;
+}
+
+/**
+ * Run feature extraction step
+ */
+bool runFeatureExtraction(const string& wavFolder, const string& featFolder, 
+                          const string& method, bool addNoise, const string& snr) {
+    string cmd = "./apps/extract_features --method " + method;
+    if (addNoise) cmd += " --add-noise " + snr;
+    cmd += " \"" + wavFolder + "\" \"" + featFolder + "\"";
+    
+    cout << "Executing: " << cmd << endl;
+    int ret = system(cmd.c_str());
+    
+    return ret == 0;
+}
+
+/**
+ * Run NCD computation step
+ */
+bool runNCDComputation(const string& featFolder, const string& matrixFile, const string& compressor) {
+    string cmd = "./apps/compute_ncd --compressor " + compressor + " \"" + featFolder + "\" \"" + matrixFile + "\"";
+    
+    cout << "Executing: " << cmd << endl;
+    int ret = system(cmd.c_str());
+    
+    return ret == 0;
+}
+
+/**
+ * Run tree building step
+ */
+bool runTreeBuilding(const string& matrixFile, const string& newickFile, const string& treeImage) {
+    string cmd = "./apps/build_tree \"" + matrixFile + "\" \"" + newickFile + "\" --output-image \"" + treeImage + "\"";
+    
+    cout << "Executing: " << cmd << endl;
+    int ret = system(cmd.c_str());
+    
+    return ret == 0;
+}
 
 /**
  * @brief High-level pipeline: extract features, compute NCD, build tree.
  * Usage: music_id [--method maxfreq|fft] [--compressor gzip|...] [--add-noise SNR] input_wav_folder output_prefix
- * Produces: output_prefix_matrix.csv, output_prefix_tree.newick, and optional image.
+ * Produces: output_prefix_matrix.csv, output_prefix_tree.newick, and image.
  */
 int main(int argc, char* argv[]) {
-    CLIParser parser(argc, argv);
-    string method = parser.getOption("--method", "fft");
-    string compressor = parser.getOption("--compressor", "gzip");
-    bool addNoise = parser.flagExists("--add-noise");
-    string snr = parser.getOption("--add-noise", "60");
-    auto args = parser.getArgs();
-
-    // cout << "Parsed arguments: " << args.size() << " positional args" << endl;
-    // for (size_t i = 0; i < args.size(); i++) {
-    //     cout << "  Arg " << i << ": " << args[i] << endl;
-    // }
-
-    // Skip known option values in the positional arguments
-    vector<string> filteredArgs;
-    for (const auto& arg : args) {
-        if (arg != method && arg != compressor &&
-            (!addNoise || arg != snr)) {
-            filteredArgs.push_back(arg);
+    // Default values
+    string method = "fft";
+    string compressor = "gzip";
+    bool addNoise = false;
+    string snr = "60";
+    string wavFolder;
+    string prefix;
+    
+    // Parse command line arguments
+    for (int i = 1; i < argc; i++) {
+        string arg = argv[i];
+        
+        if (arg == "-h" || arg == "--help") {
+            printUsage();
+            return 0;
+        } else if (arg == "--method" && i + 1 < argc) {
+            method = argv[++i];
+        } else if (arg == "--compressor" && i + 1 < argc) {
+            compressor = argv[++i];
+        } else if (arg == "--add-noise" && i + 1 < argc) {
+            addNoise = true;
+            snr = argv[++i];
+        } else if (wavFolder.empty()) {
+            wavFolder = arg;
+        } else if (prefix.empty()) {
+            prefix = arg;
         }
     }
-
-    // // Debug the filtered arguments
-    // cout << "After filtering, found " << filteredArgs.size() << " positional args" << endl;
-    // for (size_t i = 0; i < filteredArgs.size(); i++) {
-    //     cout << "  Filtered Arg " << i << ": " << filteredArgs[i] << endl;
-    // }
-
-    if (args.size() < 2) {
-        cout << "Usage: music_id [--method maxfreq|fft] [--compressor gzip|bzip2|lzma|zstd] [--add-noise SNR] <input_wav_folder> <output_prefix>\n";
+    
+    // Validate required arguments
+    if (wavFolder.empty() || prefix.empty()) {
+        cerr << "Error: Missing required input folder or output prefix\n";
+        printUsage();
         return 1;
     }
-
-    string wavFolder = filteredArgs[0];
-    string prefix = filteredArgs[1];
 
     // Validate parameters
     vector<string> validMethods = {"fft", "maxfreq"};
@@ -94,12 +144,7 @@ int main(int argc, char* argv[]) {
     // Step 1: extract features
     string featFolder = prefix + "_features";
     cout << "\n==> STEP 1: Feature Extraction" << endl;
-    string cmd1 = "apps/extract_features --method " + method;
-    if (addNoise) cmd1 += " --add-noise " + snr;
-    cmd1 += " \"" + wavFolder + "\" \"" + featFolder + "\"";
-    cout << "Executing: " << cmd1 << endl;
-    int ret1 = system(cmd1.c_str());
-    if (ret1 != 0) {
+    if (!runFeatureExtraction(wavFolder, featFolder, method, addNoise, snr)) {
         cerr << "Error during feature extraction (step 1)" << endl;
         return 1;
     }
@@ -107,10 +152,7 @@ int main(int argc, char* argv[]) {
     // Step 2: compute NCD
     string matrixFile = prefix + "_matrix.csv";
     cout << "\n==> STEP 2: Computing NCD Matrix" << endl;
-    string cmd2 = "./compute_ncd --compressor " + compressor + " \"" + featFolder + "\" \"" + matrixFile + "\"";
-    cout << "Executing: " << cmd2 << endl;
-    int ret2 = system(cmd2.c_str());
-    if (ret2 != 0) {
+    if (!runNCDComputation(featFolder, matrixFile, compressor)) {
         cerr << "Error during NCD computation (step 2)" << endl;
         return 1;
     }
@@ -119,10 +161,7 @@ int main(int argc, char* argv[]) {
     string newickFile = prefix + "_tree.newick";
     string treeImage = prefix + "_tree.png";
     cout << "\n==> STEP 3: Building Similarity Tree" << endl;
-    string cmd3 = "./build_tree \"" + matrixFile + "\" \"" + newickFile + "\" --output-image \"" + treeImage + "\"";
-    cout << "Executing: " << cmd3 << endl;
-    int ret3 = system(cmd3.c_str());
-    if (ret3 != 0) {
+    if (!runTreeBuilding(matrixFile, newickFile, treeImage)) {
         cerr << "Error during tree building (step 3)" << endl;
         return 1;
     }
