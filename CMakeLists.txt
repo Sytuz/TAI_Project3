@@ -25,7 +25,6 @@ add_library(utils
     src/utils/Segmenter.cpp
     src/utils/NoiseInjector.cpp
     src/utils/CompressorWrapper.cpp
-    src/utils/CLIParser.cpp
 )
 
 # Executables with output placed in apps/ folder

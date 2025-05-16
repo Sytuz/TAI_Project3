@@ -13,7 +13,7 @@ NCD is universal in the sense that it captures all the effective notions of simi
 ### The project is organized as follows:
 - [apps/](/apps/): Executables: music_id, extract_features, compute_ncd, run_tests.
 - [include/core/](/include/core/): Core classes: WAVReader, FTFExtractor, MaxFreqExtractor, NCD, TreeBuilder.
-- [include/utils](/include/utils/): Utility classes: Segmenter, NoiseInjector, CompressorWrapper, CLIParser.
+- [include/utils](/include/utils/): Utility classes: Segmenter, NoiseInjector, CompressorWrapper.
 - [src/core/](/src/core/): Implementations of core modules.
 - [src/utils/](/src/utils/): Implementations of utilities.
 - [data/samples/](/data/samples/): Input WAV files.
