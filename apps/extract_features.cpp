@@ -10,6 +10,9 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 using namespace std;
 
@@ -29,82 +32,162 @@ void printUsage() {
  */
 void processFiles(const string& inFolder, const string& outFolder, 
                  const string& method, bool addNoise, double snr) {
-    WAVReader reader;
-    Segmenter seg;
-    NoiseInjector injector(snr);
-    FFTExtractor fftExt;
-    MaxFreqExtractor mfExt;
-
-    int frameSize = 1024;
-    int hopSize = 512;
-
-    // Track metrics
-    int filesProcessed = 0;
-    int filesSkipped = 0;
+    // Track metrics with atomic variables for thread safety
+    atomic<int> filesProcessed(0);
+    atomic<int> filesSkipped(0);
     auto startTime = chrono::high_resolution_clock::now();
 
     cout << "Starting feature extraction using method: " << method << endl;
     if (addNoise) {
         cout << "Adding noise with SNR = " << snr << " dB" << endl;
     }
-
+    
+    // Get list of WAV files
+    vector<string> wavFiles;
     try {
         for (auto& entry : filesystem::directory_iterator(inFolder)) {
             if (entry.path().extension() == ".wav") {
-                string wavFile = entry.path().string();
-                cout << "Processing: " << wavFile << endl;
-
-                if (!reader.load(wavFile)) {
-                    cout << "  Skipping due to load error" << endl;
-                    filesSkipped++;
-                    continue;
-                }
-
-                auto samples = reader.samples();
-                int channels = reader.isStereo() ? 2 : 1;
-
-                // Add noise if requested
-                if (addNoise) {
-                    injector.addNoise(samples);
-                }
-
-                // Extract features
-                string featData;
-                auto extractStart = chrono::high_resolution_clock::now();
-                if (method == "fft") {
-                    featData = fftExt.extractFeatures(samples, channels, frameSize, hopSize);
-                } else if (method == "maxfreq") {
-                    featData = mfExt.extractFeatures(samples, channels, frameSize, hopSize);
-                }
-                auto extractEnd = chrono::high_resolution_clock::now();
-                auto extractTime = chrono::duration_cast<chrono::milliseconds>(extractEnd - extractStart).count();
-
-                cout << "  Feature extraction took " << extractTime << " ms" << endl;
-
-                // Save to output
-                string base = entry.path().stem().string();
-                string outFile = outFolder + "/" + base + "_" + method + ".feat";
-                ofstream out(outFile);
-                if (!out) {
-                    cerr << "  Error: Could not open output file: " << outFile << endl;
-                    filesSkipped++;
-                    continue;
-                }
-                out << featData;
-                out.close();
-
-                cout << "  Extracted features to " << outFile << endl;
-                filesProcessed++;
+                wavFiles.push_back(entry.path().string());
             }
         }
     } catch (const filesystem::filesystem_error& e) {
         cerr << "Error reading directory: " << e.what() << endl;
-        throw; // Re-throw to be handled by caller
+        throw;
     }
-
+    
+    cout << "Found " << wavFiles.size() << " WAV files to process" << endl;
+    
+    // Determine optimal number of threads
+    unsigned int threadCount = thread::hardware_concurrency();
+    if (threadCount == 0) threadCount = 2;  // Default if detection fails
+    
+    // Limit threads based on file count (no point in having more threads than files)
+    threadCount = min(threadCount, static_cast<unsigned int>(wavFiles.size()));
+    cout << "Using " << threadCount << " threads to process " << wavFiles.size() << " files" << endl;
+    
+    // Thread-safe console output
+    mutex coutMutex;
+    
+    // Define the file processing function for each thread
+    auto processFileBatch = [&](size_t start, size_t end) {
+        // Each thread gets its own instances of these objects
+        WAVReader reader;
+        NoiseInjector injector(snr);
+        FFTExtractor fftExt;
+        MaxFreqExtractor mfExt;
+        
+        int frameSize = 1024;
+        int hopSize = 512;
+        
+        for (size_t i = start; i < end && i < wavFiles.size(); i++) {
+            string wavFile = wavFiles[i];
+            
+            {
+                lock_guard<mutex> lock(coutMutex);
+                cout << "Processing: " << wavFile << endl;
+            }
+            
+            if (!reader.load(wavFile)) {
+                lock_guard<mutex> lock(coutMutex);
+                cout << "  Skipping due to load error" << endl;
+                filesSkipped++;
+                continue;
+            }
+            
+            auto samples = reader.samples();
+            int channels = reader.isStereo() ? 2 : 1;
+            
+            // Add noise if requested
+            if (addNoise) {
+                // Need to convert from int32_t to int16_t for noise injection
+                vector<int16_t> samples16bit(samples.size());
+                for (size_t j = 0; j < samples.size(); j++) {
+                    samples16bit[j] = static_cast<int16_t>(samples[j]);
+                }
+                
+                injector.addNoise(samples16bit);
+                
+                // Convert back to int32_t
+                for (size_t j = 0; j < samples.size(); j++) {
+                    samples[j] = static_cast<int32_t>(samples16bit[j]);
+                }
+            }
+            
+            // Extract features
+            string featData;
+            auto extractStart = chrono::high_resolution_clock::now();
+            
+            if (method == "fft") {
+                // Convert to int16_t for feature extraction 
+                vector<int16_t> samples16bit(samples.size());
+                for (size_t j = 0; j < samples.size(); j++) {
+                    samples16bit[j] = static_cast<int16_t>(samples[j]);
+                }
+                featData = fftExt.extractFeatures(samples16bit, channels, frameSize, hopSize);
+            } else if (method == "maxfreq") {
+                // Convert to int16_t for feature extraction
+                vector<int16_t> samples16bit(samples.size());
+                for (size_t j = 0; j < samples.size(); j++) {
+                    samples16bit[j] = static_cast<int16_t>(samples[j]);
+                }
+                featData = mfExt.extractFeatures(samples16bit, channels, frameSize, hopSize);
+            }
+            
+            auto extractEnd = chrono::high_resolution_clock::now();
+            auto extractTime = chrono::duration_cast<chrono::milliseconds>(extractEnd - extractStart).count();
+            
+            {
+                lock_guard<mutex> lock(coutMutex);
+                cout << "  Feature extraction took " << extractTime << " ms" << endl;
+            }
+            
+            // Save to output
+            string base = filesystem::path(wavFile).stem().string();
+            string outFile = outFolder + "/" + base + "_" + method + ".feat";
+            
+            ofstream out(outFile);
+            if (!out) {
+                lock_guard<mutex> lock(coutMutex);
+                cerr << "  Error: Could not open output file: " << outFile << endl;
+                filesSkipped++;
+                continue;
+            }
+            
+            out << featData;
+            out.close();
+            
+            {
+                lock_guard<mutex> lock(coutMutex);
+                cout << "  Extracted features to " << outFile << endl;
+            }
+            
+            filesProcessed++;
+        }
+    };
+    
+    // Create and launch threads
+    vector<thread> threads;
+    size_t filesPerThread = (wavFiles.size() + threadCount - 1) / threadCount;
+    
+    for (unsigned int t = 0; t < threadCount; t++) {
+        size_t start = t * filesPerThread;
+        size_t end = min((t + 1) * filesPerThread, wavFiles.size());
+        
+        if (start >= wavFiles.size()) break;
+        
+        threads.emplace_back(processFileBatch, start, end);
+    }
+    
+    // Wait for all threads to complete
+    for (auto& t : threads) {
+        if (t.joinable()) {
+            t.join();
+        }
+    }
+    
     auto endTime = chrono::high_resolution_clock::now();
     auto totalTime = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
-
+    
     cout << "\nFeature extraction summary:" << endl;
     cout << "  Files processed: " << filesProcessed << endl;
     cout << "  Files skipped: " << filesSkipped << endl;
