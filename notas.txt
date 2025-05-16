@@ -1,0 +1,9 @@
+Songs from: https://500audio.com/free-music (first two pages)
+
+Ainda falta rever + implementar certas partes que estão só com exemplos (tipo a parte do tree builder --> ler melhor o paper do stor - 2.3 The quartet method)
+
+tem de se meter dentro do build e alterar o codigo
+
+FALTA TESTAR
+
+falta organizar

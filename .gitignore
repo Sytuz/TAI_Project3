@@ -1,0 +1,28 @@
+.vscode/
+data/samples/
+build/
+venv/
+
+# Ignore executables in apps/
+apps/build_tree
+apps/compute_ncd
+apps/extract_features
+apps/music_id
+
+# Ignore all object files and static libraries
+*.o
+*.a
+
+# Ignore CMake build files and folders
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Ignore temporary files (optional)
+*.log
+*.tmp
+
+# Ignore Python cache and pyc files
+__pycache__/
+*.pyc
