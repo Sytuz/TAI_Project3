@@ -1,5 +1,5 @@
-#ifndef MAXFREQEXTRACTOR_H
-#define MAXFREQEXTRACTOR_H
+#ifndef SpectralExtractor_H
+#define SpectralExtractor_H
 
 #include <vector>
 #include <string>
@@ -7,12 +7,12 @@
 using namespace std;
 
 /**
- * @brief Extracts multiple dominant frequencies from audio frames using FFT
+ * @brief Extracts frequency features using FFT and multiple spectral bins
  */
-class MaxFreqExtractor {
+class SpectralExtractor {
 public:
-    MaxFreqExtractor(int numFrequencies = 4);
-    ~MaxFreqExtractor() = default;
+    SpectralExtractor(int numBins = 32);
+    ~SpectralExtractor() = default;
     
     /**
      * @brief Extract features from audio samples
@@ -24,17 +24,10 @@ public:
      * @return Feature string representation
      */
     string extractFeatures(const vector<int16_t>& samples, int channels, 
-                           int frameSize, int hopSize, int sampleRate = 44100);
+                          int frameSize, int hopSize, int sampleRate = 44100);
 
 private:
-    int numFreqs;  // Number of frequencies to extract per frame
-
-    /**
-     * @brief Get top N frequency indices from magnitudes
-     * @param magnitudes FFT magnitude spectrum
-     * @return Vector of frequency indices
-     */
-    vector<int> getTopFreqIndices(const vector<double>& magnitudes);
+    int numBins;  // Number of frequency bins to use
     
     /**
      * @brief Compute FFT magnitude spectrum of frame
@@ -48,6 +41,13 @@ private:
      * @param frame Audio frame data
      */
     void applyWindow(vector<int16_t>& frame);
+    
+    /**
+     * @brief Convert full FFT spectrum to reduced bins
+     * @param magnitudes Full magnitude spectrum
+     * @return Reduced spectrum with 'numBins' bins
+     */
+    vector<double> getBinnedSpectrum(const vector<double>& magnitudes);
 };
 
 #endif

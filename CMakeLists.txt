@@ -12,38 +12,42 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 # Include directories
 include_directories(include)
 
-# Core and utils libraries
+# Core library
 add_library(core
     src/core/WAVReader.cpp
-    src/core/FFTExtractor.cpp
+    src/core/SpectralExtractor.cpp
     src/core/MaxFreqExtractor.cpp
     src/core/NCD.cpp
     src/core/TreeBuilder.cpp
+    src/core/FeatureExtractor.cpp
 )
 
+# Utils library - depends on core
 add_library(utils
     src/utils/Segmenter.cpp
     src/utils/NoiseInjector.cpp
     src/utils/CompressorWrapper.cpp
 )
+# Add dependency - utils needs core
+target_link_libraries(utils core)
 
 # Executables with output placed in apps/ folder
 add_executable(extract_features apps/extract_features.cpp)
-target_link_libraries(extract_features core utils)
+target_link_libraries(extract_features core utils)  # Link to both libraries explicitly
 set_target_properties(extract_features PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
 add_executable(compute_ncd apps/compute_ncd.cpp)
-target_link_libraries(compute_ncd core utils)
+target_link_libraries(compute_ncd core utils)  # Link to both libraries explicitly
 set_target_properties(compute_ncd PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
 add_executable(build_tree apps/build_tree.cpp)
-target_link_libraries(build_tree core utils)
+target_link_libraries(build_tree core utils)  # Link to both libraries explicitly
 set_target_properties(build_tree PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
 add_executable(music_id apps/music_id.cpp)
-target_link_libraries(music_id core utils)
+target_link_libraries(music_id core utils)  # Link to both libraries explicitly
 set_target_properties(music_id PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)

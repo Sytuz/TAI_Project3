@@ -1,4 +1,4 @@
-#include "../../include/core/MaxFreqExtractor.h"
+#include "../../include/core/SpectralExtractor.h"
 #include <complex>
 #include <cmath>
 #include <sstream>
@@ -7,11 +7,11 @@
 
 using namespace std;
 
-MaxFreqExtractor::MaxFreqExtractor(int numFrequencies) : numFreqs(numFrequencies) {
-    if (numFreqs <= 0) numFreqs = 4;  // Default to 4 frequencies per frame
+SpectralExtractor::SpectralExtractor(int bins) : numBins(bins) {
+    if (numBins <= 0) numBins = 32;  // Default to 32 frequency bins
 }
 
-void MaxFreqExtractor::computeFFT(const vector<int16_t>& frame, vector<double>& magnitudes) {
+void SpectralExtractor::computeFFT(const vector<int16_t>& frame, vector<double>& magnitudes) {
     int N = frame.size();
     vector<complex<double>> fft(N);
     
@@ -59,13 +59,13 @@ void MaxFreqExtractor::computeFFT(const vector<int16_t>& frame, vector<double>& 
         magnitudes[i] = abs(fft[i]);
     }
     
-    // Normalize by N to adjust for window size
+    // Normalize by N
     for (auto& mag : magnitudes) {
         mag /= N;
     }
 }
 
-void MaxFreqExtractor::applyWindow(vector<int16_t>& frame) {
+void SpectralExtractor::applyWindow(vector<int16_t>& frame) {
     // Hann window function
     const int size = frame.size();
     for (int i = 0; i < size; i++) {
@@ -74,35 +74,29 @@ void MaxFreqExtractor::applyWindow(vector<int16_t>& frame) {
     }
 }
 
-vector<int> MaxFreqExtractor::getTopFreqIndices(const vector<double>& magnitudes) {
-    // Create index array
-    vector<int> indices(magnitudes.size());
-    iota(indices.begin(), indices.end(), 0);  // Fill with 0, 1, 2, ...
+vector<double> SpectralExtractor::getBinnedSpectrum(const vector<double>& magnitudes) {
+    vector<double> binned(numBins, 0.0);
     
-    // Skip DC component (0 Hz)
-    indices[0] = -1;
+    // Use logarithmic frequency bins (more resolution in lower frequencies)
+    // Skip the DC component (i=0)
     
-    // Partial sort to find top N frequencies (much faster than full sort)
-    partial_sort(indices.begin(), indices.begin() + numFreqs, indices.end(),
-                [&magnitudes](int a, int b) {
-                    if (a == -1) return false;
-                    if (b == -1) return true;
-                    return magnitudes[a] > magnitudes[b];
-                });
+    double maxFreq = magnitudes.size();
     
-    // Return top indices
-    vector<int> result;
-    for (int i = 0; i < numFreqs && i < static_cast<int>(magnitudes.size()); i++) {
-        if (indices[i] > 0) {  // Skip any marked indices (-1)
-            result.push_back(indices[i]);
-        }
+    for (size_t i = 1; i < magnitudes.size(); i++) {
+        // Calculate bin index using logarithmic scale
+        // Map i (1...maxFreq) to bin (0...numBins-1)
+        double logPos = log(i) / log(maxFreq);
+        int binIdx = min(numBins - 1, static_cast<int>(logPos * numBins));
+        
+        // Add magnitude to bin (use max to prevent smaller values from being masked)
+        binned[binIdx] = max(binned[binIdx], magnitudes[i]);
     }
     
-    return result;
+    return binned;
 }
 
-string MaxFreqExtractor::extractFeatures(const vector<int16_t>& samples, int channels, 
-                                       int frameSize, int hopSize, int sampleRate) {
+string SpectralExtractor::extractFeatures(const vector<int16_t>& samples, int channels, 
+                                  int frameSize, int hopSize, int sampleRate) {
     // Convert to mono if needed
     vector<int16_t> monoSamples;
     if (channels == 2) {
@@ -118,12 +112,12 @@ string MaxFreqExtractor::extractFeatures(const vector<int16_t>& samples, int cha
     stringstream ss;
     
     // Header information
-    ss << "# MaxFreqExtractor features" << endl;
+    ss << "# SpectralExtractor features" << endl;
     ss << "# Channels: " << channels << endl;
     ss << "# Frame size: " << frameSize << endl;
     ss << "# Hop size: " << hopSize << endl;
     ss << "# Sample rate: " << sampleRate << endl;
-    ss << "# Frequencies per frame: " << numFreqs << endl;
+    ss << "# Frequency bins: " << numBins << endl;
     
     // Process frames
     for (size_t i = 0; i + frameSize <= monoSamples.size(); i += hopSize) {
@@ -137,14 +131,15 @@ string MaxFreqExtractor::extractFeatures(const vector<int16_t>& samples, int cha
         vector<double> magnitudes;
         computeFFT(frame, magnitudes);
         
-        // Get top frequency indices
-        vector<int> topIndices = getTopFreqIndices(magnitudes);
+        // Get binned spectrum
+        vector<double> bins = getBinnedSpectrum(magnitudes);
         
-        // Convert to actual frequencies and output
-        for (size_t j = 0; j < topIndices.size(); j++) {
-            double freq = topIndices[j] * sampleRate / frameSize;
+        // Output binned spectrum
+        for (size_t j = 0; j < bins.size(); j++) {
             if (j > 0) ss << " ";
-            ss << topIndices[j];
+            // Quantize and convert to integer to save space
+            int binValue = static_cast<int>(bins[j] * 100);
+            ss << binValue;
         }
         ss << endl;
     }

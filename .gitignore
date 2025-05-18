@@ -1,7 +1,8 @@
 .vscode/
-data/samples/
+data/
 build/
 venv/
+output/
 
 # Ignore executables in apps/
 apps/build_tree
