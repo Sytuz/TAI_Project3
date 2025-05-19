@@ -238,7 +238,7 @@ int main(int argc, char* argv[]) {
     
     // Validate required arguments - allow defaults from config file
     if (inputPath.empty()) {
-        inputPath = "data/samples";  // Default input path
+        inputPath = "data/full_tracks";  // Default input path
         cout << "Using default input path: " << inputPath << endl;
     }
     
