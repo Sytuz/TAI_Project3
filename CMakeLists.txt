@@ -24,8 +24,6 @@ add_library(core
 
 # Utils library - depends on core
 add_library(utils
-    src/utils/Segmenter.cpp
-    src/utils/NoiseInjector.cpp
     src/utils/CompressorWrapper.cpp
 )
 # Add dependency - utils needs core
@@ -37,10 +35,10 @@ target_link_libraries(extract_features core utils)  # Link to both libraries exp
 set_target_properties(extract_features PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
-add_executable(compute_ncd apps/compute_ncd.cpp)
-target_link_libraries(compute_ncd core utils)  # Link to both libraries explicitly
-set_target_properties(compute_ncd PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
+# add_executable(compute_ncd apps/compute_ncd.cpp)
+# target_link_libraries(compute_ncd core utils)  # Link to both libraries explicitly
+# set_target_properties(compute_ncd PROPERTIES
+#     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
 add_executable(build_tree apps/build_tree.cpp)
 target_link_libraries(build_tree core utils)  # Link to both libraries explicitly
