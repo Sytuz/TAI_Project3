@@ -1,0 +1,6 @@
+{
+  "method": "spectral",
+  "bins": 32,
+  "input": "data/samples/clean",
+  "output": "data/features/queries/clean/spectral_default"
+}

@@ -1,7 +1,0 @@
-{
-  "method": "maxfreq",
-  "frequencies": 8,
-  "frameSize": 2048,
-  "input": "data/full_tracks",
-  "output": "output/features/maxfreq_highres"
-}

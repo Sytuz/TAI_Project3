@@ -243,7 +243,7 @@ int main(int argc, char* argv[]) {
     }
     
     if (outFolder.empty()) {
-        outFolder = "output/features";  // Default output directory
+        outFolder = "data/features";  // Default output directory
         cout << "Using default output folder: " << outFolder << endl;
     }
 

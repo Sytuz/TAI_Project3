@@ -1,8 +1,0 @@
-{
-  "method": "spectral",
-  "bins": 64,
-  "frameSize": 2048,
-  "hopSize": 1024,
-  "input": "data/full_tracks",
-  "output": "output/features/spectral_highres"
-}
