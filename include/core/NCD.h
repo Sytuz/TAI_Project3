@@ -12,27 +12,22 @@ using namespace std;
  */
 class NCD {
 public:
-    NCD() = default;
-    ~NCD() = default;
-
     /**
-     * @brief Compute pairwise NCD matrix for given feature files.
-     * @param files List of feature filenames.
-     * @param compressor Name of compressor ("gzip", "bzip2", "lzma", "zstd").
-     * @return Matrix NxN of NCD values.
-     */
-    vector<vector<double>> computeMatrix(const vector<string>& files, const string& compressor);
-
-private:
-    /**
-     * @brief Compute NCD distance between two files.
+     * Compute the normalized compression distance between two files
+     * @param file1 Path to the first file
+     * @param file2 Path to the second file
+     * @param compressor Name of the compressor to use (gzip, bzip2, etc.)
+     * @return The NCD value between 0.0 and 1.0 (smaller means more similar)
      */
     double computeNCD(const string& file1, const string& file2, const string& compressor);
-
+    
     /**
-     * @brief Helper: get compressed size of file with compressor.
+     * Compute the NCD matrix for a set of files
+     * @param files Vector of file paths
+     * @param compressor Name of the compressor to use
+     * @return Matrix of NCD values between each pair of files
      */
-    long compressedSize(const string& filename, const string& compressor);
+    vector<vector<double>> computeMatrix(const vector<string>& files, const string& compressor);
 };
 
-#endif // NCD_H
+#endif

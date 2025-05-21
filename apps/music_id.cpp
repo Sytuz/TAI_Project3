@@ -1,73 +1,133 @@
+#include "../include/core/NCD.h"
 #include <iostream>
 #include <filesystem>
-#include <chrono>
+#include <fstream>
 #include <algorithm>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 
 void printUsage() {
-    cout << "Usage: music_id [OPTIONS] <input_wav_folder> <output_prefix>\n";
+    cout << "Usage: music_id [OPTIONS] <query_feature_file> <database_dir> <output_file>\n";
     cout << "Options:\n";
-    cout << "  --method <method>      Feature extraction method (fft, maxfreq) [default: fft]\n";
-    cout << "  --compressor <comp>    Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]\n";
-    cout << "  --add-noise <SNR>      Add noise with specified SNR in dB [default: no noise]\n";
-    cout << "  -h, --help             Show this help message\n";
+    cout << "  --compressor <comp>   Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]\n";
+    cout << "  --top <n>             Show only top N matches [default: 10]\n";
+    cout << "  -h, --help            Show this help message\n";
     cout << endl;
 }
 
 /**
- * Run feature extraction step
+ * Identify music by comparing query against database using NCD
  */
-bool runFeatureExtraction(const string& wavFolder, const string& featFolder, 
-                          const string& method, bool addNoise, const string& snr) {
-    string cmd = "./apps/extract_features --method " + method;
-    if (addNoise) cmd += " --add-noise " + snr;
-    cmd += " \"" + wavFolder + "\" \"" + featFolder + "\"";
+bool identifyMusic(const string& queryFile, const string& dbDir, 
+                 const string& outputFile, const string& compressor, int topN) {
+    // Ensure query file exists
+    if (!filesystem::exists(queryFile)) {
+        cerr << "Error: Query file does not exist: " << queryFile << endl;
+        return false;
+    }
     
-    cout << "Executing: " << cmd << endl;
-    int ret = system(cmd.c_str());
+    // Get the query filename for display
+    string queryFilename = filesystem::path(queryFile).filename().string();
     
-    return ret == 0;
+    // Gather database feature files
+    vector<string> dbFiles;
+    vector<string> dbFilenames; // For display
+    
+    try {
+        for (auto& entry : filesystem::directory_iterator(dbDir)) {
+            // Check if it's a regular file with .feat extension
+            if (entry.is_regular_file()) {
+                string filename = entry.path().filename().string();
+                string extension = entry.path().extension().string();
+                
+                if (extension == ".feat") {
+                    dbFiles.push_back(entry.path().string());
+                    dbFilenames.push_back(filename);
+                }
+            }
+        }
+    } catch (const filesystem::filesystem_error& e) {
+        cerr << "Error reading database directory: " << e.what() << endl;
+        return false;
+    }
+
+    if (dbFiles.empty()) {
+        cerr << "Error: No files found in database directory: " << dbDir << endl;
+        return false;
+    }
+
+    cout << "Comparing query against " << dbFiles.size() << " database entries" << endl;
+
+    // Compute NCD between query and each database entry
+    NCD ncd;
+    vector<pair<string, double>> results;
+    
+    for (size_t i = 0; i < dbFiles.size(); ++i) {
+        double ncdValue = ncd.computeNCD(queryFile, dbFiles[i], compressor);
+        results.push_back({dbFilenames[i], ncdValue});
+        
+        // Show progress for large databases
+        if (dbFiles.size() > 20 && i % 10 == 0) {
+            cout << "Processed " << i << "/" << dbFiles.size() << " entries\r" << flush;
+        }
+    }
+    
+    if (dbFiles.size() > 20) {
+        cout << "Processed " << dbFiles.size() << "/" << dbFiles.size() << " entries" << endl;
+    }
+
+    // Sort results by NCD (lowest first = best match)
+    sort(results.begin(), results.end(), 
+        [](const auto& a, const auto& b) { return a.second < b.second; });
+    
+    // Limit to top N if requested
+    if (topN > 0 && topN < static_cast<int>(results.size())) {
+        results.resize(topN);
+    }
+
+    // Save results to output file
+    ofstream out(outputFile);
+    if (!out) {
+        cerr << "Error: Could not open output file for writing: " << outputFile << endl;
+        return false;
+    }
+
+    // Write header
+    out << "Query: " << queryFilename << "\n";
+    out << "Compressor: " << compressor << "\n\n";
+    out << "Rank,File,NCD\n";
+
+    // Write sorted results
+    for (size_t i = 0; i < results.size(); ++i) {
+        out << (i+1) << "," << results[i].first << "," << fixed << setprecision(6) << results[i].second << "\n";
+    }
+    out.close();
+
+    // Display top results on console
+    cout << "\nTop matches for query '" << queryFilename << "':" << endl;
+    cout << setw(5) << "Rank" << setw(50) << "File" << setw(12) << "NCD" << endl;
+    cout << string(67, '-') << endl;
+    
+    int displayCount = min(5, static_cast<int>(results.size()));
+    for (int i = 0; i < displayCount; ++i) {
+        cout << setw(5) << (i+1) 
+             << setw(50) << results[i].first
+             << setw(12) << fixed << setprecision(6) << results[i].second << endl;
+    }
+
+    cout << "\nFull results saved to " << outputFile << endl;
+    return true;
 }
 
-/**
- * Run NCD computation step
- */
-bool runNCDComputation(const string& featFolder, const string& matrixFile, const string& compressor) {
-    string cmd = "./apps/compute_ncd --compressor " + compressor + " \"" + featFolder + "\" \"" + matrixFile + "\"";
-    
-    cout << "Executing: " << cmd << endl;
-    int ret = system(cmd.c_str());
-    
-    return ret == 0;
-}
-
-/**
- * Run tree building step
- */
-bool runTreeBuilding(const string& matrixFile, const string& newickFile, const string& treeImage) {
-    string cmd = "./apps/build_tree \"" + matrixFile + "\" \"" + newickFile + "\" --output-image \"" + treeImage + "\"";
-    
-    cout << "Executing: " << cmd << endl;
-    int ret = system(cmd.c_str());
-    
-    return ret == 0;
-}
-
-/**
- * @brief High-level pipeline: extract features, compute NCD, build tree.
- * Usage: music_id [--method maxfreq|fft] [--compressor gzip|...] [--add-noise SNR] input_wav_folder output_prefix
- * Produces: output_prefix_matrix.csv, output_prefix_tree.newick, and image.
- */
 int main(int argc, char* argv[]) {
     // Default values
-    string method = "fft";
     string compressor = "gzip";
-    bool addNoise = false;
-    string snr = "60";
-    string wavFolder;
-    string prefix;
+    string queryFile;
+    string dbDir;
+    string outputFile;
+    int topN = 10;
     
     // Parse command line arguments
     for (int i = 1; i < argc; i++) {
@@ -76,35 +136,27 @@ int main(int argc, char* argv[]) {
         if (arg == "-h" || arg == "--help") {
             printUsage();
             return 0;
-        } else if (arg == "--method" && i + 1 < argc) {
-            method = argv[++i];
         } else if (arg == "--compressor" && i + 1 < argc) {
             compressor = argv[++i];
-        } else if (arg == "--add-noise" && i + 1 < argc) {
-            addNoise = true;
-            snr = argv[++i];
-        } else if (wavFolder.empty()) {
-            wavFolder = arg;
-        } else if (prefix.empty()) {
-            prefix = arg;
+        } else if (arg == "--top" && i + 1 < argc) {
+            topN = stoi(argv[++i]);
+        } else if (queryFile.empty()) {
+            queryFile = arg;
+        } else if (dbDir.empty()) {
+            dbDir = arg;
+        } else if (outputFile.empty()) {
+            outputFile = arg;
         }
     }
     
     // Validate required arguments
-    if (wavFolder.empty() || prefix.empty()) {
-        cerr << "Error: Missing required input folder or output prefix\n";
+    if (queryFile.empty() || dbDir.empty() || outputFile.empty()) {
+        cerr << "Error: Missing required arguments\n";
         printUsage();
         return 1;
     }
 
-    // Validate parameters
-    vector<string> validMethods = {"fft", "maxfreq"};
-    if (find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
-        cerr << "Error: Invalid method: " << method << endl;
-        cerr << "Valid options: fft, maxfreq" << endl;
-        return 1;
-    }
-
+    // Validate compressor
     vector<string> validCompressors = {"gzip", "bzip2", "lzma", "zstd"};
     if (find(validCompressors.begin(), validCompressors.end(), compressor) == validCompressors.end()) {
         cerr << "Error: Invalid compressor: " << compressor << endl;
@@ -112,15 +164,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Check if input folder exists
-    cout << "Checking input folder: " << wavFolder << endl;
-    if (!filesystem::exists(wavFolder) || !filesystem::is_directory(wavFolder)) {
-        cerr << "Error: Input WAV folder does not exist or is not a directory: " << wavFolder << endl;
+    // Check if database directory exists
+    if (!filesystem::exists(dbDir) || !filesystem::is_directory(dbDir)) {
+        cerr << "Error: Database directory does not exist: " << dbDir << endl;
         return 1;
     }
 
     // Ensure output directory exists
-    filesystem::path outPath(prefix);
+    filesystem::path outPath(outputFile);
     try {
         if (!outPath.empty() && outPath.has_parent_path()) {
             filesystem::create_directories(outPath.parent_path());
@@ -129,54 +180,14 @@ int main(int argc, char* argv[]) {
         cerr << "Error creating output directory: " << e.what() << endl;
     }
 
-    auto startTime = chrono::high_resolution_clock::now();
+    cout << "Music identification using " << compressor << " compressor" << endl;
+    cout << "Query: " << queryFile << endl;
+    cout << "Database: " << dbDir << endl;
+    cout << "Output file: " << outputFile << endl;
 
-    cout << "=== Music Identification Pipeline ===" << endl;
-    cout << "Method: " << method << endl;
-    cout << "Compressor: " << compressor << endl;
-    if (addNoise) {
-        cout << "Noise SNR: " << snr << " dB" << endl;
-    }
-    cout << "Input: " << wavFolder << endl;
-    cout << "Output prefix: " << prefix << endl;
-    cout << "=================================" << endl;
-
-    // Step 1: extract features
-    string featFolder = prefix + "_features";
-    cout << "\n==> STEP 1: Feature Extraction" << endl;
-    if (!runFeatureExtraction(wavFolder, featFolder, method, addNoise, snr)) {
-        cerr << "Error during feature extraction (step 1)" << endl;
+    if (!identifyMusic(queryFile, dbDir, outputFile, compressor, topN)) {
         return 1;
     }
-
-    // Step 2: compute NCD
-    string matrixFile = prefix + "_matrix.csv";
-    cout << "\n==> STEP 2: Computing NCD Matrix" << endl;
-    if (!runNCDComputation(featFolder, matrixFile, compressor)) {
-        cerr << "Error during NCD computation (step 2)" << endl;
-        return 1;
-    }
-
-    // Step 3: build tree
-    string newickFile = prefix + "_tree.newick";
-    string treeImage = prefix + "_tree.png";
-    cout << "\n==> STEP 3: Building Similarity Tree" << endl;
-    if (!runTreeBuilding(matrixFile, newickFile, treeImage)) {
-        cerr << "Error during tree building (step 3)" << endl;
-        return 1;
-    }
-
-    auto endTime = chrono::high_resolution_clock::now();
-    auto totalTime = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
-
-    cout << "\n=== Music ID Pipeline Completed ===" << endl;
-    cout << "Execution time: " << totalTime << " seconds" << endl;
-    cout << "Results:" << endl;
-    cout << "  - Feature files: " << featFolder << endl;
-    cout << "  - NCD Matrix: " << matrixFile << endl;
-    cout << "  - Tree (Newick): " << newickFile << endl;
-    cout << "  - Tree (Image): " << treeImage << endl;
-    cout << "=================================" << endl;
-
+    
     return 0;
 }

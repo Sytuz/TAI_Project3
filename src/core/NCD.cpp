@@ -9,47 +9,100 @@ using namespace std;
 
 double NCD::computeNCD(const string& file1, const string& file2, const string& compressor) {
     CompressorWrapper cw;
-    // Compute compressed sizes
+    
+    // Compute compressed sizes with error checking
     long Cx = cw.compressAndGetSize(compressor, file1);
-    long Cy = cw.compressAndGetSize(compressor, file2);
-
-    if (Cx <= 0 || Cy <= 0) {
-        cerr << "Error: Failed to compress individual files." << endl;
+    if (Cx <= 0) {
+        cerr << "Error: Failed to compress file1: " << file1 << endl;
         return 1.0; // Maximum distance on error
     }
-
-    // Create concatenated file
-    string catFile = filesystem::temp_directory_path().string() + "/tmp_cat_" + to_string(hash<string>{}(file1 + file2)); // Unique temp filename
+    
+    long Cy = cw.compressAndGetSize(compressor, file2);
+    if (Cy <= 0) {
+        cerr << "Error: Failed to compress file2: " << file2 << endl;
+        return 1.0;
+    }
+    
+    // Create a unique temporary filename
+    string catFile = filesystem::temp_directory_path().string() + "/tmp_cat_" + 
+                    to_string(chrono::system_clock::now().time_since_epoch().count());
+    
+    // Improved concatenation with error checking
+    bool concatenationSuccess = false;
     {
         ofstream out(catFile, ios::binary);
+        if (!out) {
+            cerr << "Error: Could not create temporary file " << catFile << endl;
+            return 1.0;
+        }
+        
         ifstream in1(file1, ios::binary);
         if (!in1) {
             cerr << "Error: Could not open file " << file1 << endl;
             return 1.0;
         }
+        
         ifstream in2(file2, ios::binary);
         if (!in2) {
             cerr << "Error: Could not open file " << file2 << endl;
             return 1.0;
         }
-        out << in1.rdbuf() << in2.rdbuf();
+        
+        // Read and write complete files
+        out << in1.rdbuf();
+        out << in2.rdbuf();
+        
+        // Make sure everything was written
+        concatenationSuccess = out.good() && !out.fail();
+        
+        // Explicitly close to ensure data is flushed
+        out.close();
     }
-
+    
+    if (!concatenationSuccess) {
+        cerr << "Error: File concatenation failed" << endl;
+        filesystem::remove(catFile);
+        return 1.0;
+    }
+    
+    // Compress concatenated file
     long Cxy = cw.compressAndGetSize(compressor, catFile);
-    filesystem::remove(catFile);
-
+    
+    // Clean up temporary file
+    bool removed = false;
+    try {
+        removed = filesystem::remove(catFile);
+    } catch (const filesystem::filesystem_error& e) {
+        cerr << "Warning: Could not remove temp file: " << e.what() << endl;
+    }
+    
+    if (!removed) {
+        cerr << "Warning: Failed to remove temporary file " << catFile << endl;
+    }
+    
     if (Cxy <= 0) {
         cerr << "Error: Failed to compress concatenated file." << endl;
         return 1.0;
     }
-
-    // Formula NCD = (C(xy)-min(Cx,Cy)) / max(Cx, Cy)
+    
+    // Compute NCD
     long Cmin = min(Cx, Cy);
     long Cmax = max(Cx, Cy);
-
-    // Ensure valid values
+    
+    // Ensure valid values and handle edge cases
+    if (Cmax == 0) {
+        cerr << "Error: Maximum compressed size is zero." << endl;
+        return 1.0;
+    }
+    
     double ncd = double(Cxy - Cmin) / double(Cmax);
-
+    
+    // Verbose output
+    cout << "Debug: C(" << filesystem::path(file1).filename().string() << ") = " << Cx << endl;
+    cout << "Debug: C(" << filesystem::path(file2).filename().string() << ") = " << Cy << endl;
+    cout << "Debug: C(xy) = " << Cxy << endl;
+    cout << "Debug: NCD = (" << Cxy << " - " << Cmin << ") / " << Cmax << " = " << ncd << endl;
+    
     // Clamp to valid range [0,1]
     return max(0.0, min(1.0, ncd));
 }
