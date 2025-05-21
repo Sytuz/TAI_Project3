@@ -97,12 +97,6 @@ double NCD::computeNCD(const string& file1, const string& file2, const string& c
     
     double ncd = double(Cxy - Cmin) / double(Cmax);
     
-    // Verbose output
-    cout << "Debug: C(" << filesystem::path(file1).filename().string() << ") = " << Cx << endl;
-    cout << "Debug: C(" << filesystem::path(file2).filename().string() << ") = " << Cy << endl;
-    cout << "Debug: C(xy) = " << Cxy << endl;
-    cout << "Debug: NCD = (" << Cxy << " - " << Cmin << ") / " << Cmax << " = " << ncd << endl;
-    
     // Clamp to valid range [0,1]
     return max(0.0, min(1.0, ncd));
 }

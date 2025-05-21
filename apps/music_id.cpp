@@ -106,15 +106,27 @@ bool identifyMusic(const string& queryFile, const string& dbDir,
     out.close();
 
     // Display top results on console
-    cout << "\nTop matches for query '" << queryFilename << "':" << endl;
-    cout << setw(5) << "Rank" << setw(50) << "File" << setw(12) << "NCD" << endl;
-    cout << string(67, '-') << endl;
+    cout << "\nTop matches for query '" << queryFilename << "':\n" << endl;
+    
+    const int rankWidth = 5;
+    const int ncdWidth = 10;
+    const int terminalWidth = 80; // Standard terminal width
+    const int filenameWidth = terminalWidth - rankWidth - ncdWidth - 2; // -2 for spacing
+    
+    cout << setw(rankWidth) << "Rank" << setw(filenameWidth) << "File" << setw(ncdWidth) << "NCD" << endl;
+    cout << string(terminalWidth - 2, '-') << endl;
     
     int displayCount = min(5, static_cast<int>(results.size()));
     for (int i = 0; i < displayCount; ++i) {
-        cout << setw(5) << (i+1) 
-             << setw(50) << results[i].first
-             << setw(12) << fixed << setprecision(6) << results[i].second << endl;
+        // Truncate filename if necessary
+        string displayName = results[i].first;
+        if (displayName.length() > filenameWidth - 3) {
+            displayName = displayName.substr(0, filenameWidth - 3) + "...";
+        }
+        
+        cout << setw(rankWidth) << (i+1) 
+             << setw(filenameWidth) << displayName
+             << setw(ncdWidth) << fixed << setprecision(6) << results[i].second << endl;
     }
 
     cout << "\nFull results saved to " << outputFile << endl;
