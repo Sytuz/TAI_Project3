@@ -1,0 +1,12 @@
+- mudar diretorios para testar com novas musicas (e dps mudar again)
+- implementar a parte de escolher random uma parte da musica (evitar inicio)
+- spectral extractor - meter a funcionar melhor (deve ter resultados melhores q o maxfreq - está a ter piores e a demorar mais tempo)
+- o music_id:
+    - está a receber as features tanto da query como da bd
+    - devia receber a query em WAV e convertê-la para features (nao substituir a funcionalidade anterior - pode ser uma adicção de funcionalidade)
+- ver da tree
+- o music_id já está a dar output dos top e qnd faço o processamento batch n está a calcular accuracies e outras métricas (só conseguimos ver com os olhos).
+- avaliar o parametro o numero de frequencias extraida e outros parametros uteis
+- plots
+- testar
+-

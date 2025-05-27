@@ -5,14 +5,45 @@
 #include <filesystem>
 #include <cstdlib>
 
-// pip install yt-dlp
-// sudo apt install ffmpeg
-
 using namespace std;
+
+// Check if a command exists
+bool command_exists(const string& command) {
+    string check_cmd = "which " + command + " > /dev/null 2>&1";
+    return system(check_cmd.c_str()) == 0;
+}
+
+// Install dependencies
+bool install_dependencies() {
+    cout << "Checking dependencies..." << endl;
+
+    // Check ffmpeg
+    if (!command_exists("ffmpeg")) {
+        cout << "Installing ffmpeg..." << endl;
+        int ret = system("sudo apt update && sudo apt install -y ffmpeg");
+        if (ret != 0) {
+            cerr << "Failed to install ffmpeg. Please run: sudo apt install ffmpeg" << endl;
+            return false;
+        }
+    }
+
+    // Check yt-dlp
+    if (!command_exists("yt-dlp")) {
+        cout << "Installing yt-dlp..." << endl;
+        int ret = system("pip3 install yt-dlp");
+        if (ret != 0) {
+            cerr << "Failed to install yt-dlp. Please run: pip install yt-dlp" << endl;
+            return false;
+        }
+    }
+
+    cout << "All dependencies are installed!" << endl;
+    return true;
+}
 
 // Configuration
 const string SONG_LIST_FILE  = "songs.txt";
-const string OUTPUT_DIR      = "downloads";
+const string OUTPUT_DIR      = "../data/samples/youtube";
 const string AUDIO_FORMAT    = "wav";
 const string FFMPEG_LOCATION = "/usr/bin/ffmpeg";
 
@@ -63,6 +94,11 @@ void download_song(const string& title) {
 }
 
 int main() {
+    // Install dependencies if needed
+    if (!install_dependencies()) {
+        return 1;
+    }
+
     // 1) Verify ffmpeg is present
     if (system((FFMPEG_LOCATION + " -version > /dev/null 2>&1").c_str()) != 0) {
         cerr << "Error: ffmpeg not found at " << FFMPEG_LOCATION
