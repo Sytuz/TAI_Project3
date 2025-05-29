@@ -1,6 +1,6 @@
 # **Some Notes**
 
-The downloaded songs should go to the ["data/samples/youtube" folder](/data/samples/youtube/).
+The downloaded songs should go to the ["data/full_tracks" folder](/data/full_tracks/).
 
 To get the songs, you can either:
 - Run the ["download_songs.cpp" file](download_songs.cpp).

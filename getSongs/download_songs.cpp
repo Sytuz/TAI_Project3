@@ -43,7 +43,7 @@ bool install_dependencies() {
 
 // Configuration
 const string SONG_LIST_FILE  = "songs.txt";
-const string OUTPUT_DIR      = "../data/samples/youtube";
+const string OUTPUT_DIR      = "../data/full_tracks";
 const string AUDIO_FORMAT    = "wav";
 const string FFMPEG_LOCATION = "/usr/bin/ffmpeg";
 

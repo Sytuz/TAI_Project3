@@ -1,12 +1,82 @@
-- mudar diretorios para testar com novas musicas (e dps mudar again)
+Penso que está feito:
 - implementar a parte de escolher random uma parte da musica (evitar inicio)
 - spectral extractor - meter a funcionar melhor (deve ter resultados melhores q o maxfreq - está a ter piores e a demorar mais tempo)
 - o music_id:
     - está a receber as features tanto da query como da bd
     - devia receber a query em WAV e convertê-la para features (nao substituir a funcionalidade anterior - pode ser uma adicção de funcionalidade)
-- ver da tree
 - o music_id já está a dar output dos top e qnd faço o processamento batch n está a calcular accuracies e outras métricas (só conseguimos ver com os olhos).
 - avaliar o parametro o numero de frequencias extraida e outros parametros uteis
 - plots
-- testar
--
+- testes
+
+
+Falta:
+- ? - mudar diretorios para testar com novas musicas (e dps mudar again)
+- ver da tree
+- TESTAR!!!! (só testei com os comandos a baixo)
+- METER COISAS AUTOMATIZADAS
+- O NCD CONTINUA MUITO ALTO
+- A MUSICA N TA NO TOP 5
+- compor o full test youtube script
+
+_________________________________________________________________________
+
+COMANDOS PARA CORRER (testar alguns):
+
+# Para meter os scripts executáveis
+chmod +x scripts/*.sh
+
+# Clean + rebuild do projecto
+./scripts/rebuild.sh
+
+# Remover o diretório build + reconstruir o build
+rm -rf build/
+mkdir -p build
+cd build
+cmake ..
+cmake --build .
+cd ..
+
+# Extrair as features de todas as músicas do youtube para criar a base de dados
+./apps/extract_features data/full_tracks/ data/generated/youtube/ spectral config/feature_extraction_spectral_default.json
+
+
+
+# Criar test samples das músicas
+mkdir -p data/test_samples/
+
+# Extrair random samples de algumas músicas do youtube
+./scripts/extract_sample.sh -i "data/full_tracks/The Beatles - Blackbird (lyrics).wav" -o data/test_samples/ -l 5
+./scripts/extract_sample.sh -i "data/full_tracks/Billie Eilish - bad guy (Lyrics).wav" -o data/test_samples/ -l 5
+./scripts/extract_sample.sh -i "data/full_tracks/Eminem - Lose Yourself (Lyrics).wav" -o data/test_samples/ -l 5
+./scripts/extract_sample.sh -i "data/full_tracks/Led Zeppelin- Kashmir Lyrics.wav" -o data/test_samples/ -l 5
+
+# Criar o diretório dos resultados
+mkdir -p results/youtube_tests
+
+# Testar samples individuais (ficheiros WAV vão auto-extrair as features)
+./apps/music_id "data/test_samples/sample_The Beatles - Blackbird (lyrics).wav" data/generated/youtube/ results/beatles_test.txt --compressor gzip --top 10
+./apps/music_id "data/test_samples/sample_Billie Eilish - bad guy (Lyrics).wav" data/generated/youtube/ results/billie_test.txt --compressor gzip --top 10
+./apps/music_id "data/test_samples/sample_Eminem - Lose Yourself (Lyrics).wav" data/generated/youtube/ results/eminem_test.txt --compressor gzip --top 10
+
+OU
+
+# Criar diretório para test sample features
+mkdir -p data/test_features/
+
+# Extrair features das test samples
+./apps/extract_features data/test_samples/ data/test_features/ spectral config/feature_extraction_spectral_default.json
+
+# Correr batch identification com feature files
+./scripts/batch_identify.sh -q data/test_features/ -d data/generated/youtube/ -o results/batch_youtube/ -c gzip
+
+# Calcular accuracy dos batch results
+python3 scripts/calculate_accuracy.py results/batch_youtube/ -o results/youtube_accuracy.json
+
+
+
+_________________________________________________________________________
+
+COMANDOS PARA CORRER (testar TUDO):
+
+Script: scripts/full_youtube_test.sh

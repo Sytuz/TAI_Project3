@@ -1,0 +1,49 @@
+Music Identification Summary
+==========================
+Date: 2025-05-29 13:47:54
+Compressor: lzma
+Queries processed: 10
+Database directory: data/generated/youtube_db/
+
+Query Results:
+-------------
+sample_Blue eyes crying in the rain - Willie Nelson (lyrics)_spectral_results.csv:
+  Query: sample_Blue eyes crying in the rain - Willie Nelson (lyrics)_spectral.feat
+  Top match: 1,Albert King - Crosscut Saw Lyrics_spectral.feat,0.993982
+
+sample_Jason Isbell and the 400 Unit - If We Were Vampires (Lyrics)_spectral_results.csv:
+  Query: sample_Jason Isbell and the 400 Unit - If We Were Vampires (Lyrics)_spectral.feat
+  Top match: 1,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.994466
+
+sample_Milva - Libertango - Piazzolla (lyrics)_spectral_results.csv:
+  Query: sample_Milva - Libertango - Piazzolla (lyrics)_spectral.feat
+  Top match: 1,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.994670
+
+sample_Mozart： Clarinet Concerto： II. Adagio     (Audio Only)_spectral_results.csv:
+  Query: sample_Mozart： Clarinet Concerto： II. Adagio     (Audio Only)_spectral.feat
+  Top match: 1,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.993728
+
+sample_Psalm- A Love Supreme by John Coltrane_spectral_results.csv:
+  Query: sample_Psalm- A Love Supreme by John Coltrane_spectral.feat
+  Top match: 1,Albert King - Crosscut Saw Lyrics_spectral.feat,0.993757
+
+sample_Roots, rock, reggae - Bob Marley (LYRICS⧸LETRA) (Reggae+Video)_spectral_results.csv:
+  Query: sample_Roots, rock, reggae - Bob Marley (LYRICS⧸LETRA) (Reggae+Video)_spectral.feat
+  Top match: 1,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.994446
+
+sample_Survivor_spectral_results.csv:
+  Query: sample_Survivor_spectral.feat
+  Top match: 1,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.992883
+
+sample_T Bone Walker ~ Call it stormy Monday with lyrics_spectral_results.csv:
+  Query: sample_T Bone Walker ~ Call it stormy Monday with lyrics_spectral.feat
+  Top match: 1,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.994734
+
+sample_The Chieftains Feat  Mick Jagger  - Long Black Veil (Lyrics)_spectral_results.csv:
+  Query: sample_The Chieftains Feat  Mick Jagger  - Long Black Veil (Lyrics)_spectral.feat
+  Top match: 1,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.994398
+
+sample_Travis Scott - SICKO MODE (Lyrics) ft. Drake_spectral_results.csv:
+  Query: sample_Travis Scott - SICKO MODE (Lyrics) ft. Drake_spectral.feat
+  Top match: 1,Travis Scott - SICKO MODE (Lyrics) ft. Drake_spectral.feat,0.986551
+

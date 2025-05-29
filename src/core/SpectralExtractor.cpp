@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <numeric>
+#include <cstring>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ void SpectralExtractor::computeFFT(const vector<int16_t>& frame, vector<double>&
     
     // Initialize FFT input
     for (int i = 0; i < N; i++) {
-        fft[i] = complex<double>(frame[i], 0);
+        fft[i] = complex<double>(frame[i] / 32768.0, 0); // Normalize to [-1, 1]
     }
     
     // Cooley-Tukey FFT implementation (bit-reversal + butterfly)
@@ -54,14 +55,16 @@ void SpectralExtractor::computeFFT(const vector<int16_t>& frame, vector<double>&
     }
     
     // Calculate magnitudes (only up to Nyquist frequency)
-    magnitudes.resize(N/2);
-    for (int i = 0; i < N/2; i++) {
+    // Use more frequency bins for better resolution
+    int usefulBins = min(N/2, N/4 + numBins * 8); // Adaptive number of bins
+    magnitudes.resize(usefulBins);
+    for (int i = 0; i < usefulBins; i++) {
         magnitudes[i] = abs(fft[i]);
     }
     
-    // Normalize by N
+    // Apply logarithmic scaling for better perceptual representation
     for (auto& mag : magnitudes) {
-        mag /= N;
+        mag = log1p(mag); // log(1 + x) for numerical stability
     }
 }
 
@@ -77,19 +80,37 @@ void SpectralExtractor::applyWindow(vector<int16_t>& frame) {
 vector<double> SpectralExtractor::getBinnedSpectrum(const vector<double>& magnitudes) {
     vector<double> binned(numBins, 0.0);
     
-    // Use logarithmic frequency bins (more resolution in lower frequencies)
-    // Skip the DC component (i=0)
+    // Use linear frequency bins for better distribution and faster computation
+    // Skip the DC component (i=0) and use only meaningful frequency range
+    int startBin = 1; // Skip DC component
+    int endBin = min(static_cast<int>(magnitudes.size()), static_cast<int>(magnitudes.size() * 0.8)); // Use up to 80% of spectrum
     
-    double maxFreq = magnitudes.size();
+    double binSize = static_cast<double>(endBin - startBin) / numBins;
     
-    for (size_t i = 1; i < magnitudes.size(); i++) {
-        // Calculate bin index using logarithmic scale
-        // Map i (1...maxFreq) to bin (0...numBins-1)
-        double logPos = log(i) / log(maxFreq);
-        int binIdx = min(numBins - 1, static_cast<int>(logPos * numBins));
+    for (int bin = 0; bin < numBins; bin++) {
+        int startIdx = startBin + static_cast<int>(bin * binSize);
+        int endIdx = startBin + static_cast<int>((bin + 1) * binSize);
+        endIdx = min(endIdx, endBin);
         
-        // Add magnitude to bin (use max to prevent smaller values from being masked)
-        binned[binIdx] = max(binned[binIdx], magnitudes[i]);
+        // Use RMS (energy)
+        double energy = 0.0;
+        int count = 0;
+        for (int i = startIdx; i < endIdx; i++) {
+            energy += magnitudes[i] * magnitudes[i];
+            count++;
+        }
+        
+        if (count > 0) {
+            binned[bin] = sqrt(energy / count); // RMS value
+        }
+    }
+    
+    // Normalize to prevent overflow and improve NCD performance
+    double maxVal = *max_element(binned.begin(), binned.end());
+    if (maxVal > 0) {
+        for (auto& val : binned) {
+            val /= maxVal;
+        }
     }
     
     return binned;
@@ -120,9 +141,10 @@ string SpectralExtractor::extractFeatures(const vector<int16_t>& samples, int ch
     ss << "# Frequency bins: " << numBins << endl;
     
     // Process frames
+    vector<int16_t> frame(frameSize); // Pre-allocate frame buffer
     for (size_t i = 0; i + frameSize <= monoSamples.size(); i += hopSize) {
-        // Extract frame
-        vector<int16_t> frame(monoSamples.begin() + i, monoSamples.begin() + i + frameSize);
+        // Copy frame data (more efficient than creating new vector)
+        memcpy(frame.data(), &monoSamples[i], frameSize * sizeof(int16_t));
         
         // Apply window function
         applyWindow(frame);
@@ -137,8 +159,8 @@ string SpectralExtractor::extractFeatures(const vector<int16_t>& samples, int ch
         // Output binned spectrum
         for (size_t j = 0; j < bins.size(); j++) {
             if (j > 0) ss << " ";
-            // Quantize and convert to integer to save space
-            int binValue = static_cast<int>(bins[j] * 100);
+            // Use fixed-point representation
+            int binValue = static_cast<int>(bins[j] * 10000);
             ss << binValue;
         }
         ss << endl;

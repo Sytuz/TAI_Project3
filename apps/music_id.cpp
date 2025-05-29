@@ -1,30 +1,182 @@
 #include "../include/core/NCD.h"
+#include "../include/core/FeatureExtractor.h"
+#include "../include/utils/json.hpp"
 #include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <algorithm>
 #include <vector>
 #include <iomanip>
+#include <mutex>
+#include <atomic>
+#include <unistd.h>  // for getpid()
 
 using namespace std;
+using json = nlohmann::json;
 
 void printUsage() {
-    cout << "Usage: music_id [OPTIONS] <query_feature_file> <database_dir> <output_file>\n";
-    cout << "Options:\n";
+    cout << "Usage: music_id [OPTIONS] <query_file> <database_dir> <output_file>\n";
+    cout << "Query file can be either:\n";
+    cout << "  - A feature file (.feat extension) - for direct comparison\n";
+    cout << "  - A WAV file (.wav extension) - will extract features automatically\n";
+    cout << "\nOptions:\n";
     cout << "  --compressor <comp>   Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]\n";
     cout << "  --top <n>             Show only top N matches [default: 10]\n";
+    cout << "  --config <file>       Config file for feature extraction (when using WAV) [default: config/feature_extraction_spectral_default.json]\n";
     cout << "  -h, --help            Show this help message\n";
     cout << endl;
+}
+
+/**
+ * Load feature extraction configuration from JSON file
+ */
+bool loadConfig(const string& configFile, string& method, int& numFrequencies, 
+                int& numBins, int& frameSize, int& hopSize) {
+    ifstream file(configFile);
+    if (!file.is_open()) {
+        cerr << "Error: Could not open config file: " << configFile << endl;
+        return false;
+    }
+    
+    try {
+        json config;
+        file >> config;
+        
+        method = config.value("method", "spectral");
+        numFrequencies = config.value("numFrequencies", 4);
+        numBins = config.value("numBins", 32);
+        frameSize = config.value("frameSize", 1024);
+        hopSize = config.value("hopSize", 512);
+        
+        return true;
+    } catch (const exception& e) {
+        cerr << "Error parsing config file: " << e.what() << endl;
+        return false;
+    }
+}
+
+/**
+ * Extract features from a WAV file to a temporary feature file
+ */
+string extractFeaturesFromWAV(const string& wavFile, const string& configFile) {
+    // Load configuration
+    string method;
+    int numFrequencies, numBins, frameSize, hopSize;
+    
+    if (!loadConfig(configFile, method, numFrequencies, numBins, frameSize, hopSize)) {
+        return "";
+    }
+    
+    cout << "Extracting features from WAV file using method: " << method << endl;
+    cout << "Frame size: " << frameSize << ", Hop size: " << hopSize << endl;
+    
+    if (method == "maxfreq") {
+        cout << "Extracting " << numFrequencies << " peak frequencies per frame" << endl;
+    } else {
+        cout << "Using " << numBins << " frequency bins" << endl;
+    }
+    
+    // Create temporary directory for feature extraction
+    string tempDir = "/tmp/music_id_" + to_string(getpid());
+    try {
+        filesystem::create_directories(tempDir);
+    } catch (const filesystem::filesystem_error& e) {
+        cerr << "Error creating temporary directory: " << e.what() << endl;
+        return "";
+    }
+    
+    // Extract features
+    mutex coutMutex;
+    atomic<int> filesProcessed(0);
+    atomic<int> filesSkipped(0);
+    
+    bool success = FeatureExtractor::extractFeaturesFromFile(
+        wavFile, tempDir, method, numFrequencies, numBins, 
+        frameSize, hopSize, coutMutex, filesProcessed, filesSkipped
+    );
+    
+    if (!success) {
+        cerr << "Error: Failed to extract features from WAV file" << endl;
+        // Clean up
+        try {
+            filesystem::remove_all(tempDir);
+        } catch (...) {}
+        return "";
+    }
+    
+    // Find the generated feature file
+    string featFile;
+    try {
+        for (auto& entry : filesystem::directory_iterator(tempDir)) {
+            if (entry.path().extension() == ".feat") {
+                featFile = entry.path().string();
+                break;
+            }
+        }
+    } catch (const filesystem::filesystem_error& e) {
+        cerr << "Error finding generated feature file: " << e.what() << endl;
+        return "";
+    }
+    
+    if (featFile.empty()) {
+        cerr << "Error: No feature file was generated" << endl;
+        // Clean up
+        try {
+            filesystem::remove_all(tempDir);
+        } catch (...) {}
+        return "";
+    }
+    
+    cout << "Features extracted successfully" << endl;
+    return featFile;
+}
+
+/**
+ * Clean up temporary files
+ */
+void cleanupTempFiles(const string& featFile) {
+    if (!featFile.empty() && featFile.find("/tmp/music_id_") != string::npos) {
+        try {
+            string tempDir = filesystem::path(featFile).parent_path().string();
+            filesystem::remove_all(tempDir);
+        } catch (const filesystem::filesystem_error& e) {
+            cerr << "Warning: Could not clean up temporary files: " << e.what() << endl;
+        }
+    }
 }
 
 /**
  * Identify music by comparing query against database using NCD
  */
 bool identifyMusic(const string& queryFile, const string& dbDir, 
-                 const string& outputFile, const string& compressor, int topN) {
+                 const string& outputFile, const string& compressor, int topN,
+                 const string& configFile) {
     // Ensure query file exists
     if (!filesystem::exists(queryFile)) {
         cerr << "Error: Query file does not exist: " << queryFile << endl;
+        return false;
+    }
+    
+    // Determine if query is WAV or feature file
+    string actualQueryFile = queryFile;
+    string tempFeatFile = "";
+    bool isWavFile = false;
+    
+    string extension = filesystem::path(queryFile).extension().string();
+    transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+    
+    if (extension == ".wav") {
+        isWavFile = true;
+        cout << "Detected WAV file input - extracting features first..." << endl;
+        tempFeatFile = extractFeaturesFromWAV(queryFile, configFile);
+        if (tempFeatFile.empty()) {
+            return false;
+        }
+        actualQueryFile = tempFeatFile;
+    } else if (extension == ".feat") {
+        cout << "Detected feature file input - proceeding with direct comparison..." << endl;
+    } else {
+        cerr << "Error: Query file must be either .wav or .feat format" << endl;
         return false;
     }
     
@@ -65,7 +217,7 @@ bool identifyMusic(const string& queryFile, const string& dbDir,
     vector<pair<string, double>> results;
     
     for (size_t i = 0; i < dbFiles.size(); ++i) {
-        double ncdValue = ncd.computeNCD(queryFile, dbFiles[i], compressor);
+        double ncdValue = ncd.computeNCD(actualQueryFile, dbFiles[i], compressor);
         results.push_back({dbFilenames[i], ncdValue});
         
         // Show progress for large databases
@@ -130,6 +282,12 @@ bool identifyMusic(const string& queryFile, const string& dbDir,
     }
 
     cout << "\nFull results saved to " << outputFile << endl;
+    
+    // Clean up temporary files if WAV file was used
+    if (isWavFile) {
+        cleanupTempFiles(tempFeatFile);
+    }
+    
     return true;
 }
 
@@ -139,6 +297,7 @@ int main(int argc, char* argv[]) {
     string queryFile;
     string dbDir;
     string outputFile;
+    string configFile = "config/feature_extraction_spectral_default.json";
     int topN = 10;
     
     // Parse command line arguments
@@ -152,6 +311,8 @@ int main(int argc, char* argv[]) {
             compressor = argv[++i];
         } else if (arg == "--top" && i + 1 < argc) {
             topN = stoi(argv[++i]);
+        } else if (arg == "--config" && i + 1 < argc) {
+            configFile = argv[++i];
         } else if (queryFile.empty()) {
             queryFile = arg;
         } else if (dbDir.empty()) {
@@ -196,8 +357,16 @@ int main(int argc, char* argv[]) {
     cout << "Query: " << queryFile << endl;
     cout << "Database: " << dbDir << endl;
     cout << "Output file: " << outputFile << endl;
+    
+    // Check if config file exists (only needed for WAV files)
+    string extension = filesystem::path(queryFile).extension().string();
+    transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+    if (extension == ".wav" && !filesystem::exists(configFile)) {
+        cerr << "Error: Config file does not exist: " << configFile << endl;
+        return 1;
+    }
 
-    if (!identifyMusic(queryFile, dbDir, outputFile, compressor, topN)) {
+    if (!identifyMusic(queryFile, dbDir, outputFile, compressor, topN, configFile)) {
         return 1;
     }
     

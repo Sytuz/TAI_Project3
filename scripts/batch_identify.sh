@@ -92,6 +92,22 @@ done
 echo "Batch processing complete. Processed $query_count queries."
 echo "Results saved to $output_dir"
 
+# Calculate accuracy metrics
+echo ""
+echo "Calculating accuracy metrics..."
+if command -v python3 &> /dev/null; then
+    accuracy_output="${output_dir}/accuracy_metrics_${compressor}.json"
+    if python3 scripts/calculate_accuracy.py "$output_dir" -o "$accuracy_output"; then
+        echo "Accuracy metrics calculated and saved to $accuracy_output"
+    else
+        echo "Warning: Failed to calculate accuracy metrics"
+    fi
+else
+    echo "Warning: python3 not available, skipping accuracy calculation"
+    echo "To calculate accuracy manually, run:"
+    echo "python3 scripts/calculate_accuracy.py $output_dir"
+fi
+
 # Generate a summary file
 summary_file="${output_dir}/summary_${compressor}.txt"
 {

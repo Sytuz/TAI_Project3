@@ -1,0 +1,11 @@
+Usage: music_id [OPTIONS] <query_file> <database_dir> <output_file>
+Query file can be either:
+  - A feature file (.feat extension) - for direct comparison
+  - A WAV file (.wav extension) - will extract features automatically
+
+Options:
+  --compressor <comp>   Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]
+  --top <n>             Show only top N matches [default: 10]
+  --config <file>       Config file for feature extraction (when using WAV) [default: config/feature_extraction_spectral_default.json]
+  -h, --help            Show this help message
+

@@ -1,0 +1,14 @@
+Query: sample_Eminem - Lose Yourself (Lyrics).wav
+Compressor: gzip
+
+Rank,File,NCD
+1,Albert King - Crosscut Saw Lyrics_spectral.feat,0.997100
+2,The Rite of Spring - Part I - Dance of the Earth, Igor Stravinsky_spectral.feat,0.997861
+3,Desmond Dekker & The Aces – Israelites (Official Lyrics Video)_spectral.feat,0.998390
+4,Augustus Pablo - King Tubby Meets Rockers Uptown_spectral.feat,0.998666
+5,The Beatles - Blackbird (lyrics)_spectral.feat,0.998686
+6,Take Five - Dave Brubeck Feat Carmen McRae (SongDecor)_spectral.feat,0.998688
+7,Junior Wells - Messin' with the Kid (letra español⧸ingles)_spectral.feat,0.998737
+8,Kendrick Lamar - DNA Lyrics_spectral.feat,0.998785
+9,Etta James - I'd Rather Go Blind (Lyrics)_spectral.feat,0.998793
+10,O Fortuna (Carmina Burana) (Lyrics)_spectral.feat,0.998816
