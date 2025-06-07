@@ -8,7 +8,7 @@ Penso que está feito:
 - avaliar o parametro o numero de frequencias extraida e outros parametros uteis
 - plots
 - testes
-
+- guardar features em binário (até agora só testado com spectral extractor)
 
 Falta:
 - ? - mudar diretorios para testar com novas musicas (e dps mudar again)
@@ -74,7 +74,13 @@ mkdir -p data/test_features/
 python3 scripts/calculate_accuracy.py results/batch_youtube/ -o results/youtube_accuracy.json
 
 
+BINÁRIO:
 
+# Extrair os features e guardar em binário
+./apps/extract_features data/full_tracks/ data/generated/youtube-bin/ spectral config/feature_extraction_spectral_default.json --binary
+
+# Testar para uma dada sample
+./apps/music_id "data/test_samples/sample_Eminem - Lose Yourself (Lyrics).wav" data/generated/youtube-bin/ results/eminem_test_bin.txt --compressor gzip --top 10 --binary
 _________________________________________________________________________
 
 COMANDOS PARA CORRER (testar TUDO):

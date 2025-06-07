@@ -17,6 +17,7 @@ noise_type=""
 noise_level=0.1 # Default noise level is 10%
 avoid_start_seconds=5 # Always avoid the first N seconds of the song
 avoid_end_seconds=5 # Always avoid the last N seconds of the song
+output_binary=false
 
 # Display usage information
 function show_help() {
@@ -28,6 +29,7 @@ function show_help() {
     echo "  -s, --start <sec>     Start time in seconds [default: random]"
     echo "  -n, --noise <type>    Noise type: white, pink, or brown"
     echo "  -m, --mix <level>     Noise level (0.0-1.0) [default: 0.1]"
+    echo "  -b, --binary          Output sample with .bin extension (raw float32 PCM)"
     echo "  -h, --help            Show this help message"
     echo
     echo "The script extracts segments from audio files and optionally adds noise."
@@ -35,6 +37,7 @@ function show_help() {
     echo "Examples:"
     echo "  $0 -i music/song.wav -l 15 -n pink -m 0.2 -o query_samples"
     echo "  $0 -i music_directory/ -s 30"
+    echo "  $0 -b -i music/song.wav -o bin_samples"
 }
 
 # Parse command line arguments
@@ -72,6 +75,10 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             shift 2
+            ;;
+        -b|--binary)
+            output_binary=true
+            shift
             ;;
         -h|--help)
             show_help
@@ -200,34 +207,44 @@ process_file() {
     else
         output_file="${output_dir}/sample_${base_name}.wav"
     fi
+    if [ "$output_binary" = true ]; then
+        output_file="${output_file}.bin"
+    else
+        output_file="${output_file}.wav"
+    fi
     
     echo "Processing: $input_file"
     
     # Extract segment
-    if [ -n "$noise_type" ]; then
-        # Generate temporary files for the segment and noise
-        temp_segment=$(mktemp --suffix=.wav)
-        temp_noise=$(mktemp --suffix=.wav)
-        
-        # Extract segment
-        sox "$input_file" "$temp_segment" trim "$actual_start_time" "$segment_length"
-        
-        # Get audio properties for noise generation
-        channels=$(soxi -c "$temp_segment")
-        rate=$(soxi -r "$temp_segment")
-        
-        # Generate noise
-        sox -n -r "$rate" -c "$channels" "$temp_noise" synth "$segment_length" \
-            $noise_type vol "$noise_level"
-        
-        # Mix original segment with noise
-        sox -m "$temp_segment" "$temp_noise" "$output_file"
-        
-        # Clean up temporary files
-        rm "$temp_segment" "$temp_noise"
+    if [ "$output_binary" = true ]; then
+        # Output as raw float32 PCM (little-endian)
+        sox "$input_file" -t f32 "$output_file" trim "$actual_start_time" "$segment_length"
     else
-        # Just extract the segment
-        sox "$input_file" "$output_file" trim "$actual_start_time" "$segment_length"
+        if [ -n "$noise_type" ]; then
+            # Generate temporary files for the segment and noise
+            temp_segment=$(mktemp --suffix=.wav)
+            temp_noise=$(mktemp --suffix=.wav)
+            
+            # Extract segment
+            sox "$input_file" "$temp_segment" trim "$actual_start_time" "$segment_length"
+            
+            # Get audio properties for noise generation
+            channels=$(soxi -c "$temp_segment")
+            rate=$(soxi -r "$temp_segment")
+            
+            # Generate noise
+            sox -n -r "$rate" -c "$channels" "$temp_noise" synth "$segment_length" \
+                $noise_type vol "$noise_level"
+            
+            # Mix original segment with noise
+            sox -m "$temp_segment" "$temp_noise" "$output_file"
+            
+            # Clean up temporary files
+            rm "$temp_segment" "$temp_noise"
+        else
+            # Just extract the segment
+            sox "$input_file" "$output_file" trim "$actual_start_time" "$segment_length"
+        fi
     fi
     
     echo "Created: $output_file"

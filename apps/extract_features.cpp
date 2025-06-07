@@ -10,10 +10,24 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <cstddef> // for size_t
+#include <string>
+#include <list> // for std::list
 
 using namespace std;
 using namespace FeatureExtractor;
 using json = nlohmann::json;
+
+using std::vector;
+using std::string;
+using std::min;
+using std::thread;
+using std::size_t;
+using std::list;
+
+/**
+ * Fix for MSVC: explicitly use std:: for vector, string, min, thread, size_t
+ */
 
 void printUsage() {
     cout << "Usage: extract_features [OPTIONS] <input_path> <output_folder>\n";
@@ -24,6 +38,8 @@ void printUsage() {
     cout << "  --frame-size <n>       Frame size in samples [default: 1024]\n";
     cout << "  --hop-size <n>         Hop size in samples [default: 512]\n";
     cout << "  --config <file>        Load parameters from JSON config file\n";
+    cout << "  --binary               Save features in binary format (.featbin) instead of text (.feat)\n";
+    cout << "  --threads <n>          Number of threads to use [default: all available]\n";
     cout << "  -h, --help             Show this help message\n";
     cout << "  -i, --input <path>     Input folder or WAV file\n";
     cout << "  -o, --output <folder>  Output folder for extracted features\n";
@@ -40,7 +56,9 @@ void processDirectory(
     int numFrequencies, 
     int numBins,
     int frameSize, 
-    int hopSize
+    int hopSize,
+    bool useBinary,
+    unsigned int userThreadCount = 0
 ) {
     // Track metrics with atomic variables for thread safety
     atomic<int> filesProcessed(0);
@@ -57,7 +75,7 @@ void processDirectory(
     }
     
     // Get list of WAV files
-    vector<string> wavFiles;
+    std::list<std::string> wavFiles;
     try {
         for (auto& entry : filesystem::directory_iterator(inFolder)) {
             if (entry.path().extension() == ".wav") {
@@ -68,45 +86,40 @@ void processDirectory(
         cerr << "Error reading directory: " << e.what() << endl;
         throw;
     }
-    
-    cout << "Found " << wavFiles.size() << " WAV files to process" << endl;
+    size_t wavCount = wavFiles.size();
+    cout << "Found " << wavCount << " WAV files to process" << endl;
     
     // Determine optimal number of threads
-    unsigned int threadCount = thread::hardware_concurrency();
+    unsigned int threadCount = userThreadCount > 0 ? userThreadCount : thread::hardware_concurrency();
     if (threadCount == 0) threadCount = 2;  // Default if detection fails
-    
-    // Limit threads based on file count
-    threadCount = min(threadCount, static_cast<unsigned int>(wavFiles.size()));
-    cout << "Using " << threadCount << " threads to process " << wavFiles.size() << " files" << endl;
+    threadCount = std::min(threadCount, static_cast<unsigned int>(wavCount));
+    cout << "Using " << threadCount << " threads to process " << wavCount << " files" << endl;
     
     // Thread-safe console output
     mutex coutMutex;
     
     // Define the file processing function for each thread
     auto processFileBatch = [&](size_t start, size_t end) {
-        for (size_t i = start; i < end && i < wavFiles.size(); i++) {
+        auto it = wavFiles.begin();
+        std::advance(it, start);
+        for (size_t i = start; i < end && it != wavFiles.end(); ++i, ++it) {
             extractFeaturesFromFile(
-                wavFiles[i], outFolder, method,
+                *it, outFolder, method,
                 numFrequencies, numBins, frameSize, hopSize,
-                coutMutex, filesProcessed, filesSkipped
+                coutMutex, filesProcessed, filesSkipped, useBinary
             );
         }
     };
     
     // Create and launch threads
-    vector<thread> threads;
-    size_t filesPerThread = (wavFiles.size() + threadCount - 1) / threadCount;
-    
+    size_t filesPerThread = (wavCount + threadCount - 1) / threadCount;
+    std::list<std::thread> threads;
     for (unsigned int t = 0; t < threadCount; t++) {
         size_t start = t * filesPerThread;
-        size_t end = min((t + 1) * filesPerThread, wavFiles.size());
-        
-        if (start >= wavFiles.size()) break;
-        
+        size_t end = std::min((t + 1) * filesPerThread, wavCount);
+        if (start >= wavCount) break;
         threads.emplace_back(processFileBatch, start, end);
     }
-    
-    // Wait for all threads to complete
     for (auto& t : threads) {
         if (t.joinable()) {
             t.join();
@@ -135,7 +148,8 @@ void processFile(
     int numFrequencies, 
     int numBins,
     int frameSize, 
-    int hopSize
+    int hopSize,
+    bool useBinary
 ) {
     cout << "Processing single WAV file: " << wavFile << endl;
     
@@ -148,7 +162,7 @@ void processFile(
     extractFeaturesFromFile(
         wavFile, outFolder, method,
         numFrequencies, numBins, frameSize, hopSize,
-        coutMutex, filesProcessed, filesSkipped
+        coutMutex, filesProcessed, filesSkipped, useBinary
     );
     
     auto endTime = chrono::high_resolution_clock::now();
@@ -177,6 +191,8 @@ int main(int argc, char* argv[]) {
     string inputPath;
     string outFolder;
     string configFile;
+    bool useBinary = false;
+    unsigned int userThreadCount = 0;
     
     // Parse command line arguments
     for (int i = 1; i < argc; i++) {
@@ -197,6 +213,10 @@ int main(int argc, char* argv[]) {
             hopSize = stoi(argv[++i]);
         } else if (arg == "--config" && i + 1 < argc) {
             configFile = argv[++i];
+        } else if (arg == "--binary") {
+            useBinary = true;
+        } else if (arg == "--threads" && i + 1 < argc) {
+            userThreadCount = static_cast<unsigned int>(stoi(argv[++i]));
         } else if ((arg == "-i" || arg == "--input") && i + 1 < argc) {
             inputPath = argv[++i];
         } else if ((arg == "-o" || arg == "--output") && i + 1 < argc) {
@@ -248,10 +268,12 @@ int main(int argc, char* argv[]) {
     }
 
     // Validate method
-    vector<string> validMethods = {"spectral", "maxfreq"};
-    if (find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
-        cerr << "Error: Invalid method: " << method << endl;
-        cerr << "Valid options: spectral, maxfreq" << endl;
+    std::list<std::string> validMethods;
+    validMethods.push_back("spectral");
+    validMethods.push_back("maxfreq");
+    if (std::find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
+        std::cerr << "Error: Invalid method: " << method << std::endl;
+        std::cerr << "Valid options: spectral, maxfreq" << std::endl;
         return 1;
     }
 
@@ -279,12 +301,12 @@ int main(int argc, char* argv[]) {
             }
             
             processFile(inputPath, outFolder, method,
-                       numFrequencies, numBins, frameSize, hopSize);
+                       numFrequencies, numBins, frameSize, hopSize, useBinary);
         } 
         else if (filesystem::is_directory(inputPath)) {
             // Process a directory
             processDirectory(inputPath, outFolder, method,
-                           numFrequencies, numBins, frameSize, hopSize);
+                           numFrequencies, numBins, frameSize, hopSize, useBinary, userThreadCount);
         }
         else {
             cerr << "Error: Input path is neither a file nor a directory: " << inputPath << endl;

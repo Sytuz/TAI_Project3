@@ -1,0 +1,14 @@
+Query: sample_Eminem - Lose Yourself (Lyrics).wav
+Compressor: gzip
+
+Rank,File,NCD
+1,the most racist person in usa 😭_spectral.featbin,0.999585
+2,Rolling In The Deep - Adele (Lyrics) 🎵_spectral.featbin,0.999758
+3,Desmond Dekker & The Aces – Israelites (Official Lyrics Video)_spectral.featbin,0.999820
+4,Drake - God's Plan (Lyric Video)_spectral.featbin,0.999875
+5,Albert King - Crosscut Saw Lyrics_spectral.featbin,0.999876
+6,Culture - Two Sevens Clash (Karaoke Version)_spectral.featbin,0.999881
+7,Rodrigo y Gabriela - Tamacun_spectral.featbin,0.999881
+8,Junior Wells - Messin' with the Kid (letra español⧸ingles)_spectral.featbin,0.999884
+9,The Chieftains Feat  Mick Jagger  - Long Black Veil (Lyrics)_spectral.featbin,0.999887
+10,Iron Maiden - The Trooper Lyrics_spectral.featbin,0.999902

@@ -23,6 +23,7 @@ void printUsage() {
     cout << "  --compressor <comp>   Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]\n";
     cout << "  --top <n>             Show only top N matches [default: 10]\n";
     cout << "  --config <file>       Config file for feature extraction (when using WAV) [default: config/feature_extraction_spectral_default.json]\n";
+    cout << "  --binary              Use binary feature files (.featbin) instead of text (.feat)\n";
     cout << "  -h, --help            Show this help message\n";
     cout << endl;
 }
@@ -58,7 +59,7 @@ bool loadConfig(const string& configFile, string& method, int& numFrequencies,
 /**
  * Extract features from a WAV file to a temporary feature file
  */
-string extractFeaturesFromWAV(const string& wavFile, const string& configFile) {
+string extractFeaturesFromWAV(const string& wavFile, const string& configFile, bool useBinary = false) {
     // Load configuration
     string method;
     int numFrequencies, numBins, frameSize, hopSize;
@@ -90,10 +91,18 @@ string extractFeaturesFromWAV(const string& wavFile, const string& configFile) {
     atomic<int> filesProcessed(0);
     atomic<int> filesSkipped(0);
     
-    bool success = FeatureExtractor::extractFeaturesFromFile(
-        wavFile, tempDir, method, numFrequencies, numBins, 
-        frameSize, hopSize, coutMutex, filesProcessed, filesSkipped
-    );
+    bool success = false;
+    if (useBinary) {
+        success = FeatureExtractor::extractFeaturesFromFile(
+            wavFile, tempDir, method, numFrequencies, numBins, 
+            frameSize, hopSize, coutMutex, filesProcessed, filesSkipped, true
+        );
+    } else {
+        success = FeatureExtractor::extractFeaturesFromFile(
+            wavFile, tempDir, method, numFrequencies, numBins, 
+            frameSize, hopSize, coutMutex, filesProcessed, filesSkipped, false
+        );
+    }
     
     if (!success) {
         cerr << "Error: Failed to extract features from WAV file" << endl;
@@ -108,7 +117,7 @@ string extractFeaturesFromWAV(const string& wavFile, const string& configFile) {
     string featFile;
     try {
         for (auto& entry : filesystem::directory_iterator(tempDir)) {
-            if (entry.path().extension() == ".feat") {
+            if ((useBinary && entry.path().extension() == ".featbin") || (!useBinary && entry.path().extension() == ".feat")) {
                 featFile = entry.path().string();
                 break;
             }
@@ -150,7 +159,7 @@ void cleanupTempFiles(const string& featFile) {
  */
 bool identifyMusic(const string& queryFile, const string& dbDir, 
                  const string& outputFile, const string& compressor, int topN,
-                 const string& configFile) {
+                 const string& configFile, bool useBinary = false) {
     // Ensure query file exists
     if (!filesystem::exists(queryFile)) {
         cerr << "Error: Query file does not exist: " << queryFile << endl;
@@ -168,7 +177,7 @@ bool identifyMusic(const string& queryFile, const string& dbDir,
     if (extension == ".wav") {
         isWavFile = true;
         cout << "Detected WAV file input - extracting features first..." << endl;
-        tempFeatFile = extractFeaturesFromWAV(queryFile, configFile);
+        tempFeatFile = extractFeaturesFromWAV(queryFile, configFile, useBinary);
         if (tempFeatFile.empty()) {
             return false;
         }
@@ -186,15 +195,12 @@ bool identifyMusic(const string& queryFile, const string& dbDir,
     // Gather database feature files
     vector<string> dbFiles;
     vector<string> dbFilenames; // For display
-    
     try {
         for (auto& entry : filesystem::directory_iterator(dbDir)) {
-            // Check if it's a regular file with .feat extension
             if (entry.is_regular_file()) {
                 string filename = entry.path().filename().string();
                 string extension = entry.path().extension().string();
-                
-                if (extension == ".feat") {
+                if ((useBinary && extension == ".featbin") || (!useBinary && extension == ".feat")) {
                     dbFiles.push_back(entry.path().string());
                     dbFilenames.push_back(filename);
                 }
@@ -299,6 +305,7 @@ int main(int argc, char* argv[]) {
     string outputFile;
     string configFile = "config/feature_extraction_spectral_default.json";
     int topN = 10;
+    bool useBinary = false;
     
     // Parse command line arguments
     for (int i = 1; i < argc; i++) {
@@ -313,6 +320,8 @@ int main(int argc, char* argv[]) {
             topN = stoi(argv[++i]);
         } else if (arg == "--config" && i + 1 < argc) {
             configFile = argv[++i];
+        } else if (arg == "--binary") {
+            useBinary = true;
         } else if (queryFile.empty()) {
             queryFile = arg;
         } else if (dbDir.empty()) {
@@ -366,7 +375,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (!identifyMusic(queryFile, dbDir, outputFile, compressor, topN, configFile)) {
+    if (!identifyMusic(queryFile, dbDir, outputFile, compressor, topN, configFile, useBinary)) {
         return 1;
     }
     

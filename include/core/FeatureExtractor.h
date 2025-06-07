@@ -28,7 +28,13 @@ namespace FeatureExtractor {
     bool saveFeaturesText(const string& outFile, const string& featData);
     
     /**
+     * Save features in binary format
+     */
+    bool saveFeaturesBinary(const string& outFile, const vector<float>& featData);
+
+    /**
      * Extract features from a single WAV file
+     * @param useBinary If true, save features as binary (.featbin), else as text (.feat)
      */
     bool extractFeaturesFromFile(
         const string& wavFile, 
@@ -40,7 +46,8 @@ namespace FeatureExtractor {
         int hopSize,
         mutex& coutMutex,
         atomic<int>& filesProcessed,
-        atomic<int>& filesSkipped
+        atomic<int>& filesSkipped,
+        bool useBinary = false
     );
 }
 

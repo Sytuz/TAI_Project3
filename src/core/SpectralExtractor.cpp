@@ -168,3 +168,28 @@ string SpectralExtractor::extractFeatures(const vector<int16_t>& samples, int ch
     
     return ss.str();
 }
+
+std::vector<std::vector<float>> SpectralExtractor::extractFeaturesBinary(const std::vector<int16_t>& samples, int channels, int frameSize, int hopSize, int sampleRate) {
+    // Convert to mono if needed
+    std::vector<int16_t> monoSamples;
+    if (channels == 2) {
+        monoSamples.resize(samples.size() / 2);
+        for (size_t i = 0, j = 0; i < samples.size(); i += 2, j++) {
+            monoSamples[j] = (samples[i] + samples[i+1]) / 2;
+        }
+    } else {
+        monoSamples = samples;
+    }
+    std::vector<std::vector<float>> features;
+    std::vector<int16_t> frame(frameSize);
+    for (size_t i = 0; i + frameSize <= monoSamples.size(); i += hopSize) {
+        memcpy(frame.data(), &monoSamples[i], frameSize * sizeof(int16_t));
+        applyWindow(frame);
+        std::vector<double> magnitudes;
+        computeFFT(frame, magnitudes);
+        std::vector<double> bins = getBinnedSpectrum(magnitudes);
+        std::vector<float> binsFloat(bins.begin(), bins.end());
+        features.push_back(binsFloat);
+    }
+    return features;
+}

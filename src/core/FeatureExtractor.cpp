@@ -59,6 +59,17 @@ bool saveFeaturesText(const string& outFile, const string& featData) {
     return true;
 }
 
+bool saveFeaturesBinary(const string& outFile, const vector<float>& featData) {
+    ofstream out(outFile + ".featbin", ios::binary);
+    if (!out) {
+        cerr << "  Error: Could not open output file: " << outFile << ".featbin" << endl;
+        return false;
+    }
+    out.write(reinterpret_cast<const char*>(featData.data()), featData.size() * sizeof(float));
+    out.close();
+    return true;
+}
+
 bool extractFeaturesFromFile(
     const string& wavFile, 
     const string& outFolder, 
@@ -69,7 +80,8 @@ bool extractFeaturesFromFile(
     int hopSize,
     mutex& coutMutex,
     atomic<int>& filesProcessed,
-    atomic<int>& filesSkipped
+    atomic<int>& filesSkipped,
+    bool useBinary
 ) {
     WAVReader reader;
     SpectralExtractor specExt(numBins);
@@ -99,12 +111,21 @@ bool extractFeaturesFromFile(
     
     // Extract features
     string featData;
+    std::vector<std::vector<float>> featDataBin; // changed from vector<float>
     auto extractStart = chrono::high_resolution_clock::now();
     
     if (method == "spectral") {
-        featData = specExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
+        if (useBinary) {
+            featDataBin = specExt.extractFeaturesBinary(samples16bit, channels, frameSize, hopSize, sampleRate);
+        } else {
+            featData = specExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
+        }
     } else if (method == "maxfreq") {
-        featData = mfExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
+        if (useBinary) {
+            featDataBin = mfExt.extractFeaturesBinary(samples16bit, channels, frameSize, hopSize, sampleRate);
+        } else {
+            featData = mfExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
+        }
     }
     
     auto extractEnd = chrono::high_resolution_clock::now();
@@ -119,7 +140,17 @@ bool extractFeaturesFromFile(
     string base = filesystem::path(wavFile).stem().string();
     string outFile = outFolder + "/" + base + "_" + method;
     
-    bool saveSuccess = saveFeaturesText(outFile, featData);
+    bool saveSuccess = false;
+    if (useBinary) {
+        // Flatten 2D feature vector to 1D for binary saving
+        std::vector<float> flatFeatDataBin;
+        for (const auto& frame : featDataBin) {
+            flatFeatDataBin.insert(flatFeatDataBin.end(), frame.begin(), frame.end());
+        }
+        saveSuccess = saveFeaturesBinary(outFile, flatFeatDataBin);
+    } else {
+        saveSuccess = saveFeaturesText(outFile, featData);
+    }
     if (!saveSuccess) {
         filesSkipped++;
         return false;
@@ -127,7 +158,11 @@ bool extractFeaturesFromFile(
     
     {
         lock_guard<mutex> lock(coutMutex);
-        cout << "  Extracted features to " << outFile << ".feat" << endl;
+        if (useBinary) {
+            cout << "  Extracted features to " << outFile << ".featbin" << endl;
+        } else {
+            cout << "  Extracted features to " << outFile << ".feat" << endl;
+        }
     }
     
     filesProcessed++;

@@ -151,3 +151,27 @@ string MaxFreqExtractor::extractFeatures(const vector<int16_t>& samples, int cha
     
     return ss.str();
 }
+
+std::vector<std::vector<float>> MaxFreqExtractor::extractFeaturesBinary(const std::vector<int16_t>& samples, int channels, int frameSize, int hopSize, int sampleRate) {
+    // Convert to mono if needed
+    std::vector<int16_t> monoSamples;
+    if (channels == 2) {
+        monoSamples.resize(samples.size() / 2);
+        for (size_t i = 0, j = 0; i < samples.size(); i += 2, j++) {
+            monoSamples[j] = (samples[i] + samples[i+1]) / 2;
+        }
+    } else {
+        monoSamples = samples;
+    }
+    std::vector<std::vector<float>> features;
+    for (size_t i = 0; i + frameSize <= monoSamples.size(); i += hopSize) {
+        std::vector<int16_t> frame(monoSamples.begin() + i, monoSamples.begin() + i + frameSize);
+        applyWindow(frame);
+        std::vector<double> magnitudes;
+        computeFFT(frame, magnitudes);
+        std::vector<int> topIndices = getTopFreqIndices(magnitudes);
+        std::vector<float> indicesFloat(topIndices.begin(), topIndices.end());
+        features.push_back(indicesFloat);
+    }
+    return features;
+}
