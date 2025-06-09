@@ -1,0 +1,62 @@
+DETAILED PARAMETER EVALUATION REPORT
+==================================================
+
+OVERALL STATISTICS:
+--------------------
+Total configurations tested: 24
+Methods tested: maxfreq, spectral
+Compressors tested: gzip, bzip2, lzma, zstd
+Best Top-1 accuracy: 100.0%
+Average Top-1 accuracy: 85.0%
+Standard deviation: 28.4%
+
+TOP 10 CONFIGURATIONS:
+-------------------------
+1. maxfreq - Freq: 4, Bins: 32, Frame: 1024, Hop: 512, Comp: gzip - Acc: 100.0%
+2. maxfreq - Freq: 4, Bins: 32, Frame: 1024, Hop: 512, Comp: bzip2 - Acc: 100.0%
+3. maxfreq - Freq: 4, Bins: 32, Frame: 1024, Hop: 512, Comp: lzma - Acc: 100.0%
+4. maxfreq - Freq: 4, Bins: 32, Frame: 1024, Hop: 512, Comp: zstd - Acc: 100.0%
+5. maxfreq - Freq: 6, Bins: 32, Frame: 1024, Hop: 512, Comp: gzip - Acc: 100.0%
+6. maxfreq - Freq: 6, Bins: 32, Frame: 1024, Hop: 512, Comp: bzip2 - Acc: 100.0%
+7. maxfreq - Freq: 6, Bins: 32, Frame: 1024, Hop: 512, Comp: lzma - Acc: 100.0%
+8. maxfreq - Freq: 6, Bins: 32, Frame: 1024, Hop: 512, Comp: zstd - Acc: 100.0%
+9. maxfreq - Freq: 8, Bins: 32, Frame: 1024, Hop: 512, Comp: gzip - Acc: 100.0%
+10. maxfreq - Freq: 8, Bins: 32, Frame: 1024, Hop: 512, Comp: bzip2 - Acc: 100.0%
+
+METHOD COMPARISON:
+------------------
+MAXFREQ:
+  Top-1: 100.0% ± 0.0%
+  Top-5: 100.0% ± 0.0%
+  Top-10: 100.0% ± 0.0%
+
+SPECTRAL:
+  Top-1: 70.0% ± 34.6%
+  Top-5: 100.0% ± 0.0%
+  Top-10: 100.0% ± 0.0%
+
+PARAMETER RECOMMENDATIONS:
+--------------------------
+Best overall configuration:
+  Method: maxfreq
+  Frequencies: 4
+  Bins: 32
+  Frame Size: 1024
+  Hop Size: 512
+  Compressor: gzip
+  Accuracy: 100.0%
+
+Best maxfreq configuration:
+  Frequencies: 4
+  Bins: 32
+  Frame Size: 1024
+  Hop Size: 512
+  Accuracy: 100.0%
+
+Best spectral configuration:
+  Frequencies: 4
+  Bins: 32
+  Frame Size: 1024
+  Hop Size: 512
+  Accuracy: 100.0%
+

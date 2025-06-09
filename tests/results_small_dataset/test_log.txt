@@ -1,0 +1,1500 @@
+Test started at: Mon Jun  9 02:01:04 PM WEST 2025
+Project root: /home/maria/Desktop/TAI_Project3
+Results directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset
+
+[0;32mSTEP 1: Preparing small dataset (5 songs)...[0m
+Selecting 5 songs from data/samples...
+  Added: Business Positive Energy-Main-version.wav
+  Added: Campus child-Main-version.wav
+  Added: Colorful campus-Main-version.wav
+  Added: Cool and refreshing summer-Main-version.wav
+  Added: Device fat burning-Main-version.wav
+Small dataset prepared with 5 songs
+
+[0;32mSTEP 2: Extracting features...[0m
+Extracting text format features...
+Starting feature extraction using method: spectral
+Frame size: 1024, Hop size: 512
+Using 32 frequency bins
+Found 5 WAV files to process
+Using 5 threads to process 5 files
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Colorful campus-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Device fat burning-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Campus child-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Cool and refreshing summer-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Business Positive Energy-Main-version.wav
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Campus child-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 16
+  Total samples: 9172802
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Device fat burning-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 6598668
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Colorful campus-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 7408800
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Business Positive Energy-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 10766484
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Cool and refreshing summer-Main-version.wav
+  Sample rate: 48000 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 9984002
+  Feature extraction took 1025 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Device fat burning-Main-version_spectral.feat
+  Feature extraction took 1152 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Colorful campus-Main-version_spectral.feat
+  Feature extraction took 1413 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Campus child-Main-version_spectral.feat
+  Feature extraction took 1543 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Cool and refreshing summer-Main-version_spectral.feat
+  Feature extraction took 1646 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Business Positive Energy-Main-version_spectral.feat
+
+Feature extraction summary:
+  Files processed: 5
+  Files skipped: 0
+  Total time: 1 seconds
+Configuration saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/extraction_config.txt
+Extracting binary format features...
+Starting feature extraction using method: spectral
+Frame size: 1024, Hop size: 512
+Using 32 frequency bins
+Found 5 WAV files to process
+Using 5 threads to process 5 files
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Colorful campus-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Campus child-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Business Positive Energy-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Cool and refreshing summer-Main-version.wav
+Processing: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Device fat burning-Main-version.wav
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Device fat burning-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 6598668
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Campus child-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 16
+  Total samples: 9172802
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Colorful campus-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 7408800
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Business Positive Energy-Main-version.wav
+  Sample rate: 44100 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 10766484
+Loaded WAV file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small/Cool and refreshing summer-Main-version.wav
+  Sample rate: 48000 Hz
+  Channels: 2
+  Bits per sample: 24
+  Total samples: 9984002
+  Feature extraction took 1059 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Device fat burning-Main-version_spectral.featbin
+  Feature extraction took 1195 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Colorful campus-Main-version_spectral.featbin
+  Feature extraction took 1459 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Campus child-Main-version_spectral.featbin
+  Feature extraction took 1570 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Cool and refreshing summer-Main-version_spectral.featbin
+  Feature extraction took 1702 ms
+  Extracted features to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Business Positive Energy-Main-version_spectral.featbin
+
+Feature extraction summary:
+  Files processed: 5
+  Files skipped: 0
+  Total time: 1 seconds
+Configuration saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/extraction_config.txt
+Feature extraction complete
+
+[0;32mSTEP 3: Testing all compressors with text format...[0m
+Found 5 .feat files in query directory. Using existing features.
+Starting evaluation...
+Query directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Database directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Compressors: gzip bzip2 lzma zstd
+
+==========================================
+Evaluating with compressor: gzip
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using gzip compressor...
+Using text feature format (.feat files)
+Processing query: Business Positive Energy-Main-version_spectral.feat
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Business Positive Energy-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Business Positive Energy-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1          Cool and refreshing summer-Main-version_spectral.feat  0.997305
+    2                        Campus child-Main-version_spectral.feat  0.998031
+    3                  Device fat burning-Main-version_spectral.feat  0.998069
+    4                     Colorful campus-Main-version_spectral.feat  0.998261
+    5            Business Positive Energy-Main-version_spectral.feat  0.998543
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.feat
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Campus child-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Campus child-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                        Campus child-Main-version_spectral.feat  0.997938
+    2          Cool and refreshing summer-Main-version_spectral.feat  0.998006
+    3                  Device fat burning-Main-version_spectral.feat  0.998227
+    4                     Colorful campus-Main-version_spectral.feat  0.998395
+    5            Business Positive Energy-Main-version_spectral.feat  0.999060
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.feat
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Colorful campus-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Colorful campus-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Colorful campus-Main-version_spectral.feat  0.996812
+    2                  Device fat burning-Main-version_spectral.feat  0.996992
+    3          Cool and refreshing summer-Main-version_spectral.feat  0.997611
+    4                        Campus child-Main-version_spectral.feat  0.998059
+    5            Business Positive Energy-Main-version_spectral.feat  0.998210
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.feat
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Cool and refreshing summer-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1          Cool and refreshing summer-Main-version_spectral.feat  0.997429
+    2                  Device fat burning-Main-version_spectral.feat  0.997797
+    3                        Campus child-Main-version_spectral.feat  0.997913
+    4                     Colorful campus-Main-version_spectral.feat  0.998110
+    5            Business Positive Energy-Main-version_spectral.feat  0.998582
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.feat
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Device fat burning-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Device fat burning-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Colorful campus-Main-version_spectral.feat  0.996459
+    2                  Device fat burning-Main-version_spectral.feat  0.996680
+    3            Business Positive Energy-Main-version_spectral.feat  0.997953
+    4          Cool and refreshing summer-Main-version_spectral.feat  0.997999
+    5                        Campus child-Main-version_spectral.feat  0.998454
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.feat -> cool and refreshing summer (rank 1)
+✓ Campus child-Main-version_spectral.feat -> campus child (rank 1)
+✓ Device fat burning-Main-version_spectral.feat -> device fat burning (rank 2)
+✓ Business Positive Energy-Main-version_spectral.feat -> business positive energy (rank 5)
+✓ Colorful campus-Main-version_spectral.feat -> colorful campus (rank 1)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 3/5 (60.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/accuracy_metrics_gzip.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/accuracy_metrics_gzip.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/summary_gzip.txt
+Compressor gzip evaluation complete.
+
+==========================================
+Evaluating with compressor: bzip2
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using bzip2 compressor...
+Using text feature format (.feat files)
+Processing query: Business Positive Energy-Main-version_spectral.feat
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Business Positive Energy-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Business Positive Energy-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                  Device fat burning-Main-version_spectral.feat  0.997171
+    2          Cool and refreshing summer-Main-version_spectral.feat  0.998811
+    3                     Colorful campus-Main-version_spectral.feat  0.998959
+    4                        Campus child-Main-version_spectral.feat  1.000000
+    5            Business Positive Energy-Main-version_spectral.feat  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.feat
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Campus child-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Campus child-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                        Campus child-Main-version_spectral.feat  0.997888
+    2                  Device fat burning-Main-version_spectral.feat  1.000000
+    3                     Colorful campus-Main-version_spectral.feat  1.000000
+    4          Cool and refreshing summer-Main-version_spectral.feat  1.000000
+    5            Business Positive Energy-Main-version_spectral.feat  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.feat
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Colorful campus-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Colorful campus-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1          Cool and refreshing summer-Main-version_spectral.feat  0.991301
+    2                     Colorful campus-Main-version_spectral.feat  0.992672
+    3                  Device fat burning-Main-version_spectral.feat  0.994629
+    4            Business Positive Energy-Main-version_spectral.feat  0.998995
+    5                        Campus child-Main-version_spectral.feat  0.999325
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.feat
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Cool and refreshing summer-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                  Device fat burning-Main-version_spectral.feat  0.995117
+    2                     Colorful campus-Main-version_spectral.feat  0.996202
+    3          Cool and refreshing summer-Main-version_spectral.feat  0.997104
+    4                        Campus child-Main-version_spectral.feat  1.000000
+    5            Business Positive Energy-Main-version_spectral.feat  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.feat
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Device fat burning-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Device fat burning-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Colorful campus-Main-version_spectral.feat  0.994339
+    2                  Device fat burning-Main-version_spectral.feat  0.994465
+    3            Business Positive Energy-Main-version_spectral.feat  0.994856
+    4          Cool and refreshing summer-Main-version_spectral.feat  0.996644
+    5                        Campus child-Main-version_spectral.feat  0.999251
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.feat -> cool and refreshing summer (rank 3)
+✓ Campus child-Main-version_spectral.feat -> campus child (rank 1)
+✓ Device fat burning-Main-version_spectral.feat -> device fat burning (rank 2)
+✓ Business Positive Energy-Main-version_spectral.feat -> business positive energy (rank 5)
+✓ Colorful campus-Main-version_spectral.feat -> colorful campus (rank 2)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 1/5 (20.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/accuracy_metrics_bzip2.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/accuracy_metrics_bzip2.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/summary_bzip2.txt
+Compressor bzip2 evaluation complete.
+
+==========================================
+Evaluating with compressor: lzma
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using lzma compressor...
+Using text feature format (.feat files)
+Processing query: Business Positive Energy-Main-version_spectral.feat
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Business Positive Energy-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Business Positive Energy-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1            Business Positive Energy-Main-version_spectral.feat  0.000547
+    2          Cool and refreshing summer-Main-version_spectral.feat  0.983510
+    3                     Colorful campus-Main-version_spectral.feat  0.985740
+    4                  Device fat burning-Main-version_spectral.feat  0.986280
+    5                        Campus child-Main-version_spectral.feat  0.994141
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.feat
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Campus child-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Campus child-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                        Campus child-Main-version_spectral.feat  0.000543
+    2          Cool and refreshing summer-Main-version_spectral.feat  0.995403
+    3                     Colorful campus-Main-version_spectral.feat  0.995783
+    4            Business Positive Energy-Main-version_spectral.feat  0.995925
+    5                  Device fat burning-Main-version_spectral.feat  0.995943
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.feat
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Colorful campus-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Colorful campus-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Colorful campus-Main-version_spectral.feat  0.000610
+    2                  Device fat burning-Main-version_spectral.feat  0.982294
+    3          Cool and refreshing summer-Main-version_spectral.feat  0.985414
+    4            Business Positive Energy-Main-version_spectral.feat  0.985854
+    5                        Campus child-Main-version_spectral.feat  0.994645
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.feat
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Cool and refreshing summer-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1          Cool and refreshing summer-Main-version_spectral.feat  0.000550
+    2            Business Positive Energy-Main-version_spectral.feat  0.983952
+    3                     Colorful campus-Main-version_spectral.feat  0.985198
+    4                  Device fat burning-Main-version_spectral.feat  0.985777
+    5                        Campus child-Main-version_spectral.feat  0.994767
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.feat
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Device fat burning-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Device fat burning-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                  Device fat burning-Main-version_spectral.feat  0.000631
+    2                     Colorful campus-Main-version_spectral.feat  0.982823
+    3          Cool and refreshing summer-Main-version_spectral.feat  0.985604
+    4            Business Positive Energy-Main-version_spectral.feat  0.986470
+    5                        Campus child-Main-version_spectral.feat  0.996102
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.feat -> cool and refreshing summer (rank 1)
+✓ Campus child-Main-version_spectral.feat -> campus child (rank 1)
+✓ Device fat burning-Main-version_spectral.feat -> device fat burning (rank 1)
+✓ Business Positive Energy-Main-version_spectral.feat -> business positive energy (rank 1)
+✓ Colorful campus-Main-version_spectral.feat -> colorful campus (rank 1)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 5/5 (100.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/accuracy_metrics_lzma.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/accuracy_metrics_lzma.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/summary_lzma.txt
+Compressor lzma evaluation complete.
+
+==========================================
+Evaluating with compressor: zstd
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using zstd compressor...
+Using text feature format (.feat files)
+Processing query: Business Positive Energy-Main-version_spectral.feat
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Business Positive Energy-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Business Positive Energy-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1            Business Positive Energy-Main-version_spectral.feat  0.000245
+    2                        Campus child-Main-version_spectral.feat  0.960267
+    3          Cool and refreshing summer-Main-version_spectral.feat  0.969358
+    4                  Device fat burning-Main-version_spectral.feat  0.985635
+    5                     Colorful campus-Main-version_spectral.feat  0.987807
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.feat
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Campus child-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Campus child-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                        Campus child-Main-version_spectral.feat  0.000235
+    2            Business Positive Energy-Main-version_spectral.feat  0.968352
+    3          Cool and refreshing summer-Main-version_spectral.feat  0.974170
+    4                  Device fat burning-Main-version_spectral.feat  0.996540
+    5                     Colorful campus-Main-version_spectral.feat  0.998261
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.feat
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Colorful campus-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Colorful campus-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Colorful campus-Main-version_spectral.feat  0.000267
+    2            Business Positive Energy-Main-version_spectral.feat  0.957975
+    3                        Campus child-Main-version_spectral.feat  0.959975
+    4          Cool and refreshing summer-Main-version_spectral.feat  0.963253
+    5                  Device fat burning-Main-version_spectral.feat  0.975687
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.feat
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Cool and refreshing summer-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1          Cool and refreshing summer-Main-version_spectral.feat  0.000244
+    2                        Campus child-Main-version_spectral.feat  0.956526
+    3            Business Positive Energy-Main-version_spectral.feat  0.962461
+    4                  Device fat burning-Main-version_spectral.feat  0.985436
+    5                     Colorful campus-Main-version_spectral.feat  0.987022
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.feat
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text/Device fat burning-Main-version_spectral.feat
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Device fat burning-Main-version_spectral_results.csv
+Detected feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.feat':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                  Device fat burning-Main-version_spectral.feat  0.000273
+    2            Business Positive Energy-Main-version_spectral.feat  0.957123
+    3          Cool and refreshing summer-Main-version_spectral.feat  0.963494
+    4                        Campus child-Main-version_spectral.feat  0.964461
+    5                     Colorful campus-Main-version_spectral.feat  0.979323
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.feat -> cool and refreshing summer (rank 1)
+✓ Campus child-Main-version_spectral.feat -> campus child (rank 1)
+✓ Device fat burning-Main-version_spectral.feat -> device fat burning (rank 1)
+✓ Business Positive Energy-Main-version_spectral.feat -> business positive energy (rank 1)
+✓ Colorful campus-Main-version_spectral.feat -> colorful campus (rank 1)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 5/5 (100.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/accuracy_metrics_zstd.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/accuracy_metrics_zstd.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/summary_zstd.txt
+Compressor zstd evaluation complete.
+
+==========================================
+Generating comparative summary...
+==========================================
+Comparative summary saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/comparative_summary.txt
+Music Identification Evaluation Summary
+======================================
+Date: 2025-06-09 14:03:20
+Query directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Database directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_text
+Compressors evaluated: gzip bzip2 lzma zstd
+
+Accuracy Comparison:
+-------------------
+Compressor   Top-1      Top-5      Top-10    
+----------   -----      -----      ------    
+gzip         60.0%      100.0%     100.0%    
+bzip2        20.0%      100.0%     100.0%    
+lzma         100.0%     100.0%     100.0%    
+zstd         100.0%     100.0%     100.0%    
+
+Individual Results:
+------------------
+Results for gzip: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/gzip/
+Results for bzip2: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/bzip2/
+Results for lzma: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/lzma/
+Results for zstd: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results/zstd/
+
+Evaluation complete!
+Results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/text_format_results
+Text format testing complete
+
+[0;32mSTEP 4: Testing all compressors with binary format...[0m
+Found 5 .featbin files in query directory. Using existing features.
+Starting evaluation...
+Query directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Database directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Compressors: gzip bzip2 lzma zstd
+
+==========================================
+Evaluating with compressor: gzip
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using gzip compressor...
+Using binary feature format (.featbin files)
+Processing query: Business Positive Energy-Main-version_spectral.featbin
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Business Positive Energy-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Business Positive Energy-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1               Device fat burning-Main-version_spectral.featbin  0.999856
+    2                     Campus child-Main-version_spectral.featbin  0.999868
+    3                  Colorful campus-Main-version_spectral.featbin  0.999899
+    4         Business Positive Energy-Main-version_spectral.featbin  0.999902
+    5       Cool and refreshing summer-Main-version_spectral.featbin  0.999907
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.featbin
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Campus child-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Campus child-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1       Cool and refreshing summer-Main-version_spectral.featbin  0.999869
+    2               Device fat burning-Main-version_spectral.featbin  0.999872
+    3                  Colorful campus-Main-version_spectral.featbin  0.999879
+    4                     Campus child-Main-version_spectral.featbin  0.999902
+    5         Business Positive Energy-Main-version_spectral.featbin  0.999902
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.featbin
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Colorful campus-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Colorful campus-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1       Cool and refreshing summer-Main-version_spectral.featbin  0.999480
+    2               Device fat burning-Main-version_spectral.featbin  0.999856
+    3                  Colorful campus-Main-version_spectral.featbin  0.999920
+    4         Business Positive Energy-Main-version_spectral.featbin  0.999952
+    5                     Campus child-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.featbin
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Cool and refreshing summer-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1       Cool and refreshing summer-Main-version_spectral.featbin  0.999644
+    2                     Campus child-Main-version_spectral.featbin  0.999823
+    3               Device fat burning-Main-version_spectral.featbin  1.000000
+    4         Business Positive Energy-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.featbin
+Music identification using gzip compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Device fat burning-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Device fat burning-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1       Cool and refreshing summer-Main-version_spectral.featbin  0.999590
+    2         Business Positive Energy-Main-version_spectral.featbin  0.999785
+    3               Device fat burning-Main-version_spectral.featbin  0.999833
+    4                  Colorful campus-Main-version_spectral.featbin  0.999902
+    5                     Campus child-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.featbin -> cool and refreshing summer (rank 1)
+✓ Campus child-Main-version_spectral.featbin -> campus child (rank 4)
+✓ Device fat burning-Main-version_spectral.featbin -> device fat burning (rank 3)
+✓ Business Positive Energy-Main-version_spectral.featbin -> business positive energy (rank 4)
+✓ Colorful campus-Main-version_spectral.featbin -> colorful campus (rank 3)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 1/5 (20.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/accuracy_metrics_gzip.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/accuracy_metrics_gzip.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/summary_gzip.txt
+Compressor gzip evaluation complete.
+
+==========================================
+Evaluating with compressor: bzip2
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using bzip2 compressor...
+Using binary feature format (.featbin files)
+Processing query: Business Positive Energy-Main-version_spectral.featbin
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Business Positive Energy-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Business Positive Energy-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1         Business Positive Energy-Main-version_spectral.featbin  0.994377
+    2       Cool and refreshing summer-Main-version_spectral.featbin  0.994526
+    3               Device fat burning-Main-version_spectral.featbin  0.999488
+    4                     Campus child-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.featbin
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Campus child-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Campus child-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Campus child-Main-version_spectral.featbin  0.999032
+    2               Device fat burning-Main-version_spectral.featbin  1.000000
+    3       Cool and refreshing summer-Main-version_spectral.featbin  1.000000
+    4         Business Positive Energy-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.featbin
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Colorful campus-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Colorful campus-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Campus child-Main-version_spectral.featbin  0.999385
+    2               Device fat burning-Main-version_spectral.featbin  1.000000
+    3       Cool and refreshing summer-Main-version_spectral.featbin  1.000000
+    4         Business Positive Energy-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.featbin
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Cool and refreshing summer-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1         Business Positive Energy-Main-version_spectral.featbin  0.995176
+    2       Cool and refreshing summer-Main-version_spectral.featbin  0.995302
+    3               Device fat burning-Main-version_spectral.featbin  0.999887
+    4                     Campus child-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.featbin
+Music identification using bzip2 compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Device fat burning-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Device fat burning-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1               Device fat burning-Main-version_spectral.featbin  0.953193
+    2       Cool and refreshing summer-Main-version_spectral.featbin  0.997520
+    3         Business Positive Energy-Main-version_spectral.featbin  0.999244
+    4                     Campus child-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.featbin -> cool and refreshing summer (rank 2)
+✓ Campus child-Main-version_spectral.featbin -> campus child (rank 1)
+✓ Device fat burning-Main-version_spectral.featbin -> device fat burning (rank 1)
+✓ Business Positive Energy-Main-version_spectral.featbin -> business positive energy (rank 1)
+✓ Colorful campus-Main-version_spectral.featbin -> colorful campus (rank 5)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 3/5 (60.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/accuracy_metrics_bzip2.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/accuracy_metrics_bzip2.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/summary_bzip2.txt
+Compressor bzip2 evaluation complete.
+
+==========================================
+Evaluating with compressor: lzma
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using lzma compressor...
+Using binary feature format (.featbin files)
+Processing query: Business Positive Energy-Main-version_spectral.featbin
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Business Positive Energy-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Business Positive Energy-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1         Business Positive Energy-Main-version_spectral.featbin  0.000275
+    2                     Campus child-Main-version_spectral.featbin  0.992709
+    3               Device fat burning-Main-version_spectral.featbin  0.999713
+    4                  Colorful campus-Main-version_spectral.featbin  0.999865
+    5       Cool and refreshing summer-Main-version_spectral.featbin  0.999909
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.featbin
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Campus child-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Campus child-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Campus child-Main-version_spectral.featbin  0.000264
+    2       Cool and refreshing summer-Main-version_spectral.featbin  0.999626
+    3               Device fat burning-Main-version_spectral.featbin  1.000000
+    4         Business Positive Energy-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.featbin
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Colorful campus-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Colorful campus-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                  Colorful campus-Main-version_spectral.featbin  0.000308
+    2                     Campus child-Main-version_spectral.featbin  0.992794
+    3               Device fat burning-Main-version_spectral.featbin  0.999553
+    4       Cool and refreshing summer-Main-version_spectral.featbin  0.999903
+    5         Business Positive Energy-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.featbin
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Cool and refreshing summer-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1       Cool and refreshing summer-Main-version_spectral.featbin  0.000279
+    2                     Campus child-Main-version_spectral.featbin  0.992323
+    3               Device fat burning-Main-version_spectral.featbin  1.000000
+    4         Business Positive Energy-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.featbin
+Music identification using lzma compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Device fat burning-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Device fat burning-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1               Device fat burning-Main-version_spectral.featbin  0.000314
+    2                     Campus child-Main-version_spectral.featbin  0.993223
+    3                  Colorful campus-Main-version_spectral.featbin  0.999533
+    4         Business Positive Energy-Main-version_spectral.featbin  0.999944
+    5       Cool and refreshing summer-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.featbin -> cool and refreshing summer (rank 1)
+✓ Campus child-Main-version_spectral.featbin -> campus child (rank 1)
+✓ Device fat burning-Main-version_spectral.featbin -> device fat burning (rank 1)
+✓ Business Positive Energy-Main-version_spectral.featbin -> business positive energy (rank 1)
+✓ Colorful campus-Main-version_spectral.featbin -> colorful campus (rank 1)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 5/5 (100.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/accuracy_metrics_lzma.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/accuracy_metrics_lzma.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/summary_lzma.txt
+Compressor lzma evaluation complete.
+
+==========================================
+Evaluating with compressor: zstd
+==========================================
+Running batch identification...
+Query configuration found. Copying to output directory...
+Processing queries using zstd compressor...
+Using binary feature format (.featbin files)
+Processing query: Business Positive Energy-Main-version_spectral.featbin
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Business Positive Energy-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Business Positive Energy-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Business Positive Energy-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1         Business Positive Energy-Main-version_spectral.featbin  0.000112
+    2       Cool and refreshing summer-Main-version_spectral.featbin  0.999585
+    3               Device fat burning-Main-version_spectral.featbin  0.999865
+    4                     Campus child-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Business Positive Energy-Main-version_spectral_results.csv
+Processing query: Campus child-Main-version_spectral.featbin
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Campus child-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Campus child-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Campus child-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                     Campus child-Main-version_spectral.featbin  0.000128
+    2         Business Positive Energy-Main-version_spectral.featbin  0.998667
+    3       Cool and refreshing summer-Main-version_spectral.featbin  0.999034
+    4                  Colorful campus-Main-version_spectral.featbin  0.999061
+    5               Device fat burning-Main-version_spectral.featbin  0.999075
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Campus child-Main-version_spectral_results.csv
+Processing query: Colorful campus-Main-version_spectral.featbin
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Colorful campus-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Colorful campus-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Colorful campus-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1                  Colorful campus-Main-version_spectral.featbin  0.000128
+    2       Cool and refreshing summer-Main-version_spectral.featbin  0.999733
+    3         Business Positive Energy-Main-version_spectral.featbin  0.999833
+    4               Device fat burning-Main-version_spectral.featbin  0.999845
+    5                     Campus child-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Colorful campus-Main-version_spectral_results.csv
+Processing query: Cool and refreshing summer-Main-version_spectral.featbin
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Cool and refreshing summer-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Cool and refreshing summer-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Cool and refreshing summer-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1       Cool and refreshing summer-Main-version_spectral.featbin  0.000118
+    2               Device fat burning-Main-version_spectral.featbin  0.999989
+    3         Business Positive Energy-Main-version_spectral.featbin  1.000000
+    4                     Campus child-Main-version_spectral.featbin  1.000000
+    5                  Colorful campus-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Cool and refreshing summer-Main-version_spectral_results.csv
+Processing query: Device fat burning-Main-version_spectral.featbin
+Music identification using zstd compressor
+Query: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary/Device fat burning-Main-version_spectral.featbin
+Database: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Output file: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Device fat burning-Main-version_spectral_results.csv
+Detected binary feature file input - proceeding with direct comparison...
+Comparing query against 5 database entries
+
+Top matches for query 'Device fat burning-Main-version_spectral.featbin':
+
+ Rank                                                           File       NCD
+------------------------------------------------------------------------------
+    1               Device fat burning-Main-version_spectral.featbin  0.000139
+    2       Cool and refreshing summer-Main-version_spectral.featbin  0.999657
+    3                  Colorful campus-Main-version_spectral.featbin  0.999660
+    4         Business Positive Energy-Main-version_spectral.featbin  0.999868
+    5                     Campus child-Main-version_spectral.featbin  1.000000
+
+Full results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/Device fat burning-Main-version_spectral_results.csv
+Batch processing complete. Processed 5 queries.
+Results saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd
+
+Calculating accuracy metrics...
+Analyzing results in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd
+Found 5 result files
+✓ Cool and refreshing summer-Main-version_spectral.featbin -> cool and refreshing summer (rank 1)
+✓ Campus child-Main-version_spectral.featbin -> campus child (rank 1)
+✓ Device fat burning-Main-version_spectral.featbin -> device fat burning (rank 1)
+✓ Business Positive Energy-Main-version_spectral.featbin -> business positive energy (rank 1)
+✓ Colorful campus-Main-version_spectral.featbin -> colorful campus (rank 1)
+
+==================================================
+ACCURACY METRICS SUMMARY
+==================================================
+Total queries processed: 5
+Top-1 Accuracy: 5/5 (100.0%)
+Top-5 Accuracy: 5/5 (100.0%)
+Top-10 Accuracy: 5/5 (100.0%)
+
+Detailed results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/accuracy_metrics_zstd.json
+Accuracy metrics calculated and saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/accuracy_metrics_zstd.json
+Summary saved to /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/summary_zstd.txt
+Compressor zstd evaluation complete.
+
+==========================================
+Generating comparative summary...
+==========================================
+Comparative summary saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/comparative_summary.txt
+Music Identification Evaluation Summary
+======================================
+Date: 2025-06-09 14:04:15
+Query directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Database directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/features_binary
+Compressors evaluated: gzip bzip2 lzma zstd
+
+Accuracy Comparison:
+-------------------
+Compressor   Top-1      Top-5      Top-10    
+----------   -----      -----      ------    
+gzip         20.0%      100.0%     100.0%    
+bzip2        60.0%      100.0%     100.0%    
+lzma         100.0%     100.0%     100.0%    
+zstd         100.0%     100.0%     100.0%    
+
+Individual Results:
+------------------
+Results for gzip: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/gzip/
+Results for bzip2: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/bzip2/
+Results for lzma: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/lzma/
+Results for zstd: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results/zstd/
+
+Evaluation complete!
+Results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/binary_format_results
+Binary format testing complete
+
+[0;32mSTEP 5: Parameter evaluation with all compressors...[0m
+Starting parameter evaluation...
+Project root: /home/maria/Desktop/TAI_Project3
+Query directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small
+Database directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/samples_small
+Output directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation
+Compressors: gzip,bzip2,lzma,zstd
+Binary format: true
+Running QUICK evaluation...
+
+Generated 6 parameter configurations
+Testing with compressors: ['gzip', 'bzip2', 'lzma', 'zstd']
+Starting evaluation of 24 configurations...
+
+============================================================
+Configuration: maxfreq_f4_b32_fs1024_hs512
+Method: maxfreq, Frequencies: 4, Bins: 32
+Frame Size: 1024, Hop Size: 512
+============================================================
+Extracting features with config: maxfreq_f4_b32_fs1024_hs512
+Extracting features with config: maxfreq_f4_b32_fs1024_hs512
+
+[1/24] Testing maxfreq_f4_b32_fs1024_hs512 with gzip
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[2/24] Testing maxfreq_f4_b32_fs1024_hs512 with bzip2
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[3/24] Testing maxfreq_f4_b32_fs1024_hs512 with lzma
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[4/24] Testing maxfreq_f4_b32_fs1024_hs512 with zstd
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+============================================================
+Configuration: maxfreq_f6_b32_fs1024_hs512
+Method: maxfreq, Frequencies: 6, Bins: 32
+Frame Size: 1024, Hop Size: 512
+============================================================
+Extracting features with config: maxfreq_f6_b32_fs1024_hs512
+Extracting features with config: maxfreq_f6_b32_fs1024_hs512
+
+[5/24] Testing maxfreq_f6_b32_fs1024_hs512 with gzip
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[6/24] Testing maxfreq_f6_b32_fs1024_hs512 with bzip2
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[7/24] Testing maxfreq_f6_b32_fs1024_hs512 with lzma
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[8/24] Testing maxfreq_f6_b32_fs1024_hs512 with zstd
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+============================================================
+Configuration: maxfreq_f8_b32_fs1024_hs512
+Method: maxfreq, Frequencies: 8, Bins: 32
+Frame Size: 1024, Hop Size: 512
+============================================================
+Extracting features with config: maxfreq_f8_b32_fs1024_hs512
+Extracting features with config: maxfreq_f8_b32_fs1024_hs512
+
+[9/24] Testing maxfreq_f8_b32_fs1024_hs512 with gzip
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[10/24] Testing maxfreq_f8_b32_fs1024_hs512 with bzip2
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[11/24] Testing maxfreq_f8_b32_fs1024_hs512 with lzma
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[12/24] Testing maxfreq_f8_b32_fs1024_hs512 with zstd
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+============================================================
+Configuration: spectral_f4_b32_fs1024_hs512
+Method: spectral, Frequencies: 4, Bins: 32
+Frame Size: 1024, Hop Size: 512
+============================================================
+Extracting features with config: spectral_f4_b32_fs1024_hs512
+Extracting features with config: spectral_f4_b32_fs1024_hs512
+
+[13/24] Testing spectral_f4_b32_fs1024_hs512 with gzip
+- Top-1: 20.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[14/24] Testing spectral_f4_b32_fs1024_hs512 with bzip2
+- Top-1: 60.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[15/24] Testing spectral_f4_b32_fs1024_hs512 with lzma
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[16/24] Testing spectral_f4_b32_fs1024_hs512 with zstd
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+============================================================
+Configuration: spectral_f4_b64_fs1024_hs512
+Method: spectral, Frequencies: 4, Bins: 64
+Frame Size: 1024, Hop Size: 512
+============================================================
+Extracting features with config: spectral_f4_b64_fs1024_hs512
+Extracting features with config: spectral_f4_b64_fs1024_hs512
+
+[17/24] Testing spectral_f4_b64_fs1024_hs512 with gzip
+- Top-1: 20.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[18/24] Testing spectral_f4_b64_fs1024_hs512 with bzip2
+- Top-1: 60.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[19/24] Testing spectral_f4_b64_fs1024_hs512 with lzma
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[20/24] Testing spectral_f4_b64_fs1024_hs512 with zstd
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+============================================================
+Configuration: spectral_f4_b128_fs1024_hs512
+Method: spectral, Frequencies: 4, Bins: 128
+Frame Size: 1024, Hop Size: 512
+============================================================
+Extracting features with config: spectral_f4_b128_fs1024_hs512
+Extracting features with config: spectral_f4_b128_fs1024_hs512
+
+[21/24] Testing spectral_f4_b128_fs1024_hs512 with gzip
+- Top-1: 20.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[22/24] Testing spectral_f4_b128_fs1024_hs512 with bzip2
+- Top-1: 60.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[23/24] Testing spectral_f4_b128_fs1024_hs512 with lzma
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+[24/24] Testing spectral_f4_b128_fs1024_hs512 with zstd
+- Top-1: 100.0%, Top-5: 100.0%, Top-10: 100.0%
+
+Results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation/parameter_evaluation_results.json
+
+================================================================================
+PARAMETER EVALUATION SUMMARY
+================================================================================
+Rank Method   Freq Bins Frame Hop  Comp   Top-1  Top-5  Top-10 
+--------------------------------------------------------------------------------
+1    maxfreq  4    32   1024  512  gzip   100.0  100.0  100.0  
+2    maxfreq  4    32   1024  512  bzip2  100.0  100.0  100.0  
+3    maxfreq  4    32   1024  512  lzma   100.0  100.0  100.0  
+4    maxfreq  4    32   1024  512  zstd   100.0  100.0  100.0  
+5    maxfreq  6    32   1024  512  gzip   100.0  100.0  100.0  
+6    maxfreq  6    32   1024  512  bzip2  100.0  100.0  100.0  
+7    maxfreq  6    32   1024  512  lzma   100.0  100.0  100.0  
+8    maxfreq  6    32   1024  512  zstd   100.0  100.0  100.0  
+9    maxfreq  8    32   1024  512  gzip   100.0  100.0  100.0  
+10   maxfreq  8    32   1024  512  bzip2  100.0  100.0  100.0  
+11   maxfreq  8    32   1024  512  lzma   100.0  100.0  100.0  
+12   maxfreq  8    32   1024  512  zstd   100.0  100.0  100.0  
+13   spectral 4    32   1024  512  lzma   100.0  100.0  100.0  
+14   spectral 4    32   1024  512  zstd   100.0  100.0  100.0  
+15   spectral 4    64   1024  512  lzma   100.0  100.0  100.0  
+16   spectral 4    64   1024  512  zstd   100.0  100.0  100.0  
+17   spectral 4    128  1024  512  lzma   100.0  100.0  100.0  
+18   spectral 4    128  1024  512  zstd   100.0  100.0  100.0  
+19   spectral 4    32   1024  512  bzip2  60.0   100.0  100.0  
+20   spectral 4    64   1024  512  bzip2  60.0   100.0  100.0  
+
+Best Configuration:
+Method: maxfreq
+Frequencies: 4
+Bins: 32
+Frame Size: 1024
+Hop Size: 512
+Compressor: gzip
+Top-1 Accuracy: 100.0%
+
+Parameter evaluation completed successfully!
+Creating visualizations...
+Loading results from: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation/parameter_evaluation_results.json
+Creating visualizations for 24 configurations...
+- Created accuracy comparison plot
+- Created method comparison plot
+- Created parameter analysis plot
+- Created compressor comparison plot
+- Created numFrequencies heatmap
+- Created numBins heatmap
+- Created frameSize heatmap
+Detailed report saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation/plots/detailed_analysis_report.txt
+- Generated detailed analysis report
+
+All visualizations saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation/plots
+Visualizations created in: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation/plots
+
+==========================================
+EVALUATION SUMMARY
+==========================================
+Total configurations tested: 24
+Best configuration:
+  Method: maxfreq
+  Frequencies: 4
+  Bins: 32
+  Frame Size: 1024
+  Hop Size: 512
+  Compressor: gzip
+  Top-1 Accuracy: 100.0%
+  Top-5 Accuracy: 100.0%
+  Top-10 Accuracy: 100.0%
+
+Results saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation
+Detailed analysis: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation/plots/detailed_analysis_report.txt
+Parameter evaluation complete
+
+[0;32mSTEP 6: Generating visualizations...[0m
+=============================================
+  Test Results Visualization Generator
+=============================================
+Results directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset
+Output directory: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/plots
+Test type: small_dataset
+Formats: text,binary
+Compressors: gzip,bzip2,lzma,zstd
+
+[0;32mActivating virtual environment...[0m
+[0;32mGenerating visualizations...[0m
+Creating visualization for text format, gzip compressor...
+Created individual analysis for text format, gzip compressor
+Creating visualization for text format, bzip2 compressor...
+Created individual analysis for text format, bzip2 compressor
+Creating visualization for text format, lzma compressor...
+Created individual analysis for text format, lzma compressor
+Creating visualization for text format, zstd compressor...
+Created individual analysis for text format, zstd compressor
+Creating visualization for binary format, gzip compressor...
+Created individual analysis for binary format, gzip compressor
+Creating visualization for binary format, bzip2 compressor...
+Created individual analysis for binary format, bzip2 compressor
+Creating visualization for binary format, lzma compressor...
+Created individual analysis for binary format, lzma compressor
+Creating visualization for binary format, zstd compressor...
+Created individual analysis for binary format, zstd compressor
+Creating format comparison plots...
+Loaded gzip results for text format
+Loaded bzip2 results for text format
+Loaded lzma results for text format
+Loaded zstd results for text format
+Loaded gzip results for binary format
+Loaded bzip2 results for binary format
+Loaded lzma results for binary format
+Loaded zstd results for binary format
+Created text accuracy comparison plot
+Created binary accuracy comparison plot
+Created format comparison plots
+Creating parameter evaluation visualizations...
+Loading results from: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/parameter_evaluation/parameter_evaluation_results.json
+Creating visualizations for 24 configurations...
+- Created accuracy comparison plot
+- Created method comparison plot
+- Created parameter analysis plot
+- Created compressor comparison plot
+- Created numFrequencies heatmap
+- Created numBins heatmap
+- Created frameSize heatmap
+Detailed report saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/plots/parameter_evaluation/detailed_analysis_report.txt
+- Generated detailed analysis report
+
+All visualizations saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/plots/parameter_evaluation
+Generating summary report...
+
+[0;32mVisualization generation complete![0m
+All plots and reports saved to: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/plots
+Summary report: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/plots/visualization_summary.md
+Visualizations complete
+
+[0;32mSTEP 7: Generating comprehensive report...[0m
+Comprehensive report generated: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/comprehensive_report.md
+
+[0;32m=============================================[0m
+[0;32m  TEST COMPLETED SUCCESSFULLY[0m
+[0;32m=============================================[0m
+
+Test completed at: Mon Jun  9 02:08:31 PM WEST 2025
+
+[1;33mResults saved to:[0m /home/maria/Desktop/TAI_Project3/tests/results_small_dataset
+[1;33mComprehensive report:[0m /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/comprehensive_report.md
+
+[0;34mGenerated files:[0m
+  📁 Data files: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/data/
+  📊 Test results: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/*_results/
+  📈 Visualizations: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/plots/
+  📋 Report: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/comprehensive_report.md
+  📝 Log: /home/maria/Desktop/TAI_Project3/tests/results_small_dataset/test_log.txt
+
+[0;32mSmall dataset test completed successfully![0m

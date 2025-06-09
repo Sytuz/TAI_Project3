@@ -209,5 +209,5 @@ if [ -n "$temp_feat_dir" ] && [ -d "$temp_feat_dir" ]; then
 fi
 
 echo ""
-echo  evaluation complete!"
+echo "Evaluation complete!"
 echo "Results saved to: $output_base_dir"

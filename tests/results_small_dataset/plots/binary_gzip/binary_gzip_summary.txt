@@ -1,0 +1,19 @@
+Individual Analysis Summary
+===============================
+
+Format: Binary
+Compressor: Gzip
+Total Queries: 5
+
+Accuracy Results:
+- Top-1: 20.0% (1/5)
+- Top-5: 100.0% (5/5)
+- Top-10: 100.0% (5/5)
+
+Detailed Results:
+--------------------------------------------------
+ 1. ✓ Cool and refreshing summer-Mai -> Rank: 1
+ 2. ✓ Campus child-Main-version_spec -> Rank: 4
+ 3. ✓ Device fat burning-Main-versio -> Rank: 3
+ 4. ✓ Business Positive Energy-Main- -> Rank: 4
+ 5. ✓ Colorful campus-Main-version_s -> Rank: 3
