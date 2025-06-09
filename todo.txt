@@ -1,3 +1,57 @@
+COMANDOS PARA CORRER AGORA:
+
+- Step 1: Create a smaller test set (5 songs only)
+
+# Create a small test directory with just 5 songs
+mkdir -p data/samples_small
+cp data/samples/Colorful\ campus-Main-version.wav data/samples_small/
+cp data/samples/Sweet\ morning-Main-version.wav data/samples_small/
+cp data/samples/Jazz\ bar-Main-version.wav data/samples_small/
+cp data/samples/Business\ Positive\ Energy-Main-version.wav data/samples_small/
+cp data/samples/Campus\ child-Main-version.wav data/samples_small/
+
+__
+- Step 2: Essential Commands (with small dataset)
+
+# 1. Extract features (small dataset)
+./scripts/run.sh extract_features --method spectral data/samples_small data/test.features_small
+
+# 2. Run batch identification to create the CSV file
+./scripts/batch_identify.sh -q data/test.features_small -d data/test.features_small -o data/test_results_small -c lzma
+
+# 3. View the results (optional)
+cat data/test_results_small/summary_lzma.txt
+cat data/test_results_small/accuracy_metrics_lzma.json
+
+__
+- Step 3: Extended Testing (optional, if above works)
+# 4. Compare multiple compressors (small dataset)
+./scripts/evaluate_system.sh -q data/test.features_small -d data/test.features_small -o data/extended_results_small -c "gzip,lzma"
+
+# 5. Quick parameter evaluation (small dataset)
+./scripts/quick_param_eval.sh --query-dir data/samples_small --db-dir data/samples_small --output-dir data/quick_param_eval_small --compressors "gzip,lzma"
+
+# 6. Visualize results
+python3 scripts/visualize_parameters.py data/quick_param_eval_small/parameter_evaluation_results.json
+
+
+________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Penso que está feito:
 - implementar a parte de escolher random uma parte da musica (evitar inicio)
 - spectral extractor - meter a funcionar melhor (deve ter resultados melhores q o maxfreq - está a ter piores e a demorar mais tempo)
@@ -55,9 +109,9 @@ mkdir -p data/test_samples/
 mkdir -p results/youtube_tests
 
 # Testar samples individuais (ficheiros WAV vão auto-extrair as features)
-./apps/music_id "data/test_samples/sample_The Beatles - Blackbird (lyrics).wav" data/generated/youtube/ results/beatles_test.txt --compressor gzip --top 10
-./apps/music_id "data/test_samples/sample_Billie Eilish - bad guy (Lyrics).wav" data/generated/youtube/ results/billie_test.txt --compressor gzip --top 10
-./apps/music_id "data/test_samples/sample_Eminem - Lose Yourself (Lyrics).wav" data/generated/youtube/ results/eminem_test.txt --compressor gzip --top 10
+./apps/music_id "data/test_samples/sample_The Beatles - Blackbird (lyrics).wav.wav" data/generated/youtube/ results/beatles_test.txt --compressor gzip --top 10
+./apps/music_id "data/test_samples/sample_Billie Eilish - bad guy (Lyrics).wav.wav" data/generated/youtube/ results/billie_test.txt --compressor gzip --top 10
+./apps/music_id "data/test_samples/sample_Eminem - Lose Yourself (Lyrics).wav.wav" data/generated/youtube/ results/eminem_test.txt --compressor gzip --top 10
 
 OU
 

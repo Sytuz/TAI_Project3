@@ -1,8 +1,8 @@
 {
   "method": "spectral",
-  "bins": 64,
-  "frameSize": 1024,
-  "hopSize": 512,
+  "bins": 16,
+  "frameSize": 2048,
+  "hopSize": 1024,
   "input": "data/samples/clean",
   "output": "data/features/queries/clean/spectral_default"
 }

@@ -31,3 +31,9 @@ Makefile
 # Ignore Python cache and pyc files
 __pycache__/
 *.pyc
+
+# Ignore test files
+test.features/
+tests/complete_test
+tests/simple_test
+tests/youtube_test

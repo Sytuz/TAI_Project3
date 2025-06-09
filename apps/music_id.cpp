@@ -22,7 +22,7 @@ void printUsage() {
     cout << "\nOptions:\n";
     cout << "  --compressor <comp>   Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]\n";
     cout << "  --top <n>             Show only top N matches [default: 10]\n";
-    cout << "  --config <file>       Config file for feature extraction (when using WAV) [default: config/feature_extraction_spectral_default.json]\n";
+    cout << "  --config <file>       Config file for feature extraction (when using WAV) [default: config/feature_extraction_spectral_64bins.json]\n";
     cout << "  --binary              Use binary feature files (.featbin) instead of text (.feat)\n";
     cout << "  -h, --help            Show this help message\n";
     cout << endl;
@@ -303,7 +303,7 @@ int main(int argc, char* argv[]) {
     string queryFile;
     string dbDir;
     string outputFile;
-    string configFile = "config/feature_extraction_spectral_default.json";
+    string configFile = "config/feature_extraction_spectral_64bins.json";
     int topN = 10;
     bool useBinary = false;
     

@@ -49,3 +49,45 @@ add_executable(music_id apps/music_id.cpp)
 target_link_libraries(music_id core utils)  # Link to both libraries explicitly
 set_target_properties(music_id PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
+
+# Test executables
+add_executable(simple_test tests/simple_test.cpp)
+set_target_properties(simple_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
+
+add_executable(complete_test tests/complete_test.cpp)
+set_target_properties(complete_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
+
+add_executable(youtube_test tests/youtube_test.cpp)
+set_target_properties(youtube_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
+
+# Test targets for convenience
+add_custom_target(tests ALL DEPENDS simple_test complete_test youtube_test)
+
+add_custom_target(run_simple_test
+    COMMAND ${CMAKE_SOURCE_DIR}/tests/simple_test
+    DEPENDS simple_test
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running simple music identification test"
+)
+
+add_custom_target(run_complete_test
+    COMMAND ${CMAKE_SOURCE_DIR}/tests/complete_test
+    DEPENDS complete_test
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running complete music identification test"
+)
+
+add_custom_target(run_youtube_test
+    COMMAND ${CMAKE_SOURCE_DIR}/tests/youtube_test
+    DEPENDS youtube_test
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running YouTube music identification test"
+)
+
+add_custom_target(run_all_tests
+    DEPENDS run_simple_test run_complete_test run_youtube_test
+    COMMENT "Running all music identification tests"
+)

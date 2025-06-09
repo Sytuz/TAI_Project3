@@ -34,9 +34,9 @@ void printUsage() {
     cout << "Options:\n";
     cout << "  --method <method>      Feature extraction method (spectral, maxfreq) [default: spectral]\n";
     cout << "  --frequencies <n>      Number of frequencies per frame (maxfreq) [default: 4]\n";
-    cout << "  --bins <n>             Number of frequency bins (spectral) [default: 32]\n";
-    cout << "  --frame-size <n>       Frame size in samples [default: 1024]\n";
-    cout << "  --hop-size <n>         Hop size in samples [default: 512]\n";
+    cout << "  --bins <n>             Number of frequency bins (spectral) [default: 64]\n";
+    cout << "  --frame-size <n>       Frame size in samples [default: 2048]\n";
+    cout << "  --hop-size <n>         Hop size in samples [default: 1024]\n";
     cout << "  --config <file>        Load parameters from JSON config file\n";
     cout << "  --binary               Save features in binary format (.featbin) instead of text (.feat)\n";
     cout << "  --threads <n>          Number of threads to use [default: all available]\n";
@@ -185,9 +185,9 @@ int main(int argc, char* argv[]) {
     // Default values
     string method = "spectral";
     int numFrequencies = 4;
-    int numBins = 32;
-    int frameSize = 1024;
-    int hopSize = 512;
+    int numBins = 64;
+    int frameSize = 2048;
+    int hopSize = 1024;
     string inputPath;
     string outFolder;
     string configFile;
