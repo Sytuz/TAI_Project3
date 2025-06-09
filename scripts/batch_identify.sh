@@ -5,6 +5,7 @@ query_dir="data/queries"
 db_dir="data/features/db"
 output_dir="output"
 compressor="gzip"
+use_binary=false
 
 # Display usage information
 function show_help() {
@@ -14,6 +15,7 @@ function show_help() {
     echo "  -d, --db <dir>        Directory with database feature files [default: data/features/db]"
     echo "  -o, --output <dir>    Output directory for results [default: output]"
     echo "  -c, --compressor <c>  Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]"
+    echo "  --binary              Use binary feature files (.featbin) instead of text (.feat)"
     echo "  -h, --help            Show this help message"
     echo
     echo "Processes a batch of queries against the database for music identification."
@@ -37,6 +39,10 @@ while [[ $# -gt 0 ]]; do
         -c|--compressor)
             compressor="$2"
             shift 2
+            ;;
+        --binary)
+            use_binary=true
+            shift
             ;;
         -h|--help)
             show_help
@@ -72,19 +78,39 @@ fi
 
 # Process each query file
 echo "Processing queries using ${compressor} compressor..."
+if [ "$use_binary" = true ]; then
+    echo "Using binary feature format (.featbin files)"
+    file_extension="*.featbin"
+else
+    echo "Using text feature format (.feat files)"
+    file_extension="*.feat"
+fi
+
 query_count=0
 
-for query_file in "${query_dir}"/*.feat; do
+for query_file in "${query_dir}"/${file_extension}; do
     if [ ! -f "$query_file" ]; then
-        echo "No feature files found in $query_dir"
+        if [ "$use_binary" = true ]; then
+            echo "No .featbin files found in $query_dir"
+        else
+            echo "No .feat files found in $query_dir"
+        fi
         exit 1
     fi
     
     query_name=$(basename "$query_file")
-    result_file="${output_dir}/${query_name%.feat}_results.csv"
+    if [ "$use_binary" = true ]; then
+        result_file="${output_dir}/${query_name%.featbin}_results.csv"
+    else
+        result_file="${output_dir}/${query_name%.feat}_results.csv"
+    fi
     
     echo "Processing query: $query_name"
-    ./apps/music_id --compressor "$compressor" "$query_file" "$db_dir" "$result_file"
+    if [ "$use_binary" = true ]; then
+        ./apps/music_id --compressor "$compressor" --binary "$query_file" "$db_dir" "$result_file"
+    else
+        ./apps/music_id --compressor "$compressor" "$query_file" "$db_dir" "$result_file"
+    fi
     
     ((query_count++))
 done

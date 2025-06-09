@@ -1,9 +1,0 @@
-Feature Extraction Configuration
-===============================
-Date: 2025-05-29 11:20:10
-Method: spectral
-Format: text
-Frame size: 1024 samples
-Hop size: 512 samples
-Frequency bins: 32
-Files processed: 4

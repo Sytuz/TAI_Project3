@@ -1,3 +1,116 @@
+ÚLTIMO UPDATE:
+
+COMANDOS PARA CORRER:
+
+- Step 1: Create a smaller test set (5 songs only)
+
+# Create a small test directory with just 5 songs
+mkdir -p data/samples_small
+cp data/samples/Colorful\ campus-Main-version.wav data/samples_small/
+cp data/samples/Sweet\ morning-Main-version.wav data/samples_small/
+cp data/samples/Jazz\ bar-Main-version.wav data/samples_small/
+cp data/samples/Business\ Positive\ Energy-Main-version.wav data/samples_small/
+cp data/samples/Campus\ child-Main-version.wav data/samples_small/
+
+__
+- Step 2: Essential Commands (with small dataset)
+
+# 1. Extract features (small dataset) - TEXT FORMAT
+./scripts/run.sh extract_features --method spectral data/samples_small data/test.features_small
+
+# 2. Run batch identification to create the CSV file
+./scripts/batch_identify.sh -q data/test.features_small -d data/test.features_small -o data/test_results_small -c lzma
+
+# 3. View the results (optional)
+cat data/test_results_small/summary_lzma.txt
+cat data/test_results_small/accuracy_metrics_lzma.json
+
+__
+- Step 2B: Binary Format Testing (recommended for performance)
+
+# 1B. Extract features in BINARY FORMAT (faster and more efficient)
+./apps/extract_features data/samples_small data/test.features_small_bin spectral config/feature_extraction_spectral_default.json --binary
+
+# 2B. Run batch identification with binary features
+./scripts/batch_identify.sh -q data/test.features_small_bin -d data/test.features_small_bin -o data/test_results_small_bin -c lzma --binary
+
+# 3B. View the binary results (optional)
+cat data/test_results_small_bin/summary_lzma.txt
+cat data/test_results_small_bin/accuracy_metrics_lzma.json
+
+__
+- Step 3: Extended Testing (optional, if above works)
+
+# 4. Compare multiple compressors (small dataset) - TEXT FORMAT
+./scripts/evaluate_system.sh -q data/test.features_small -d data/test.features_small -o data/extended_results_small -c "gzip,lzma"
+
+# 4B. Compare multiple compressors (small dataset) - BINARY FORMAT
+./scripts/evaluate_system.sh -q data/test.features_small_bin -d data/test.features_small_bin -o data/extended_results_small_bin -c "gzip,lzma" --binary
+
+# 5. Quick parameter evaluation (small dataset) - TEXT FORMAT
+./scripts/quick_param_eval.sh --query-dir data/samples_small --db-dir data/samples_small --output-dir data/quick_param_eval_small --compressors "gzip,lzma"
+
+# 5B. Quick parameter evaluation (small dataset) - BINARY FORMAT
+./scripts/quick_param_eval.sh --query-dir data/samples_small --db-dir data/samples_small --output-dir data/quick_param_eval_small_bin --compressors "gzip,lzma" --binary
+
+# 6. Visualize results (text format)
+python3 scripts/visualize_parameters.py data/quick_param_eval_small/parameter_evaluation_results.json
+
+# 6B. Visualize results (binary format)
+python3 scripts/visualize_parameters.py data/quick_param_eval_small_bin/parameter_evaluation_results.json
+
+__
+- Step 4: Individual Song Testing (optional)
+
+# Test individual WAV files with auto feature extraction (text format)
+./apps/music_id data/samples_small/Colorful\ campus-Main-version.wav data/test.features_small results/colorful_test.txt --compressor lzma --top 5
+
+# Test individual WAV files with binary feature database
+./apps/music_id data/samples_small/Colorful\ campus-Main-version.wav data/test.features_small_bin results/colorful_test_bin.txt --compressor lzma --top 5 --binary
+
+# Test with pre-extracted features (text format)
+./apps/music_id data/test.features_small/Colorful\ campus-Main-version.json data/test.features_small results/colorful_features_test.txt --compressor lzma --top 5
+
+# Test with pre-extracted features (binary format)
+./apps/music_id data/test.features_small_bin/Colorful\ campus-Main-version.bin data/test.features_small_bin results/colorful_features_test_bin.txt --compressor lzma --top 5 --binary
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Penso que está feito:
 - implementar a parte de escolher random uma parte da musica (evitar inicio)
 - spectral extractor - meter a funcionar melhor (deve ter resultados melhores q o maxfreq - está a ter piores e a demorar mais tempo)

@@ -9,6 +9,7 @@ query_dir="data/test_samples"
 db_dir="data/samples"
 output_dir="quick_param_eval"
 compressors="gzip,bzip2"
+use_binary=false
 
 # Display usage information
 function show_help() {
@@ -19,6 +20,7 @@ function show_help() {
     echo "  --db-dir <dir>        Directory with database WAV files [default: data/samples]"
     echo "  --output-dir <dir>    Output directory [default: quick_param_eval]"
     echo "  --compressors <list>  Comma-separated compressors [default: gzip,bzip2]"
+    echo "  --binary              Use binary format for feature files (.featbin)"
     echo "  --full                Run full evaluation (takes much longer)"
     echo "  -h, --help            Show this help message"
     echo
@@ -49,6 +51,10 @@ while [[ $# -gt 0 ]]; do
         --compressors)
             compressors="$2"
             shift 2
+            ;;
+        --binary)
+            use_binary=true
+            shift
             ;;
         --full)
             full_evaluation=true
@@ -96,6 +102,7 @@ echo "Query directory: $query_dir"
 echo "Database directory: $db_dir"
 echo "Output directory: $output_dir"
 echo "Compressors: $compressors"
+echo "Binary format: $use_binary"
 
 if [ "$full_evaluation" = true ]; then
     echo "Running FULL evaluation (this may take a long time)..."
@@ -108,12 +115,18 @@ fi
 echo ""
 
 # Run the parameter evaluation
+binary_arg=""
+if [ "$use_binary" = true ]; then
+    binary_arg="--binary"
+fi
+
 if python3 scripts/evaluate_parameters.py \
     --project-root "$project_root" \
     --query-dir "$query_dir" \
     --db-dir "$db_dir" \
     --output-dir "$output_dir" \
     --compressors "$compressors" \
+    $binary_arg \
     $evaluation_type; then
     
     echo ""

@@ -18,6 +18,7 @@ void printUsage() {
     cout << "Usage: music_id [OPTIONS] <query_file> <database_dir> <output_file>\n";
     cout << "Query file can be either:\n";
     cout << "  - A feature file (.feat extension) - for direct comparison\n";
+    cout << "  - A binary feature file (.featbin extension) - for direct comparison\n";
     cout << "  - A WAV file (.wav extension) - will extract features automatically\n";
     cout << "\nOptions:\n";
     cout << "  --compressor <comp>   Compressor to use (gzip, bzip2, lzma, zstd) [default: gzip]\n";
@@ -184,8 +185,10 @@ bool identifyMusic(const string& queryFile, const string& dbDir,
         actualQueryFile = tempFeatFile;
     } else if (extension == ".feat") {
         cout << "Detected feature file input - proceeding with direct comparison..." << endl;
+    } else if (extension == ".featbin") {
+        cout << "Detected binary feature file input - proceeding with direct comparison..." << endl;
     } else {
-        cerr << "Error: Query file must be either .wav or .feat format" << endl;
+        cerr << "Error: Query file must be either .wav, .feat, or .featbin format" << endl;
         return false;
     }
     

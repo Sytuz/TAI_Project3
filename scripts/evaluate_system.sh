@@ -9,6 +9,7 @@ db_dir="data/features/db"
 output_base_dir="evaluation_results"
 compressors=("gzip" "bzip2" "lzma" "zstd")
 config_file="config/feature_extraction_spectral_default.json"
+use_binary=false
 
 # Display usage information
 function show_help() {
@@ -19,6 +20,7 @@ function show_help() {
     echo "  -o, --output <dir>    Base output directory [default: evaluation_results]"
     echo "  -c, --compressors <list>  Comma-separated list of compressors [default: gzip,bzip2,lzma,zstd]"
     echo "  --config <file>       Config file for feature extraction [default: config/feature_extraction_spectral_default.json]"
+    echo "  --binary              Use binary feature files (.featbin) instead of text (.feat)"
     echo "  -h, --help            Show this help message"
     echo
     echo "This script performs evaluation across multiple compressors."
@@ -47,6 +49,10 @@ while [[ $# -gt 0 ]]; do
         --config)
             config_file="$2"
             shift 2
+            ;;
+        --binary)
+            use_binary=true
+            shift
             ;;
         -h|--help)
             show_help
@@ -80,7 +86,13 @@ temp_feat_dir=""
 
 # Check if query directory contains WAV files
 wav_count=$(find "$query_dir" -name "*.wav" | wc -l)
-feat_count=$(find "$query_dir" -name "*.feat" | wc -l)
+if [ "$use_binary" = true ]; then
+    feat_count=$(find "$query_dir" -name "*.featbin" | wc -l)
+    feat_extension="featbin"
+else
+    feat_count=$(find "$query_dir" -name "*.feat" | wc -l)
+    feat_extension="feat"
+fi
 
 if [ $wav_count -gt 0 ] && [ $feat_count -eq 0 ]; then
     echo "Found $wav_count WAV files in query directory. Extracting features..."
@@ -88,7 +100,12 @@ if [ $wav_count -gt 0 ] && [ $feat_count -eq 0 ]; then
     mkdir -p "$temp_feat_dir"
     
     # Extract features from WAV files
-    if ! ./apps/extract_features --config "$config_file" -i "$query_dir" -o "$temp_feat_dir"; then
+    extract_cmd="./apps/extract_features --config $config_file -i $query_dir -o $temp_feat_dir"
+    if [ "$use_binary" = true ]; then
+        extract_cmd="$extract_cmd --binary"
+    fi
+    
+    if ! eval "$extract_cmd"; then
         echo "Error: Failed to extract features from WAV files"
         exit 1
     fi
@@ -96,9 +113,9 @@ if [ $wav_count -gt 0 ] && [ $feat_count -eq 0 ]; then
     query_feat_dir="$temp_feat_dir"
     echo "Features extracted to: $temp_feat_dir"
 elif [ $feat_count -gt 0 ]; then
-    echo "Found $feat_count feature files in query directory. Using existing features."
+    echo "Found $feat_count .$feat_extension files in query directory. Using existing features."
 else
-    echo "Error: No WAV or feature files found in query directory: $query_dir"
+    echo "Error: No WAV or .$feat_extension files found in query directory: $query_dir"
     exit 1
 fi
 
@@ -120,7 +137,12 @@ for compressor in "${compressors[@]}"; do
     
     # Run batch identification
     echo "Running batch identification..."
-    if ! bash scripts/batch_identify.sh -q "$query_feat_dir" -d "$db_dir" -o "$comp_output_dir" -c "$compressor"; then
+    batch_cmd="bash scripts/batch_identify.sh -q $query_feat_dir -d $db_dir -o $comp_output_dir -c $compressor"
+    if [ "$use_binary" = true ]; then
+        batch_cmd="$batch_cmd --binary"
+    fi
+    
+    if ! eval "$batch_cmd"; then
         echo "Error: Batch identification failed for $compressor"
         continue
     fi

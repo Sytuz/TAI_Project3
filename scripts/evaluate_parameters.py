@@ -14,11 +14,12 @@ import argparse
 from datetime import datetime
 
 class ParameterEvaluator:
-    def __init__(self, project_root, query_dir, db_dir, output_dir):
+    def __init__(self, project_root, query_dir, db_dir, output_dir, use_binary=False):
         self.project_root = Path(project_root)
         self.query_dir = Path(query_dir)
         self.db_dir = Path(db_dir)
         self.output_dir = Path(output_dir)
+        self.use_binary = use_binary
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Ensure we're in the project directory
@@ -53,6 +54,10 @@ class ParameterEvaluator:
             "-o", str(output_dir)
         ]
         
+        # Add binary flag if enabled
+        if self.use_binary:
+            cmd.append("--binary")
+        
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
             if result.returncode != 0:
@@ -76,6 +81,10 @@ class ParameterEvaluator:
             "-o", str(output_file.parent),
             "-c", compressor
         ]
+        
+        # Add binary flag if enabled
+        if self.use_binary:
+            cmd.append("--binary")
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
@@ -279,6 +288,8 @@ def main():
                        help='Output directory for evaluation results')
     parser.add_argument('--compressors', default='gzip,bzip2',
                        help='Comma-separated list of compressors to test')
+    parser.add_argument('--binary', action='store_true',
+                       help='Use binary format for feature files (.featbin)')
     parser.add_argument('--quick', action='store_true',
                        help='Run quick evaluation with fewer parameters')
     
@@ -289,7 +300,7 @@ def main():
     
     # Initialize evaluator
     evaluator = ParameterEvaluator(
-        args.project_root, args.query_dir, args.db_dir, args.output_dir
+        args.project_root, args.query_dir, args.db_dir, args.output_dir, args.binary
     )
     
     # Generate parameter sets
