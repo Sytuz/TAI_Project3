@@ -1,0 +1,48 @@
+Individual Analysis Summary
+===============================
+
+Format: Text
+Compressor: Bzip2
+Total Queries: 34
+
+Accuracy Results:
+- Top-1: 0.0% (0/34)
+- Top-5: 23.5% (8/34)
+- Top-10: 52.9% (18/34)
+
+Detailed Results:
+--------------------------------------------------
+ 1. ✗ Eager look-Main-version_spectr -> Rank: Not found
+ 2. ✓ Youthless-Main-version_spectra -> Rank: 2
+ 3. ✓ dynamic color-Main-version_spe -> Rank: 10
+ 4. ✓ Cool and refreshing summer-Mai -> Rank: 6
+ 5. ✓ relaxing Vlogger-Main-version_ -> Rank: 10
+ 6. ✗ Sad Warrior-Main-version_spect -> Rank: Not found
+ 7. ✓ Party carnival night-Main-vers -> Rank: 5
+ 8. ✗ winning mentality -Main-versio -> Rank: Not found
+ 9. ✓ Happy little sheep-Main-versio -> Rank: 10
+10. ✓ Campus child-Main-version_spec -> Rank: 8
+11. ✓ Sentiment-Main-version_spectra -> Rank: 10
+12. ✗ Jazz bar-Main-version_spectral -> Rank: Not found
+13. ✗ Naughty cute-Main-version_spec -> Rank: Not found
+14. ✗ One day of Vloger-Main-version -> Rank: Not found
+15. ✗ Inspirational and forward-Main -> Rank: Not found
+16. ✓ Device fat burning-Main-versio -> Rank: 3
+17. ✗ The Sad Cello-Main-version_spe -> Rank: Not found
+18. ✓ dynamic future dance music-Mai -> Rank: 4
+19. ✗ Business Positive Energy-Main- -> Rank: Not found
+20. ✓ Easy thanks-Main-version_spect -> Rank: 7
+21. ✗ Suspense Alternative Tension-M -> Rank: Not found
+22. ✓ The detective is crazy-Main-ve -> Rank: 10
+23. ✓ Epic incentive-Main-version_sp -> Rank: 2
+24. ✓ Sweet morning-Main-version_spe -> Rank: 9
+25. ✓ Colorful campus-Main-version_s -> Rank: 3
+26. ✗ Walk slowly and relax everyday -> Rank: Not found
+27. ✗ Warm and comfortable emotion-M -> Rank: Not found
+28. ✗ hot-blooded sports-Main-versio -> Rank: Not found
+29. ✗ Heartbeat feeling-Main-version -> Rank: Not found
+30. ✓ Sleep peacefully-Main-version_ -> Rank: 2
+31. ✓ Positive energy enterprise pro -> Rank: 7
+32. ✗ New epic-Main-version_spectral -> Rank: Not found
+33. ✓ Sea wind-Main-version_spectral -> Rank: 5
+34. ✗ Naughty-Main-version_spectral. -> Rank: Not found

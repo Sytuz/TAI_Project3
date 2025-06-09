@@ -1,0 +1,48 @@
+Individual Analysis Summary
+===============================
+
+Format: Text
+Compressor: Gzip
+Total Queries: 34
+
+Accuracy Results:
+- Top-1: 8.8% (3/34)
+- Top-5: 44.1% (15/34)
+- Top-10: 73.5% (25/34)
+
+Detailed Results:
+--------------------------------------------------
+ 1. ✓ Eager look-Main-version_spectr -> Rank: 9
+ 2. ✓ Youthless-Main-version_spectra -> Rank: 3
+ 3. ✗ dynamic color-Main-version_spe -> Rank: Not found
+ 4. ✓ Cool and refreshing summer-Mai -> Rank: 1
+ 5. ✓ relaxing Vlogger-Main-version_ -> Rank: 6
+ 6. ✓ Sad Warrior-Main-version_spect -> Rank: 7
+ 7. ✗ Party carnival night-Main-vers -> Rank: Not found
+ 8. ✓ winning mentality -Main-versio -> Rank: 3
+ 9. ✗ Happy little sheep-Main-versio -> Rank: Not found
+10. ✓ Campus child-Main-version_spec -> Rank: 3
+11. ✓ Sentiment-Main-version_spectra -> Rank: 2
+12. ✓ Jazz bar-Main-version_spectral -> Rank: 7
+13. ✗ Naughty cute-Main-version_spec -> Rank: Not found
+14. ✓ One day of Vloger-Main-version -> Rank: 2
+15. ✓ Inspirational and forward-Main -> Rank: 9
+16. ✓ Device fat burning-Main-versio -> Rank: 2
+17. ✓ The Sad Cello-Main-version_spe -> Rank: 3
+18. ✓ dynamic future dance music-Mai -> Rank: 5
+19. ✗ Business Positive Energy-Main- -> Rank: Not found
+20. ✓ Easy thanks-Main-version_spect -> Rank: 8
+21. ✓ Suspense Alternative Tension-M -> Rank: 10
+22. ✓ The detective is crazy-Main-ve -> Rank: 4
+23. ✓ Epic incentive-Main-version_sp -> Rank: 6
+24. ✓ Sweet morning-Main-version_spe -> Rank: 3
+25. ✓ Colorful campus-Main-version_s -> Rank: 1
+26. ✓ Walk slowly and relax everyday -> Rank: 2
+27. ✗ Warm and comfortable emotion-M -> Rank: Not found
+28. ✓ hot-blooded sports-Main-versio -> Rank: 3
+29. ✓ Heartbeat feeling-Main-version -> Rank: 8
+30. ✓ Sleep peacefully-Main-version_ -> Rank: 9
+31. ✗ Positive energy enterprise pro -> Rank: Not found
+32. ✗ New epic-Main-version_spectral -> Rank: Not found
+33. ✓ Sea wind-Main-version_spectral -> Rank: 1
+34. ✗ Naughty-Main-version_spectral. -> Rank: Not found
