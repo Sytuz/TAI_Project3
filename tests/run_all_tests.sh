@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 PROJECT_ROOT="$(dirname "$(realpath "$0")")/.."
-DATASET="small_samples"  # Change to: samples or full_tracks for larger datasets
+DATASET="samples"  # Change to: samples or full_tracks for larger datasets
 NOISE_TYPES=("clean" "white" "brown" "pink")
 METHODS=("spectral" "maxfreq")
 FORMATS=("text" "binary")

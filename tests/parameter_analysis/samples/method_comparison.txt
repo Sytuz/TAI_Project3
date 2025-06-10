@@ -1,0 +1,17 @@
+========================================
+METHOD COMPARISON ANALYSIS
+========================================
+Analysis Date: Tue Jun 10 04:45:39 PM WEST 2025
+
+Comparing SPECTRAL vs MAXFREQ methods across all formats and compressors:
+
+
+text FORMAT COMPARISON:
+- Spectral average Top-1 accuracy: 54.96% (16 tests)
+- MaxFreq average Top-1 accuracy: 82.90% (16 tests)
+- Winner: MAXFREQ method
+
+binary FORMAT COMPARISON:
+- Spectral average Top-1 accuracy: 55.88% (16 tests)
+- MaxFreq average Top-1 accuracy: 82.53% (16 tests)
+- Winner: MAXFREQ method

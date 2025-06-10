@@ -32,3 +32,14 @@ Makefile
 __pycache__/
 *.pyc
 
+# Ignore samples + full_tracks tests outputs (keep just the parameter analysis + plots + reports)
+tests/compression_results/samples/brown/
+tests/compression_results/samples/clean/
+tests/compression_results/samples/pink/
+tests/compression_results/samples/white/
+tests/feature_extraction_results/samples/brown/
+tests/feature_extraction_results/samples/clean/
+tests/feature_extraction_results/samples/noisy_samples/
+tests/feature_extraction_results/samples/pink/
+tests/feature_extraction_results/samples/white/
+tests/plots/samples/*.py

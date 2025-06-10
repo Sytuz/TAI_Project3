@@ -1,0 +1,114 @@
+========================================
+FEATURE EXTRACTION PERFORMANCE ANALYSIS
+========================================
+Analysis Date: Tue Jun 10 04:45:38 PM WEST 2025
+
+DATASET: samples
+METHODS ANALYZED: spectral maxfreq
+FORMATS ANALYZED: text binary
+NOISE TYPES ANALYZED: clean white brown pink
+
+
+=== clean SAMPLES ===
+
+clean/spectral METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 48M
+- Average file size: 1.4MB
+- Sample file lines: 8282
+- Sample file characters: 1332556
+
+clean/spectral METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 38M
+- Average file size: 1.2MB
+
+clean/maxfreq METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.2M
+- Average file size: 124KB
+- Sample file lines: 9100
+- Sample file characters: 113268
+
+clean/maxfreq METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.8M
+- Average file size: 142KB
+
+=== white SAMPLES ===
+
+white/spectral METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 48M
+- Average file size: 1.4MB
+- Sample file lines: 9233
+- Sample file characters: 1485667
+
+white/spectral METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 38M
+- Average file size: 1.2MB
+
+white/maxfreq METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.3M
+- Average file size: 126KB
+- Sample file lines: 10299
+- Sample file characters: 132287
+
+white/maxfreq METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.8M
+- Average file size: 142KB
+
+=== brown SAMPLES ===
+
+brown/spectral METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 48M
+- Average file size: 1.4MB
+- Sample file lines: 5793
+- Sample file characters: 931826
+
+brown/spectral METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 38M
+- Average file size: 1.2MB
+
+brown/maxfreq METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.2M
+- Average file size: 124KB
+- Sample file lines: 7880
+- Sample file characters: 119346
+
+brown/maxfreq METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.8M
+- Average file size: 142KB
+
+=== pink SAMPLES ===
+
+pink/spectral METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 48M
+- Average file size: 1.4MB
+- Sample file lines: 10519
+- Sample file characters: 1692713
+
+pink/spectral METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 38M
+- Average file size: 1.2MB
+
+pink/maxfreq METHOD - text FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.2M
+- Average file size: 125KB
+- Sample file lines: 10299
+- Sample file characters: 127300
+
+pink/maxfreq METHOD - binary FORMAT:
+- Feature files generated: 34
+- Total storage size: 4.8M
+- Average file size: 142KB

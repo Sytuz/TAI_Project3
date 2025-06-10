@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 PROJECT_ROOT="$(dirname "$(realpath "$0")")/.."
-DATASET="small_samples"  # Change to: samples or full_tracks for larger datasets
+DATASET="samples"  # Change to: samples or full_tracks for larger datasets
 FEATURES_BASE_DIR="tests/feature_extraction_results/$DATASET"
 COMPRESSION_BASE_DIR="tests/compression_results/$DATASET"
 ANALYSIS_BASE_DIR="tests/parameter_analysis/$DATASET"
@@ -124,7 +124,7 @@ import sys
 import os
 
 # Configuration
-dataset = "small_samples"  # Change to: samples or full_tracks for larger datasets
+dataset = "samples"  # Change to: samples or full_tracks for larger datasets
 compression_base = f"tests/compression_results/{dataset}"
 output_dir = f"tests/plots/{dataset}"
 methods = ["spectral", "maxfreq"]
@@ -508,7 +508,7 @@ import os
 from pathlib import Path
 
 # Configuration
-dataset = "small_samples"  # Change to: samples or full_tracks for larger datasets
+dataset = "samples"  # Change to: samples or full_tracks for larger datasets
 features_base = f"tests/feature_extraction_results/{dataset}"
 output_dir = f"tests/plots/{dataset}"
 methods = ["spectral", "maxfreq"]
