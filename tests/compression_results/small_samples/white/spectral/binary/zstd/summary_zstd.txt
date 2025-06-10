@@ -1,6 +1,6 @@
 Music Identification Summary
 ==========================
-Date: 2025-06-10 14:07:32
+Date: 2025-06-10 14:46:51
 Compressor: zstd
 Queries processed: 5
 Database directory: tests/feature_extraction_results/small_samples/white/spectral/binary
@@ -9,21 +9,21 @@ Query Results:
 -------------
 Business Positive Energy-Main-version_white_noise_spectral_results.csv:
   Query: Business Positive Energy-Main-version_white_noise_spectral.featbin
-  Top match: 1,Business Positive Energy-Main-version_white_noise_spectral.featbin,0.000117
+  Top match: 1,Business Positive Energy-Main-version_white_noise_spectral.featbin,0.000112
 
 Campus child-Main-version_white_noise_spectral_results.csv:
   Query: Campus child-Main-version_white_noise_spectral.featbin
-  Top match: 1,Campus child-Main-version_white_noise_spectral.featbin,0.000124
+  Top match: 1,Campus child-Main-version_white_noise_spectral.featbin,0.000116
 
 Colorful campus-Main-version_white_noise_spectral_results.csv:
   Query: Colorful campus-Main-version_white_noise_spectral.featbin
-  Top match: 1,Colorful campus-Main-version_white_noise_spectral.featbin,0.000128
+  Top match: 1,Colorful campus-Main-version_white_noise_spectral.featbin,0.000129
 
 Cool and refreshing summer-Main-version_white_noise_spectral_results.csv:
   Query: Cool and refreshing summer-Main-version_white_noise_spectral.featbin
-  Top match: 1,Cool and refreshing summer-Main-version_white_noise_spectral.featbin,0.000121
+  Top match: 1,Cool and refreshing summer-Main-version_white_noise_spectral.featbin,0.000124
 
 Device fat burning-Main-version_white_noise_spectral_results.csv:
   Query: Device fat burning-Main-version_white_noise_spectral.featbin
-  Top match: 1,Device fat burning-Main-version_white_noise_spectral.featbin,0.000132
+  Top match: 1,Device fat burning-Main-version_white_noise_spectral.featbin,0.000144
 

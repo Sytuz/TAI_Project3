@@ -1,0 +1,33 @@
+========================================
+COMPLETE TEST SUITE SUMMARY
+========================================
+Test Date: Tue Jun 10 02:48:43 PM WEST 2025
+Dataset: small_samples
+
+CONFIGURATION:
+- Noise Types: clean white brown pink
+- Methods: spectral maxfreq
+- Formats: text binary
+- Compressors: gzip bzip2 lzma zstd
+
+RESULTS:
+
+FEATURE EXTRACTION:
+- Total feature files: 80
+- Output directory: tests/feature_extraction_results/small_samples
+
+COMPRESSION TESTS:
+- Total result files: 320
+- Accuracy reports: 64
+- Output directory: tests/compression_results/small_samples
+
+PARAMETER ANALYSIS:
+- Analysis reports: 6
+- Output directory: tests/parameter_analysis/small_samples
+
+VISUALIZATIONS:
+- Generated plots: 5
+- Output directory: tests/plots/small_samples
+- HTML summary: tests/plots/small_samples/plot_summary.html
+
+TEST COMPLETED: Tue Jun 10 02:48:43 PM WEST 2025

@@ -11,7 +11,7 @@
       "query": "Campus child-Main-version_pink_noise_spectral.featbin",
       "ground_truth": "campus child main version pink noise",
       "top_match": "Campus child-Main-version_pink_noise",
-      "top_match_ncd": 0.99677,
+      "top_match_ncd": 0.999642,
       "found_at_rank": 1,
       "correct": true
     },
@@ -19,15 +19,15 @@
       "query": "Colorful campus-Main-version_pink_noise_spectral.featbin",
       "ground_truth": "colorful campus main version pink noise",
       "top_match": "Device fat burning-Main-version_pink_noise",
-      "top_match_ncd": 0.997207,
-      "found_at_rank": 3,
+      "top_match_ncd": 0.997067,
+      "found_at_rank": 2,
       "correct": false
     },
     {
       "query": "Cool and refreshing summer-Main-version_pink_noise_spectral.featbin",
       "ground_truth": "cool and refreshing summer main version pink noise",
       "top_match": "Business Positive Energy-Main-version_pink_noise",
-      "top_match_ncd": 0.993227,
+      "top_match_ncd": 0.9927,
       "found_at_rank": 2,
       "correct": false
     },
@@ -35,7 +35,7 @@
       "query": "Business Positive Energy-Main-version_pink_noise_spectral.featbin",
       "ground_truth": "business positive energy main version pink noise",
       "top_match": "Business Positive Energy-Main-version_pink_noise",
-      "top_match_ncd": 0.991802,
+      "top_match_ncd": 0.990675,
       "found_at_rank": 1,
       "correct": true
     },
@@ -43,7 +43,7 @@
       "query": "Device fat burning-Main-version_pink_noise_spectral.featbin",
       "ground_truth": "device fat burning main version pink noise",
       "top_match": "Device fat burning-Main-version_pink_noise",
-      "top_match_ncd": 0.958302,
+      "top_match_ncd": 0.957543,
       "found_at_rank": 1,
       "correct": true
     }

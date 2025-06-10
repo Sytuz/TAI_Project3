@@ -1,6 +1,6 @@
 Feature Extraction Configuration
 ===============================
-Date: 2025-06-10 13:52:07
+Date: 2025-06-10 14:45:56
 Method: spectral
 Format: text
 Frame size: 1024 samples

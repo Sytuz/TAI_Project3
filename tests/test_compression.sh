@@ -19,6 +19,7 @@ COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
 METHODS=("spectral" "maxfreq")
 FORMATS=("text" "binary")
 NOISE_TYPES=("clean" "white" "brown" "pink")  # Include noise types
+MAX_THREADS=16  # Maximum number of parallel threads
 
 # Print colored output
 print_info() {
@@ -76,6 +77,106 @@ print_info "Testing noise types: ${NOISE_TYPES[*]}"
 TEST_OUTPUT_DIR="$OUTPUT_BASE_DIR/$DATASET"
 mkdir -p "$TEST_OUTPUT_DIR"
 print_info "Test output directory: $TEST_OUTPUT_DIR"
+
+# Thread management variables
+declare -a running_jobs=()
+declare -a job_logs=()
+
+# Function to manage thread pool
+wait_for_available_slot() {
+    while [ ${#running_jobs[@]} -ge $MAX_THREADS ]; do
+        # Check for completed jobs
+        local new_running_jobs=()
+        local new_job_logs=()
+        
+        for i in "${!running_jobs[@]}"; do
+            local pid=${running_jobs[$i]}
+            local log_file=${job_logs[$i]}
+            
+            if kill -0 "$pid" 2>/dev/null; then
+                # Job still running
+                new_running_jobs+=("$pid")
+                new_job_logs+=("$log_file")
+            else
+                # Job completed
+                wait "$pid"
+                local exit_code=$?
+                
+                # Show job completion
+                local job_info=$(basename "$log_file" .log)
+                if [ $exit_code -eq 0 ]; then
+                    print_success "Completed: $job_info"
+                else
+                    print_error "Failed: $job_info (exit code: $exit_code)"
+                fi
+                
+                # Show job output if it exists
+                if [ -f "$log_file" ]; then
+                    echo "--- Output from $job_info ---"
+                    cat "$log_file"
+                    echo "--- End of output ---"
+                    rm -f "$log_file"
+                fi
+            fi
+        done
+        
+        running_jobs=("${new_running_jobs[@]}")
+        job_logs=("${new_job_logs[@]}")
+        
+        # Brief sleep to avoid busy waiting
+        sleep 0.1
+    done
+}
+
+# Function to wait for all jobs to complete
+wait_for_all_jobs() {
+    print_info "Waiting for all ${#running_jobs[@]} jobs to complete..."
+    
+    while [ ${#running_jobs[@]} -gt 0 ]; do
+        # Check for completed jobs
+        local new_running_jobs=()
+        local new_job_logs=()
+        
+        for i in "${!running_jobs[@]}"; do
+            local pid=${running_jobs[$i]}
+            local log_file=${job_logs[$i]}
+            
+            if kill -0 "$pid" 2>/dev/null; then
+                # Job still running
+                new_running_jobs+=("$pid")
+                new_job_logs+=("$log_file")
+            else
+                # Job completed
+                wait "$pid"
+                local exit_code=$?
+                
+                # Show job completion
+                local job_info=$(basename "$log_file" .log)
+                if [ $exit_code -eq 0 ]; then
+                    print_success "Completed: $job_info"
+                else
+                    print_error "Failed: $job_info (exit code: $exit_code)"
+                fi
+                
+                # Show job output if it exists
+                if [ -f "$log_file" ]; then
+                    echo "--- Output from $job_info ---"
+                    cat "$log_file"
+                    echo "--- End of output ---"
+                    rm -f "$log_file"
+                fi
+            fi
+        done
+        
+        running_jobs=("${new_running_jobs[@]}")
+        job_logs=("${new_job_logs[@]}")
+        
+        # Brief sleep to avoid busy waiting
+        sleep 0.5
+    done
+    
+    print_success "All compression tests completed!"
+}
 
 # Function to validate feature files exist
 validate_features() {
@@ -138,6 +239,35 @@ run_batch_identification() {
     print_success "$method/$format with $compressor completed in ${duration}s"
     
     return 0
+}
+
+# Function to run a single compression test job (to be run in background)
+run_compression_job() {
+    local noise_type=$1
+    local method=$2
+    local format=$3
+    local compressor=$4
+    local features_dir=$5
+    local output_dir=$6
+    local log_file=$7
+    
+    # Redirect output to log file
+    exec > "$log_file" 2>&1
+    
+    echo "Starting compression job: $noise_type/$method/$format/$compressor"
+    echo "Features dir: $features_dir"
+    echo "Output dir: $output_dir"
+    echo "---"
+    
+    # Run the batch identification
+    if run_batch_identification "$method" "$format" "$compressor" "$features_dir" "$output_dir"; then
+        calculate_accuracy "$method" "$format" "$compressor" "$output_dir"
+        echo "Job completed successfully"
+        exit 0
+    else
+        echo "Job failed"
+        exit 1
+    fi
 }
 
 # Function to calculate accuracy metrics
@@ -253,16 +383,22 @@ EOF
 # Main execution
 print_info "Starting compression tests for dataset: $DATASET"
 print_info "Testing noise types: ${NOISE_TYPES[*]}"
+print_info "Using parallel processing with up to $MAX_THREADS threads"
 
-# Test each combination of noise type, method, format, and compressor
+# Create logs directory for job outputs
+LOGS_DIR="$TEST_OUTPUT_DIR/logs"
+mkdir -p "$LOGS_DIR"
+
+# Build job queue and launch jobs in parallel
+total_jobs=0
+successful_jobs=0
+
 for noise_type in "${NOISE_TYPES[@]}"; do
-    print_info "=== Testing with $noise_type samples ==="
+    print_info "=== Preparing jobs for $noise_type samples ==="
     
     for method in "${METHODS[@]}"; do
         for format in "${FORMATS[@]}"; do
             features_dir="$FEATURES_BASE_DIR/${noise_type}/${method}/${format}"
-            
-            print_info "Testing $method method with $format format ($noise_type samples)..."
             
             # Validate that features exist
             if ! validate_features "$method" "$format" "$features_dir"; then
@@ -270,22 +406,49 @@ for noise_type in "${NOISE_TYPES[@]}"; do
                 continue
             fi
             
-            # Test each compressor
+            # Launch jobs for each compressor
             for compressor in "${COMPRESSORS[@]}"; do
-                print_info "Testing $compressor compressor..."
+                # Wait for available slot
+                wait_for_available_slot
                 
                 output_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/${format}/${compressor}"
+                log_file="$LOGS_DIR/${noise_type}_${method}_${format}_${compressor}.log"
                 
-                if run_batch_identification "$method" "$format" "$compressor" "$features_dir" "$output_dir"; then
-                    calculate_accuracy "$method" "$format" "$compressor" "$output_dir"
+                print_info "Launching job: $noise_type/$method/$format/$compressor"
+                
+                # Launch job in background
+                {
+                    run_compression_job "$noise_type" "$method" "$format" "$compressor" "$features_dir" "$output_dir" "$log_file"
+                } &
+                job_pid=$!
+                
+                # Validate PID before tracking
+                if [ -n "$job_pid" ] && [ "$job_pid" != "0" ]; then
+                    running_jobs+=("$job_pid")
+                    job_logs+=("$log_file")
+                else
+                    print_error "Failed to launch job for $noise_type/$method/$format/$compressor"
                 fi
+                
+                ((total_jobs++))
             done
         done
     done
 done
+
+print_info "Launched $total_jobs compression jobs"
+
+# Wait for all jobs to complete
+wait_for_all_jobs
+
+# Clean up logs directory if empty
+if [ -d "$LOGS_DIR" ] && [ -z "$(ls -A "$LOGS_DIR")" ]; then
+    rmdir "$LOGS_DIR"
+fi
 
 # Generate summary report
 generate_report
 
 print_info "Test files preserved in: $TEST_OUTPUT_DIR"
 print_success "Compression tests completed successfully!"
+print_info "Total jobs processed: $total_jobs"

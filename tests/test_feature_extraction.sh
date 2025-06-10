@@ -18,6 +18,7 @@ TEST_METHODS=("spectral" "maxfreq")  # Both methods
 FORMATS=("text" "binary")            # Both formats
 NOISE_TYPES=("clean" "white" "brown" "pink")  # Include clean (no noise) plus noise types
 NOISE_LEVEL=0.1  # 10% noise level for testing
+MAX_THREADS=8  # Maximum number of parallel threads for feature extraction
 
 # Print colored output
 print_info() {
@@ -79,6 +80,101 @@ TEST_OUTPUT_DIR="$OUTPUT_BASE_DIR/$DATASET"
 
 print_info "Test output directory: $TEST_OUTPUT_DIR"
 
+# Thread management variables for feature extraction
+declare -a fe_running_jobs=()
+declare -a fe_job_logs=()
+
+# Function to manage feature extraction thread pool
+wait_for_fe_slot() {
+    while [ ${#fe_running_jobs[@]} -ge $MAX_THREADS ]; do
+        # Check for completed jobs
+        local new_running_jobs=()
+        local new_job_logs=()
+        
+        for i in "${!fe_running_jobs[@]}"; do
+            local pid=${fe_running_jobs[$i]}
+            local log_file=${fe_job_logs[$i]}
+            
+            if kill -0 "$pid" 2>/dev/null; then
+                # Job still running
+                new_running_jobs+=("$pid")
+                new_job_logs+=("$log_file")
+            else
+                # Job completed
+                wait "$pid"
+                local exit_code=$?
+                
+                # Show job completion
+                local job_info=$(basename "$log_file" .log)
+                if [ $exit_code -eq 0 ]; then
+                    print_success "Feature extraction completed: $job_info"
+                else
+                    print_error "Feature extraction failed: $job_info (exit code: $exit_code)"
+                fi
+                
+                # Show brief job output
+                if [ -f "$log_file" ]; then
+                    local last_lines=$(tail -3 "$log_file" | grep -E "(SUCCESS|ERROR|Generated)" || echo "")
+                    if [ -n "$last_lines" ]; then
+                        echo "$last_lines"
+                    fi
+                    rm -f "$log_file"
+                fi
+            fi
+        done
+        
+        fe_running_jobs=("${new_running_jobs[@]}")
+        fe_job_logs=("${new_job_logs[@]}")
+        
+        sleep 0.1
+    done
+}
+
+# Function to wait for all feature extraction jobs
+wait_for_all_fe_jobs() {
+    print_info "Waiting for ${#fe_running_jobs[@]} feature extraction jobs to complete..."
+    
+    while [ ${#fe_running_jobs[@]} -gt 0 ]; do
+        local new_running_jobs=()
+        local new_job_logs=()
+        
+        for i in "${!fe_running_jobs[@]}"; do
+            local pid=${fe_running_jobs[$i]}
+            local log_file=${fe_job_logs[$i]}
+            
+            if kill -0 "$pid" 2>/dev/null; then
+                new_running_jobs+=("$pid")
+                new_job_logs+=("$log_file")
+            else
+                wait "$pid"
+                local exit_code=$?
+                
+                local job_info=$(basename "$log_file" .log)
+                if [ $exit_code -eq 0 ]; then
+                    print_success "Feature extraction completed: $job_info"
+                else
+                    print_error "Feature extraction failed: $job_info (exit code: $exit_code)"
+                fi
+                
+                if [ -f "$log_file" ]; then
+                    local last_lines=$(tail -3 "$log_file" | grep -E "(SUCCESS|ERROR|Generated)" || echo "")
+                    if [ -n "$last_lines" ]; then
+                        echo "$last_lines"
+                    fi
+                    rm -f "$log_file"
+                fi
+            fi
+        done
+        
+        fe_running_jobs=("${new_running_jobs[@]}")
+        fe_job_logs=("${new_job_logs[@]}")
+        
+        sleep 0.5
+    done
+    
+    print_success "All feature extraction jobs completed!"
+}
+
 # Function to generate noisy samples
 generate_noisy_samples() {
     local noise_type=$1
@@ -136,6 +232,35 @@ generate_noisy_samples() {
     return 0
 }
 
+# Function to run a single feature extraction job
+run_feature_extraction_job() {
+    local method=$1
+    local format=$2
+    local binary_flag=$3
+    local output_dir=$4
+    local input_dir=$5
+    local noise_type=$6
+    local log_file=$7
+    
+    # Redirect output to log file
+    exec > "$log_file" 2>&1
+    
+    echo "Starting feature extraction job: $noise_type/$method/$format"
+    echo "Input dir: $input_dir"
+    echo "Output dir: $output_dir"
+    echo "---"
+    
+    # Run feature extraction
+    if run_feature_extraction "$method" "$format" "$binary_flag" "$output_dir" "$input_dir" "$noise_type"; then
+        validate_features "$method" "$format" "$binary_flag" "$output_dir" "$input_dir" "$noise_type"
+        echo "Feature extraction job completed successfully"
+        exit 0
+    else
+        echo "Feature extraction job failed"
+        exit 1
+    fi
+}
+
 # Function to run feature extraction and measure performance
 run_feature_extraction() {
     local method=$1
@@ -144,6 +269,7 @@ run_feature_extraction() {
     local output_dir=$4
     local input_dir=$5
     local noise_type=$6
+    
     
     print_step "2" "Feature extraction - $method method, $format format, $noise_type samples"
     
@@ -380,35 +506,79 @@ print_info "Starting feature extraction test for dataset: $DATASET"
 print_info "Testing methods: ${TEST_METHODS[*]}"
 print_info "Testing formats: text and binary"
 print_info "Testing noise types: ${NOISE_TYPES[*]}"
+print_info "Using parallel processing with up to $MAX_THREADS threads"
 
-# Loop through each noise type, method, and format combination
+# Create logs directory for job outputs
+FE_LOGS_DIR="$TEST_OUTPUT_DIR/fe_logs"
+mkdir -p "$FE_LOGS_DIR"
+
+# First, generate all noise samples sequentially (to avoid conflicts)
+print_info "=== Generating noise samples ==="
 for noise_type in "${NOISE_TYPES[@]}"; do
-    print_info "=== Testing with $noise_type samples ==="
+    if [ "$noise_type" != "clean" ]; then
+        CURRENT_INPUT_DIR="$TEST_OUTPUT_DIR/noisy_samples/$noise_type"
+        generate_noisy_samples "$noise_type" "$INPUT_DIR" "$CURRENT_INPUT_DIR"
+    fi
+done
+
+# Now run feature extraction jobs in parallel
+total_fe_jobs=0
+
+for noise_type in "${NOISE_TYPES[@]}"; do
+    print_info "=== Launching feature extraction jobs for $noise_type samples ==="
     
-    # Generate or prepare samples for this noise type
+    # Determine input directory
     if [ "$noise_type" = "clean" ]; then
         CURRENT_INPUT_DIR="$INPUT_DIR"
     else
         CURRENT_INPUT_DIR="$TEST_OUTPUT_DIR/noisy_samples/$noise_type"
-        generate_noisy_samples "$noise_type" "$INPUT_DIR" "$CURRENT_INPUT_DIR"
     fi
     
     for method in "${TEST_METHODS[@]}"; do
-        print_info "Testing $method method with $noise_type samples..."
-        
-        # Test text format
-        text_output_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/text"
-        if run_feature_extraction "$method" "text" "false" "$text_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"; then
-            validate_features "$method" "text" "false" "$text_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"
-        fi
-
-        # Test binary format
-        binary_output_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/binary"
-        if run_feature_extraction "$method" "binary" "true" "$binary_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"; then
-            validate_features "$method" "binary" "true" "$binary_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"
-        fi
+        for format in "${FORMATS[@]}"; do
+            # Wait for available slot
+            wait_for_fe_slot
+            
+            # Determine binary flag
+            if [ "$format" = "binary" ]; then
+                binary_flag="true"
+            else
+                binary_flag="false"
+            fi
+            
+            output_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/${format}"
+            log_file="$FE_LOGS_DIR/${noise_type}_${method}_${format}.log"
+            
+            print_info "Launching feature extraction: $noise_type/$method/$format"
+            
+            # Launch job in background using a simpler approach
+            {
+                run_feature_extraction_job "$method" "$format" "$binary_flag" "$output_dir" "$CURRENT_INPUT_DIR" "$noise_type" "$log_file"
+            } &
+            job_pid=$!
+            
+            # Validate PID before tracking
+            if [ -n "$job_pid" ] && [ "$job_pid" != "0" ]; then
+                fe_running_jobs+=("$job_pid")
+                fe_job_logs+=("$log_file")
+            else
+                print_error "Failed to launch job for $noise_type/$method/$format"
+            fi
+            
+            ((total_fe_jobs++))
+        done
     done
 done
+
+print_info "Launched $total_fe_jobs feature extraction jobs"
+
+# Wait for all feature extraction jobs to complete
+wait_for_all_fe_jobs
+
+# Clean up logs directory if empty
+if [ -d "$FE_LOGS_DIR" ] && [ -z "$(ls -A "$FE_LOGS_DIR")" ]; then
+    rmdir "$FE_LOGS_DIR"
+fi
 
 # Compare formats across noise types
 compare_formats
@@ -418,3 +588,4 @@ generate_report
 
 print_info "Test files preserved in: $TEST_OUTPUT_DIR"
 print_success "Feature extraction test completed successfully!"
+print_info "Total feature extraction jobs processed: $total_fe_jobs"

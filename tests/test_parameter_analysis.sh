@@ -283,22 +283,24 @@ EOF
         local maxfreq_total=0
         local maxfreq_count=0
         
-        for compressor in "${COMPRESSORS[@]}"; do
-            # Spectral method
-            local spectral_file="$COMPRESSION_BASE_DIR/spectral/${format}/${compressor}/accuracy_metrics_${compressor}.json"
-            if [ -f "$spectral_file" ] && command -v jq > /dev/null; then
-                local spectral_top1=$(jq -r '.top1_accuracy // 0' "$spectral_file" 2>/dev/null)
-                spectral_total=$(echo "$spectral_total + $spectral_top1" | bc -l 2>/dev/null || echo "$spectral_total")
-                ((spectral_count++))
-            fi
-            
-            # MaxFreq method
-            local maxfreq_file="$COMPRESSION_BASE_DIR/maxfreq/${format}/${compressor}/accuracy_metrics_${compressor}.json"
-            if [ -f "$maxfreq_file" ] && command -v jq > /dev/null; then
-                local maxfreq_top1=$(jq -r '.top1_accuracy // 0' "$maxfreq_file" 2>/dev/null)
-                maxfreq_total=$(echo "$maxfreq_total + $maxfreq_top1" | bc -l 2>/dev/null || echo "$maxfreq_total")
-                ((maxfreq_count++))
-            fi
+        for noise_type in "${NOISE_TYPES[@]}"; do
+            for compressor in "${COMPRESSORS[@]}"; do
+                # Spectral method
+                local spectral_file="$COMPRESSION_BASE_DIR/${noise_type}/spectral/${format}/${compressor}/accuracy_metrics_${compressor}.json"
+                if [ -f "$spectral_file" ] && command -v jq > /dev/null; then
+                    local spectral_top1=$(jq -r '.top1_accuracy // 0' "$spectral_file" 2>/dev/null)
+                    spectral_total=$(echo "$spectral_total + $spectral_top1" | bc -l 2>/dev/null || echo "$spectral_total")
+                    ((spectral_count++))
+                fi
+                
+                # MaxFreq method
+                local maxfreq_file="$COMPRESSION_BASE_DIR/${noise_type}/maxfreq/${format}/${compressor}/accuracy_metrics_${compressor}.json"
+                if [ -f "$maxfreq_file" ] && command -v jq > /dev/null; then
+                    local maxfreq_top1=$(jq -r '.top1_accuracy // 0' "$maxfreq_file" 2>/dev/null)
+                    maxfreq_total=$(echo "$maxfreq_total + $maxfreq_top1" | bc -l 2>/dev/null || echo "$maxfreq_total")
+                    ((maxfreq_count++))
+                fi
+            done
         done
         
         # Calculate averages
@@ -366,22 +368,24 @@ EOF
         local binary_total=0
         local binary_count=0
         
-        for compressor in "${COMPRESSORS[@]}"; do
-            # Text format
-            local text_file="$COMPRESSION_BASE_DIR/${method}/text/${compressor}/accuracy_metrics_${compressor}.json"
-            if [ -f "$text_file" ] && command -v jq > /dev/null; then
-                local text_top1=$(jq -r '.top1_accuracy // 0' "$text_file" 2>/dev/null)
-                text_total=$(echo "$text_total + $text_top1" | bc -l 2>/dev/null || echo "$text_total")
-                ((text_count++))
-            fi
-            
-            # Binary format
-            local binary_file="$COMPRESSION_BASE_DIR/${method}/binary/${compressor}/accuracy_metrics_${compressor}.json"
-            if [ -f "$binary_file" ] && command -v jq > /dev/null; then
-                local binary_top1=$(jq -r '.top1_accuracy // 0' "$binary_file" 2>/dev/null)
-                binary_total=$(echo "$binary_total + $binary_top1" | bc -l 2>/dev/null || echo "$binary_total")
-                ((binary_count++))
-            fi
+        for noise_type in "${NOISE_TYPES[@]}"; do
+            for compressor in "${COMPRESSORS[@]}"; do
+                # Text format
+                local text_file="$COMPRESSION_BASE_DIR/${noise_type}/${method}/text/${compressor}/accuracy_metrics_${compressor}.json"
+                if [ -f "$text_file" ] && command -v jq > /dev/null; then
+                    local text_top1=$(jq -r '.top1_accuracy // 0' "$text_file" 2>/dev/null)
+                    text_total=$(echo "$text_total + $text_top1" | bc -l 2>/dev/null || echo "$text_total")
+                    ((text_count++))
+                fi
+                
+                # Binary format
+                local binary_file="$COMPRESSION_BASE_DIR/${noise_type}/${method}/binary/${compressor}/accuracy_metrics_${compressor}.json"
+                if [ -f "$binary_file" ] && command -v jq > /dev/null; then
+                    local binary_top1=$(jq -r '.top1_accuracy // 0' "$binary_file" 2>/dev/null)
+                    binary_total=$(echo "$binary_total + $binary_top1" | bc -l 2>/dev/null || echo "$binary_total")
+                    ((binary_count++))
+                fi
+            done
         done
         
         # Calculate averages
@@ -442,14 +446,16 @@ EOF
         local total_accuracy=0
         local test_count=0
         
-        for method in "${METHODS[@]}"; do
-            for format in "${FORMATS[@]}"; do
-                local accuracy_file="$COMPRESSION_BASE_DIR/${method}/${format}/${compressor}/accuracy_metrics_${compressor}.json"
-                if [ -f "$accuracy_file" ] && command -v jq > /dev/null; then
-                    local top1_accuracy=$(jq -r '.top1_accuracy // 0' "$accuracy_file" 2>/dev/null)
-                    total_accuracy=$(echo "$total_accuracy + $top1_accuracy" | bc -l 2>/dev/null || echo "$total_accuracy")
-                    ((test_count++))
-                fi
+        for noise_type in "${NOISE_TYPES[@]}"; do
+            for method in "${METHODS[@]}"; do
+                for format in "${FORMATS[@]}"; do
+                    local accuracy_file="$COMPRESSION_BASE_DIR/${noise_type}/${method}/${format}/${compressor}/accuracy_metrics_${compressor}.json"
+                    if [ -f "$accuracy_file" ] && command -v jq > /dev/null; then
+                        local top1_accuracy=$(jq -r '.top1_accuracy // 0' "$accuracy_file" 2>/dev/null)
+                        total_accuracy=$(echo "$total_accuracy + $top1_accuracy" | bc -l 2>/dev/null || echo "$total_accuracy")
+                        ((test_count++))
+                    fi
+                done
             done
         done
         
@@ -520,12 +526,6 @@ EOF
 
 ANALYSIS COMPLETED: $(date)
 
-RECOMMENDATIONS:
-1. Use the best performing method/format/compressor combination for your specific use case
-2. Consider the trade-off between accuracy and storage requirements
-3. Test with larger datasets to validate these results
-4. Consider parameter tuning for the best performing method
-
 For more detailed results, check the individual analysis files in:
 $TEST_OUTPUT_DIR/
 EOF
@@ -543,17 +543,19 @@ EOF
     local best_accuracy=0
     local best_config=""
     
-    for method in "${METHODS[@]}"; do
-        for format in "${FORMATS[@]}"; do
-            for compressor in "${COMPRESSORS[@]}"; do
-                local accuracy_file="$COMPRESSION_BASE_DIR/${method}/${format}/${compressor}/accuracy_metrics_${compressor}.json"
-                if [ -f "$accuracy_file" ] && command -v jq > /dev/null; then
-                    local top1_accuracy=$(jq -r '.top1_accuracy // 0' "$accuracy_file" 2>/dev/null)
-                    if (( $(echo "$top1_accuracy > $best_accuracy" | bc -l 2>/dev/null || echo "0") )); then
-                        best_accuracy="$top1_accuracy"
-                        best_config="$method/$format/$compressor"
+    for noise_type in "${NOISE_TYPES[@]}"; do
+        for method in "${METHODS[@]}"; do
+            for format in "${FORMATS[@]}"; do
+                for compressor in "${COMPRESSORS[@]}"; do
+                    local accuracy_file="$COMPRESSION_BASE_DIR/${noise_type}/${method}/${format}/${compressor}/accuracy_metrics_${compressor}.json"
+                    if [ -f "$accuracy_file" ] && command -v jq > /dev/null; then
+                        local top1_accuracy=$(jq -r '.top1_accuracy // 0' "$accuracy_file" 2>/dev/null)
+                        if (( $(echo "$top1_accuracy > $best_accuracy" | bc -l 2>/dev/null || echo "0") )); then
+                            best_accuracy="$top1_accuracy"
+                            best_config="$noise_type/$method/$format/$compressor"
+                        fi
                     fi
-                fi
+                done
             done
         done
     done

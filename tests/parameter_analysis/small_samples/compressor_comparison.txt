@@ -1,0 +1,11 @@
+========================================
+COMPRESSOR COMPARISON ANALYSIS
+========================================
+Analysis Date: Tue Jun 10 02:48:37 PM WEST 2025
+
+Comparing all compressors across methods and formats:
+
+gzip: 71.25% average Top-1 accuracy (16 tests)
+bzip2: 77.50% average Top-1 accuracy (16 tests)
+lzma: 100.00% average Top-1 accuracy (16 tests)
+zstd: 100.00% average Top-1 accuracy (16 tests)

@@ -1,6 +1,6 @@
 Music Identification Summary
 ==========================
-Date: 2025-06-10 14:15:25
+Date: 2025-06-10 14:47:12
 Compressor: bzip2
 Queries processed: 5
 Database directory: tests/feature_extraction_results/small_samples/pink/maxfreq/binary
@@ -9,21 +9,21 @@ Query Results:
 -------------
 Business Positive Energy-Main-version_pink_noise_maxfreq_results.csv:
   Query: Business Positive Energy-Main-version_pink_noise_maxfreq.featbin
-  Top match: 1,Business Positive Energy-Main-version_pink_noise_maxfreq.featbin,0.312643
+  Top match: 1,Business Positive Energy-Main-version_pink_noise_maxfreq.featbin,0.313552
 
 Campus child-Main-version_pink_noise_maxfreq_results.csv:
   Query: Campus child-Main-version_pink_noise_maxfreq.featbin
-  Top match: 1,Campus child-Main-version_pink_noise_maxfreq.featbin,0.392884
+  Top match: 1,Campus child-Main-version_pink_noise_maxfreq.featbin,0.460302
 
 Colorful campus-Main-version_pink_noise_maxfreq_results.csv:
   Query: Colorful campus-Main-version_pink_noise_maxfreq.featbin
-  Top match: 1,Colorful campus-Main-version_pink_noise_maxfreq.featbin,0.309815
+  Top match: 1,Colorful campus-Main-version_pink_noise_maxfreq.featbin,0.308399
 
 Cool and refreshing summer-Main-version_pink_noise_maxfreq_results.csv:
   Query: Cool and refreshing summer-Main-version_pink_noise_maxfreq.featbin
-  Top match: 1,Cool and refreshing summer-Main-version_pink_noise_maxfreq.featbin,0.313560
+  Top match: 1,Cool and refreshing summer-Main-version_pink_noise_maxfreq.featbin,0.311009
 
 Device fat burning-Main-version_pink_noise_maxfreq_results.csv:
   Query: Device fat burning-Main-version_pink_noise_maxfreq.featbin
-  Top match: 1,Device fat burning-Main-version_pink_noise_maxfreq.featbin,0.306705
+  Top match: 1,Device fat burning-Main-version_pink_noise_maxfreq.featbin,0.308258
 

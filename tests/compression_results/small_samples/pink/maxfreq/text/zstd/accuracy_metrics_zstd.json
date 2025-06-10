@@ -11,7 +11,7 @@
       "query": "Cool and refreshing summer-Main-version_pink_noise_maxfreq.feat",
       "ground_truth": "cool and refreshing summer main version pink noise",
       "top_match": "Cool and refreshing summer-Main-version_pink_noise",
-      "top_match_ncd": 0.000579,
+      "top_match_ncd": 0.000393,
       "found_at_rank": 1,
       "correct": true
     },
@@ -19,7 +19,7 @@
       "query": "Campus child-Main-version_pink_noise_maxfreq.feat",
       "ground_truth": "campus child main version pink noise",
       "top_match": "Campus child-Main-version_pink_noise",
-      "top_match_ncd": 0.000401,
+      "top_match_ncd": 0.00059,
       "found_at_rank": 1,
       "correct": true
     },
@@ -27,7 +27,7 @@
       "query": "Colorful campus-Main-version_pink_noise_maxfreq.feat",
       "ground_truth": "colorful campus main version pink noise",
       "top_match": "Colorful campus-Main-version_pink_noise",
-      "top_match_ncd": 0.00077,
+      "top_match_ncd": 0.003853,
       "found_at_rank": 1,
       "correct": true
     },
@@ -35,7 +35,7 @@
       "query": "Business Positive Energy-Main-version_pink_noise_maxfreq.feat",
       "ground_truth": "business positive energy main version pink noise",
       "top_match": "Business Positive Energy-Main-version_pink_noise",
-      "top_match_ncd": 0.00036,
+      "top_match_ncd": 0.000346,
       "found_at_rank": 1,
       "correct": true
     },
@@ -43,7 +43,7 @@
       "query": "Device fat burning-Main-version_pink_noise_maxfreq.feat",
       "ground_truth": "device fat burning main version pink noise",
       "top_match": "Device fat burning-Main-version_pink_noise",
-      "top_match_ncd": 0.004538,
+      "top_match_ncd": 0.000991,
       "found_at_rank": 1,
       "correct": true
     }

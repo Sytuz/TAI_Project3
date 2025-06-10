@@ -1,0 +1,120 @@
+========================================
+COMPRESSION PERFORMANCE ANALYSIS
+========================================
+Analysis Date: Tue Jun 10 02:48:35 PM WEST 2025
+
+DATASET: small_samples
+METHODS ANALYZED: spectral maxfreq
+FORMATS ANALYZED: text binary
+COMPRESSORS ANALYZED: gzip bzip2 lzma zstd
+NOISE TYPES ANALYZED: clean white brown pink
+
+PERFORMANCE SUMMARY:
+
+=== clean SAMPLES ===
+
+clean/spectral METHOD - text FORMAT:
+  gzip: Top-1: 60.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 20.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+clean/spectral METHOD - binary FORMAT:
+  gzip: Top-1: 20.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 60.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+clean/maxfreq METHOD - text FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+clean/maxfreq METHOD - binary FORMAT:
+  gzip: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+=== white SAMPLES ===
+
+white/spectral METHOD - text FORMAT:
+  gzip: Top-1: 40.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 40.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+white/spectral METHOD - binary FORMAT:
+  gzip: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 60.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+white/maxfreq METHOD - text FORMAT:
+  gzip: Top-1: 60.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+white/maxfreq METHOD - binary FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+=== brown SAMPLES ===
+
+brown/spectral METHOD - text FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 60.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+brown/spectral METHOD - binary FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+brown/maxfreq METHOD - text FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+brown/maxfreq METHOD - binary FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+=== pink SAMPLES ===
+
+pink/spectral METHOD - text FORMAT:
+  gzip: Top-1: 40.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 60.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+pink/spectral METHOD - binary FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 60.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+pink/maxfreq METHOD - text FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+pink/maxfreq METHOD - binary FORMAT:
+  gzip: Top-1: 80.0%, Top-5: 100.0%, Queries: 5
+  bzip2: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  lzma: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+  zstd: Top-1: 100.0%, Top-5: 100.0%, Queries: 5
+
+BEST PERFORMERS:
+- Best Top-1 Accuracy: 100.0% (clean/spectral/text/lzma)
+- Best Top-5 Accuracy: 100.0% (clean/spectral/text/gzip)

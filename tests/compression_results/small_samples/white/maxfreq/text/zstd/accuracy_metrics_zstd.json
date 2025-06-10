@@ -19,7 +19,7 @@
       "query": "Cool and refreshing summer-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "cool and refreshing summer main version white noise",
       "top_match": "Cool and refreshing summer-Main-version_white_noise",
-      "top_match_ncd": 0.000387,
+      "top_match_ncd": 0.000389,
       "found_at_rank": 1,
       "correct": true
     },
@@ -27,7 +27,7 @@
       "query": "Colorful campus-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "colorful campus main version white noise",
       "top_match": "Colorful campus-Main-version_white_noise",
-      "top_match_ncd": 6.8e-05,
+      "top_match_ncd": 0.0,
       "found_at_rank": 1,
       "correct": true
     },
@@ -35,7 +35,7 @@
       "query": "Business Positive Energy-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "business positive energy main version white noise",
       "top_match": "Business Positive Energy-Main-version_white_noise",
-      "top_match_ncd": 0.000363,
+      "top_match_ncd": 0.000378,
       "found_at_rank": 1,
       "correct": true
     },
@@ -43,7 +43,7 @@
       "query": "Device fat burning-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "device fat burning main version white noise",
       "top_match": "Device fat burning-Main-version_white_noise",
-      "top_match_ncd": 0.009661,
+      "top_match_ncd": 0.001972,
       "found_at_rank": 1,
       "correct": true
     }

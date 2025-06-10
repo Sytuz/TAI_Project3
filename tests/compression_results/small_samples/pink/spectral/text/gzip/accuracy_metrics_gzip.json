@@ -1,9 +1,9 @@
 {
   "total_queries": 5,
-  "top1_correct": 4,
+  "top1_correct": 2,
   "top5_correct": 5,
   "top10_correct": 5,
-  "top1_accuracy": 80.0,
+  "top1_accuracy": 40.0,
   "top5_accuracy": 100.0,
   "top10_accuracy": 100.0,
   "detailed_results": [
@@ -11,39 +11,39 @@
       "query": "Campus child-Main-version_pink_noise_spectral.feat",
       "ground_truth": "campus child main version pink noise",
       "top_match": "Campus child-Main-version_pink_noise",
-      "top_match_ncd": 0.99766,
+      "top_match_ncd": 0.99759,
       "found_at_rank": 1,
       "correct": true
     },
     {
       "query": "Colorful campus-Main-version_pink_noise_spectral.feat",
       "ground_truth": "colorful campus main version pink noise",
-      "top_match": "Colorful campus-Main-version_pink_noise",
-      "top_match_ncd": 0.99698,
-      "found_at_rank": 1,
-      "correct": true
+      "top_match": "Device fat burning-Main-version_pink_noise",
+      "top_match_ncd": 0.996918,
+      "found_at_rank": 2,
+      "correct": false
     },
     {
       "query": "Cool and refreshing summer-Main-version_pink_noise_spectral.feat",
       "ground_truth": "cool and refreshing summer main version pink noise",
       "top_match": "Device fat burning-Main-version_pink_noise",
-      "top_match_ncd": 0.997725,
-      "found_at_rank": 3,
+      "top_match_ncd": 0.997633,
+      "found_at_rank": 2,
       "correct": false
     },
     {
       "query": "Business Positive Energy-Main-version_pink_noise_spectral.feat",
       "ground_truth": "business positive energy main version pink noise",
-      "top_match": "Business Positive Energy-Main-version_pink_noise",
-      "top_match_ncd": 0.997851,
-      "found_at_rank": 1,
-      "correct": true
+      "top_match": "Cool and refreshing summer-Main-version_pink_noise",
+      "top_match_ncd": 0.997853,
+      "found_at_rank": 3,
+      "correct": false
     },
     {
       "query": "Device fat burning-Main-version_pink_noise_spectral.feat",
       "ground_truth": "device fat burning main version pink noise",
       "top_match": "Device fat burning-Main-version_pink_noise",
-      "top_match_ncd": 0.996577,
+      "top_match_ncd": 0.996437,
       "found_at_rank": 1,
       "correct": true
     }

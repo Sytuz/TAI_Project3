@@ -1,6 +1,6 @@
 Feature Extraction Configuration
 ===============================
-Date: 2025-06-10 13:52:02
+Date: 2025-06-10 14:45:49
 Method: maxfreq
 Format: text
 Frame size: 1024 samples

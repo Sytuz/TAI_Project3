@@ -1,6 +1,6 @@
 Music Identification Summary
 ==========================
-Date: 2025-06-10 14:13:13
+Date: 2025-06-10 14:48:34
 Compressor: lzma
 Queries processed: 5
 Database directory: tests/feature_extraction_results/small_samples/pink/spectral/text
@@ -9,21 +9,21 @@ Query Results:
 -------------
 Business Positive Energy-Main-version_pink_noise_spectral_results.csv:
   Query: Business Positive Energy-Main-version_pink_noise_spectral.feat
-  Top match: 1,Business Positive Energy-Main-version_pink_noise_spectral.feat,0.000541
+  Top match: 1,Business Positive Energy-Main-version_pink_noise_spectral.feat,0.000555
 
 Campus child-Main-version_pink_noise_spectral_results.csv:
   Query: Campus child-Main-version_pink_noise_spectral.feat
-  Top match: 1,Campus child-Main-version_pink_noise_spectral.feat,0.000539
+  Top match: 1,Campus child-Main-version_pink_noise_spectral.feat,0.000535
 
 Colorful campus-Main-version_pink_noise_spectral_results.csv:
   Query: Colorful campus-Main-version_pink_noise_spectral.feat
-  Top match: 1,Colorful campus-Main-version_pink_noise_spectral.feat,0.000616
+  Top match: 1,Colorful campus-Main-version_pink_noise_spectral.feat,0.000614
 
 Cool and refreshing summer-Main-version_pink_noise_spectral_results.csv:
   Query: Cool and refreshing summer-Main-version_pink_noise_spectral.feat
-  Top match: 1,Cool and refreshing summer-Main-version_pink_noise_spectral.feat,0.000563
+  Top match: 1,Cool and refreshing summer-Main-version_pink_noise_spectral.feat,0.000556
 
 Device fat burning-Main-version_pink_noise_spectral_results.csv:
   Query: Device fat burning-Main-version_pink_noise_spectral.feat
-  Top match: 1,Device fat burning-Main-version_pink_noise_spectral.feat,0.000632
+  Top match: 1,Device fat burning-Main-version_pink_noise_spectral.feat,0.000630
 

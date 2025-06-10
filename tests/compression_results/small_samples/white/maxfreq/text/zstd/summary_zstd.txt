@@ -1,6 +1,6 @@
 Music Identification Summary
 ==========================
-Date: 2025-06-10 14:07:41
+Date: 2025-06-10 14:46:20
 Compressor: zstd
 Queries processed: 5
 Database directory: tests/feature_extraction_results/small_samples/white/maxfreq/text
@@ -9,7 +9,7 @@ Query Results:
 -------------
 Business Positive Energy-Main-version_white_noise_maxfreq_results.csv:
   Query: Business Positive Energy-Main-version_white_noise_maxfreq.feat
-  Top match: 1,Business Positive Energy-Main-version_white_noise_maxfreq.feat,0.000363
+  Top match: 1,Business Positive Energy-Main-version_white_noise_maxfreq.feat,0.000378
 
 Campus child-Main-version_white_noise_maxfreq_results.csv:
   Query: Campus child-Main-version_white_noise_maxfreq.feat
@@ -17,13 +17,13 @@ Campus child-Main-version_white_noise_maxfreq_results.csv:
 
 Colorful campus-Main-version_white_noise_maxfreq_results.csv:
   Query: Colorful campus-Main-version_white_noise_maxfreq.feat
-  Top match: 1,Colorful campus-Main-version_white_noise_maxfreq.feat,0.000068
+  Top match: 1,Colorful campus-Main-version_white_noise_maxfreq.feat,0.000000
 
 Cool and refreshing summer-Main-version_white_noise_maxfreq_results.csv:
   Query: Cool and refreshing summer-Main-version_white_noise_maxfreq.feat
-  Top match: 1,Cool and refreshing summer-Main-version_white_noise_maxfreq.feat,0.000387
+  Top match: 1,Cool and refreshing summer-Main-version_white_noise_maxfreq.feat,0.000389
 
 Device fat burning-Main-version_white_noise_maxfreq_results.csv:
   Query: Device fat burning-Main-version_white_noise_maxfreq.feat
-  Top match: 1,Device fat burning-Main-version_white_noise_maxfreq.feat,0.009661
+  Top match: 1,Device fat burning-Main-version_white_noise_maxfreq.feat,0.001972
 

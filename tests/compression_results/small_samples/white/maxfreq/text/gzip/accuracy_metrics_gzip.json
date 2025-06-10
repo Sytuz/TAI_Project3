@@ -11,7 +11,7 @@
       "query": "Campus child-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "campus child main version white noise",
       "top_match": "Colorful campus-Main-version_white_noise",
-      "top_match_ncd": 0.973041,
+      "top_match_ncd": 0.971329,
       "found_at_rank": 2,
       "correct": false
     },
@@ -19,31 +19,31 @@
       "query": "Cool and refreshing summer-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "cool and refreshing summer main version white noise",
       "top_match": "Cool and refreshing summer-Main-version_white_noise",
-      "top_match_ncd": 0.973415,
+      "top_match_ncd": 0.974428,
       "found_at_rank": 1,
       "correct": true
     },
     {
       "query": "Colorful campus-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "colorful campus main version white noise",
-      "top_match": "Colorful campus-Main-version_white_noise",
-      "top_match_ncd": 0.968134,
-      "found_at_rank": 1,
-      "correct": true
+      "top_match": "Device fat burning-Main-version_white_noise",
+      "top_match_ncd": 0.967085,
+      "found_at_rank": 2,
+      "correct": false
     },
     {
       "query": "Business Positive Energy-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "business positive energy main version white noise",
-      "top_match": "Cool and refreshing summer-Main-version_white_noise",
-      "top_match_ncd": 0.975542,
-      "found_at_rank": 2,
-      "correct": false
+      "top_match": "Business Positive Energy-Main-version_white_noise",
+      "top_match_ncd": 0.975744,
+      "found_at_rank": 1,
+      "correct": true
     },
     {
       "query": "Device fat burning-Main-version_white_noise_maxfreq.feat",
       "ground_truth": "device fat burning main version white noise",
       "top_match": "Device fat burning-Main-version_white_noise",
-      "top_match_ncd": 0.965135,
+      "top_match_ncd": 0.964331,
       "found_at_rank": 1,
       "correct": true
     }

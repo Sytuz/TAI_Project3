@@ -1,25 +1,25 @@
 {
   "total_queries": 5,
-  "top1_correct": 2,
+  "top1_correct": 3,
   "top5_correct": 5,
   "top10_correct": 5,
-  "top1_accuracy": 40.0,
+  "top1_accuracy": 60.0,
   "top5_accuracy": 100.0,
   "top10_accuracy": 100.0,
   "detailed_results": [
     {
       "query": "Business Positive Energy-Main-version_white_noise_spectral.featbin",
       "ground_truth": "business positive energy main version white noise",
-      "top_match": "Cool and refreshing summer-Main-version_white_noise",
-      "top_match_ncd": 0.992366,
-      "found_at_rank": 2,
-      "correct": false
+      "top_match": "Business Positive Energy-Main-version_white_noise",
+      "top_match_ncd": 0.991811,
+      "found_at_rank": 1,
+      "correct": true
     },
     {
       "query": "Colorful campus-Main-version_white_noise_spectral.featbin",
       "ground_truth": "colorful campus main version white noise",
-      "top_match": "Cool and refreshing summer-Main-version_white_noise",
-      "top_match_ncd": 0.998013,
+      "top_match": "Device fat burning-Main-version_white_noise",
+      "top_match_ncd": 0.997298,
       "found_at_rank": 4,
       "correct": false
     },
@@ -27,7 +27,7 @@
       "query": "Cool and refreshing summer-Main-version_white_noise_spectral.featbin",
       "ground_truth": "cool and refreshing summer main version white noise",
       "top_match": "Business Positive Energy-Main-version_white_noise",
-      "top_match_ncd": 0.992381,
+      "top_match_ncd": 0.992681,
       "found_at_rank": 2,
       "correct": false
     },
@@ -35,7 +35,7 @@
       "query": "Device fat burning-Main-version_white_noise_spectral.featbin",
       "ground_truth": "device fat burning main version white noise",
       "top_match": "Device fat burning-Main-version_white_noise",
-      "top_match_ncd": 0.960846,
+      "top_match_ncd": 0.959359,
       "found_at_rank": 1,
       "correct": true
     },
@@ -43,7 +43,7 @@
       "query": "Campus child-Main-version_white_noise_spectral.featbin",
       "ground_truth": "campus child main version white noise",
       "top_match": "Campus child-Main-version_white_noise",
-      "top_match_ncd": 0.998734,
+      "top_match_ncd": 0.998836,
       "found_at_rank": 1,
       "correct": true
     }

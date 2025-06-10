@@ -1,7 +1,7 @@
 ========================================
 COMPRESSION TEST REPORT
 ========================================
-Test Date: Tue Jun 10 02:15:33 PM WEST 2025
+Test Date: Tue Jun 10 02:48:35 PM WEST 2025
 
 CONFIGURATION:
 - Dataset: small_samples
@@ -43,14 +43,14 @@ clean/maxfreq METHOD - binary FORMAT:
 === white SAMPLES ===
 
 white/spectral METHOD - text FORMAT:
-- gzip: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
-- bzip2: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
+- gzip: 5 result files, 5 queries, Top-1: 40.0%, Top-5: 100.0%
+- bzip2: 5 result files, 5 queries, Top-1: 40.0%, Top-5: 100.0%
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 
 white/spectral METHOD - binary FORMAT:
-- gzip: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
-- bzip2: 5 result files, 5 queries, Top-1: 40.0%, Top-5: 100.0%
+- gzip: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- bzip2: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 
@@ -69,13 +69,13 @@ white/maxfreq METHOD - binary FORMAT:
 === brown SAMPLES ===
 
 brown/spectral METHOD - text FORMAT:
-- gzip: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
+- gzip: 5 result files, 5 queries, Top-1: 80.0%, Top-5: 100.0%
 - bzip2: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 
 brown/spectral METHOD - binary FORMAT:
-- gzip: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
+- gzip: 5 result files, 5 queries, Top-1: 80.0%, Top-5: 100.0%
 - bzip2: 5 result files, 5 queries, Top-1: 80.0%, Top-5: 100.0%
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
@@ -87,7 +87,7 @@ brown/maxfreq METHOD - text FORMAT:
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 
 brown/maxfreq METHOD - binary FORMAT:
-- gzip: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- gzip: 5 result files, 5 queries, Top-1: 80.0%, Top-5: 100.0%
 - bzip2: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
@@ -95,13 +95,13 @@ brown/maxfreq METHOD - binary FORMAT:
 === pink SAMPLES ===
 
 pink/spectral METHOD - text FORMAT:
-- gzip: 5 result files, 5 queries, Top-1: 80.0%, Top-5: 100.0%
-- bzip2: 5 result files, 5 queries, Top-1: 40.0%, Top-5: 100.0%
+- gzip: 5 result files, 5 queries, Top-1: 40.0%, Top-5: 100.0%
+- bzip2: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 
 pink/spectral METHOD - binary FORMAT:
-- gzip: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
+- gzip: 5 result files, 5 queries, Top-1: 80.0%, Top-5: 100.0%
 - bzip2: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
@@ -118,4 +118,4 @@ pink/maxfreq METHOD - binary FORMAT:
 - lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 - zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
 
-TEST COMPLETED: Tue Jun 10 02:15:34 PM WEST 2025
+TEST COMPLETED: Tue Jun 10 02:48:35 PM WEST 2025
