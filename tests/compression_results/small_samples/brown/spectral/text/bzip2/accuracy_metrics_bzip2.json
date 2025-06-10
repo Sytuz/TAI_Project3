@@ -1,0 +1,51 @@
+{
+  "total_queries": 5,
+  "top1_correct": 3,
+  "top5_correct": 5,
+  "top10_correct": 5,
+  "top1_accuracy": 60.0,
+  "top5_accuracy": 100.0,
+  "top10_accuracy": 100.0,
+  "detailed_results": [
+    {
+      "query": "Business Positive Energy-Main-version_brown_noise_spectral.feat",
+      "ground_truth": "business positive energy main version brown noise",
+      "top_match": "Device fat burning-Main-version_brown_noise",
+      "top_match_ncd": 0.999035,
+      "found_at_rank": 4,
+      "correct": false
+    },
+    {
+      "query": "Device fat burning-Main-version_brown_noise_spectral.feat",
+      "ground_truth": "device fat burning main version brown noise",
+      "top_match": "Device fat burning-Main-version_brown_noise",
+      "top_match_ncd": 0.995185,
+      "found_at_rank": 1,
+      "correct": true
+    },
+    {
+      "query": "Cool and refreshing summer-Main-version_brown_noise_spectral.feat",
+      "ground_truth": "cool and refreshing summer main version brown noise",
+      "top_match": "Device fat burning-Main-version_brown_noise",
+      "top_match_ncd": 0.996561,
+      "found_at_rank": 4,
+      "correct": false
+    },
+    {
+      "query": "Colorful campus-Main-version_brown_noise_spectral.feat",
+      "ground_truth": "colorful campus main version brown noise",
+      "top_match": "Colorful campus-Main-version_brown_noise",
+      "top_match_ncd": 0.994765,
+      "found_at_rank": 1,
+      "correct": true
+    },
+    {
+      "query": "Campus child-Main-version_brown_noise_spectral.feat",
+      "ground_truth": "campus child main version brown noise",
+      "top_match": "Campus child-Main-version_brown_noise",
+      "top_match_ncd": 0.996527,
+      "found_at_rank": 1,
+      "correct": true
+    }
+  ]
+}

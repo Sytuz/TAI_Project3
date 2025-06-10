@@ -1,0 +1,29 @@
+Music Identification Summary
+==========================
+Date: 2025-06-10 14:10:26
+Compressor: gzip
+Queries processed: 5
+Database directory: tests/feature_extraction_results/small_samples/brown/spectral/binary
+
+Query Results:
+-------------
+Business Positive Energy-Main-version_brown_noise_spectral_results.csv:
+  Query: Business Positive Energy-Main-version_brown_noise_spectral.featbin
+  Top match: 1,Colorful campus-Main-version_brown_noise_spectral.featbin,0.999844
+
+Campus child-Main-version_brown_noise_spectral_results.csv:
+  Query: Campus child-Main-version_brown_noise_spectral.featbin
+  Top match: 1,Campus child-Main-version_brown_noise_spectral.featbin,0.999811
+
+Colorful campus-Main-version_brown_noise_spectral_results.csv:
+  Query: Colorful campus-Main-version_brown_noise_spectral.featbin
+  Top match: 1,Colorful campus-Main-version_brown_noise_spectral.featbin,0.999746
+
+Cool and refreshing summer-Main-version_brown_noise_spectral_results.csv:
+  Query: Cool and refreshing summer-Main-version_brown_noise_spectral.featbin
+  Top match: 1,Colorful campus-Main-version_brown_noise_spectral.featbin,0.999785
+
+Device fat burning-Main-version_brown_noise_spectral_results.csv:
+  Query: Device fat burning-Main-version_brown_noise_spectral.featbin
+  Top match: 1,Device fat burning-Main-version_brown_noise_spectral.featbin,0.999803
+
