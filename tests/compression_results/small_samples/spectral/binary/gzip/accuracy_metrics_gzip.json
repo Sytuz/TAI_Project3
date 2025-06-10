@@ -1,0 +1,51 @@
+{
+  "total_queries": 5,
+  "top1_correct": 1,
+  "top5_correct": 5,
+  "top10_correct": 5,
+  "top1_accuracy": 20.0,
+  "top5_accuracy": 100.0,
+  "top10_accuracy": 100.0,
+  "detailed_results": [
+    {
+      "query": "Cool and refreshing summer-Main-version_spectral.featbin",
+      "ground_truth": "cool and refreshing summer",
+      "top_match": "Cool and refreshing summer",
+      "top_match_ncd": 0.999644,
+      "found_at_rank": 1,
+      "correct": true
+    },
+    {
+      "query": "Campus child-Main-version_spectral.featbin",
+      "ground_truth": "campus child",
+      "top_match": "Cool and refreshing summer",
+      "top_match_ncd": 0.999869,
+      "found_at_rank": 4,
+      "correct": false
+    },
+    {
+      "query": "Device fat burning-Main-version_spectral.featbin",
+      "ground_truth": "device fat burning",
+      "top_match": "Cool and refreshing summer",
+      "top_match_ncd": 0.99959,
+      "found_at_rank": 3,
+      "correct": false
+    },
+    {
+      "query": "Business Positive Energy-Main-version_spectral.featbin",
+      "ground_truth": "business positive energy",
+      "top_match": "Device fat burning",
+      "top_match_ncd": 0.999856,
+      "found_at_rank": 4,
+      "correct": false
+    },
+    {
+      "query": "Colorful campus-Main-version_spectral.featbin",
+      "ground_truth": "colorful campus",
+      "top_match": "Cool and refreshing summer",
+      "top_match_ncd": 0.99948,
+      "found_at_rank": 3,
+      "correct": false
+    }
+  ]
+}

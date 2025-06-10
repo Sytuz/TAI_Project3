@@ -166,13 +166,16 @@ def calculate_accuracy_metrics(results_dir, output_file=None):
             
             # Store detailed result
             top_match = results[0] if results else (0, "None", float('inf'))
+            top_match_song = normalize_song_name(extract_song_name(top_match[1])) if results else ""
+            is_top_match_correct = (ground_truth == top_match_song) if results else False
+            
             detailed_results.append({
                 'query': query_name,
                 'ground_truth': ground_truth,
-                'top_match': extract_song_name(top_match[1]),
-                'top_match_ncd': top_match[2],
+                'top_match': extract_song_name(top_match[1]) if results else "None",
+                'top_match_ncd': top_match[2] if results else float('inf'),
                 'found_at_rank': found_at_rank,
-                'correct': found_at_rank is not None
+                'correct': is_top_match_correct
             })
             
             # Print progress

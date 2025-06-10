@@ -1,0 +1,40 @@
+========================================
+COMPRESSION TEST REPORT
+========================================
+Test Date: Tue Jun 10 11:49:34 AM WEST 2025
+
+CONFIGURATION:
+- Dataset: small_samples
+- Compressors Tested: gzip bzip2 lzma zstd
+- Methods Tested: spectral maxfreq
+- Formats Tested: text binary
+- Features Directory: tests/feature_extraction_results/small_samples
+- Output Directory: tests/compression_results/small_samples
+
+TESTS PERFORMED:
+
+spectral METHOD - text FORMAT:
+- gzip: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
+- bzip2: 5 result files, 5 queries, Top-1: 20.0%, Top-5: 100.0%
+- lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+
+spectral METHOD - binary FORMAT:
+- gzip: 5 result files, 5 queries, Top-1: 20.0%, Top-5: 100.0%
+- bzip2: 5 result files, 5 queries, Top-1: 60.0%, Top-5: 100.0%
+- lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+
+maxfreq METHOD - text FORMAT:
+- gzip: 5 result files, 5 queries, Top-1: 80.0%, Top-5: 100.0%
+- bzip2: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+
+maxfreq METHOD - binary FORMAT:
+- gzip: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- bzip2: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- lzma: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+- zstd: 5 result files, 5 queries, Top-1: 100.0%, Top-5: 100.0%
+
+TEST COMPLETED: Tue Jun 10 11:49:34 AM WEST 2025
