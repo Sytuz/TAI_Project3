@@ -43,3 +43,14 @@ tests/feature_extraction_results/samples/noisy_samples/
 tests/feature_extraction_results/samples/pink/
 tests/feature_extraction_results/samples/white/
 tests/plots/samples/*.py
+
+tests/compression_results/full_tracks/brown/
+tests/compression_results/full_tracks/clean/
+tests/compression_results/full_tracks/pink/
+tests/compression_results/full_tracks/white/
+tests/feature_extraction_results/full_tracks/brown/
+tests/feature_extraction_results/full_tracks/clean/
+tests/feature_extraction_results/full_tracks/noisy_samples/
+tests/feature_extraction_results/full_tracks/pink/
+tests/feature_extraction_results/full_tracks/white/
+tests/plots/full_tracks/*.py

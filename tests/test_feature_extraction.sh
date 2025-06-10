@@ -18,7 +18,13 @@ TEST_METHODS=("spectral" "maxfreq")  # Both methods
 FORMATS=("text" "binary")            # Both formats
 NOISE_TYPES=("clean" "white" "brown" "pink")  # Include clean (no noise) plus noise types
 NOISE_LEVEL=0.1  # 10% noise level for testing
-MAX_THREADS=8  # Maximum number of parallel threads for feature extraction
+
+# Adjust thread count based on dataset size
+if [ "$DATASET" = "full_tracks" ]; then
+    MAX_THREADS=2  # Very conservative for large datasets to avoid memory/disk issues
+else
+    MAX_THREADS=8  # Higher threads for smaller datasets
+fi
 
 # Print colored output
 print_info() {
@@ -39,6 +45,25 @@ print_error() {
 
 print_step() {
     echo -e "${BLUE}==================== STEP $1: $2 ====================${NC}"
+}
+
+# Function to check disk space
+check_disk_space() {
+    local required_gb=$1
+    local available_gb=$(df /home | tail -1 | awk '{print int($4/1024/1024)}')
+    
+    print_info "Available disk space: ${available_gb}GB"
+    
+    if [ "$available_gb" -lt "$required_gb" ]; then
+        print_error "Insufficient disk space! Required: ${required_gb}GB, Available: ${available_gb}GB"
+        return 1
+    fi
+    
+    if [ "$available_gb" -lt $((required_gb * 2)) ]; then
+        print_warning "Low disk space warning! Available: ${available_gb}GB, Recommended: $((required_gb * 2))GB"
+    fi
+    
+    return 0
 }
 
 # Change to project directory
@@ -188,8 +213,19 @@ generate_noisy_samples() {
         return 0
     fi
     
-    print_info "Generating $noise_type noise samples..."
+    print_info "Checking $noise_type noise samples..."
     mkdir -p "$output_dir"
+    
+    # Check if noise samples already exist
+    local wav_count=$(find "$input_dir" -name "*.wav" | wc -l)
+    local existing_count=$(find "$output_dir" -name "*_${noise_type}_noise.wav" 2>/dev/null | wc -l)
+    
+    if [ "$existing_count" -eq "$wav_count" ]; then
+        print_success "$noise_type noise samples already exist ($existing_count files)"
+        return 0
+    fi
+    
+    print_info "Generating $noise_type noise samples... ($existing_count/$wav_count exist)"
     
     # Check if sox is available
     if ! command -v sox > /dev/null; then
@@ -197,10 +233,19 @@ generate_noisy_samples() {
         return 1
     fi
     
+    local processed=0
+    local total_files=$(find "$input_dir" -name "*.wav" | wc -l)
+    
     for wav_file in "$input_dir"/*.wav; do
         if [ -f "$wav_file" ]; then
             base_name=$(basename "$wav_file" .wav)
             output_file="$output_dir/${base_name}_${noise_type}_noise.wav"
+            
+            # Skip if file already exists
+            if [ -f "$output_file" ]; then
+                ((processed++))
+                continue
+            fi
             
             # Generate temporary noise file
             temp_noise=$(mktemp --suffix=.wav)
@@ -220,15 +265,17 @@ generate_noisy_samples() {
             # Clean up
             rm -f "$temp_noise"
             
+            ((processed++))
+            
             if [ -f "$output_file" ]; then
-                print_info "Created noisy sample: $(basename "$output_file")"
+                print_info "[$processed/$total_files] Created: $(basename "$output_file")"
             else
-                print_warning "Failed to create noisy sample for: $base_name"
+                print_warning "[$processed/$total_files] Failed: $base_name"
             fi
         fi
     done
     
-    print_success "Generated $noise_type noise samples"
+    print_success "Generated $noise_type noise samples ($processed/$total_files processed)"
     return 0
 }
 
@@ -507,6 +554,16 @@ print_info "Testing methods: ${TEST_METHODS[*]}"
 print_info "Testing formats: text and binary"
 print_info "Testing noise types: ${NOISE_TYPES[*]}"
 print_info "Using parallel processing with up to $MAX_THREADS threads"
+
+# Check disk space before starting
+if [ "$DATASET" = "full_tracks" ]; then
+    print_step "0" "Disk space check"
+    if ! check_disk_space 20; then
+        print_error "Not enough disk space for full_tracks dataset processing"
+        print_info "Consider using a smaller dataset or cleaning up disk space"
+        exit 1
+    fi
+fi
 
 # Create logs directory for job outputs
 FE_LOGS_DIR="$TEST_OUTPUT_DIR/fe_logs"

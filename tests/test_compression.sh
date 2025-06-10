@@ -19,7 +19,12 @@ COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
 METHODS=("spectral" "maxfreq")
 FORMATS=("text" "binary")
 NOISE_TYPES=("clean" "white" "brown" "pink")  # Include noise types
-MAX_THREADS=16  # Maximum number of parallel threads
+# Adjust thread count based on dataset size
+if [ "$DATASET" = "full_tracks" ]; then
+    MAX_THREADS=4  # Very conservative for large datasets to avoid memory/disk issues
+else
+    MAX_THREADS=16  # Higher threads for smaller datasets
+fi
 
 # Print colored output
 print_info() {

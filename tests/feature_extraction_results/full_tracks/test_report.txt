@@ -1,0 +1,64 @@
+========================================
+FEATURE EXTRACTION TEST REPORT
+========================================
+Test Date: Tue Jun 10 07:50:58 PM WEST 2025
+
+CONFIGURATION:
+- Dataset: full_tracks
+- Methods Tested: spectral maxfreq
+- Noise Types: clean white brown pink
+- Noise Level: 0.1
+- Input Directory: data/full_tracks
+- Output Directory: tests/feature_extraction_results/full_tracks
+
+PARAMETERS USED:
+- Spectral method: 32 bins, 1024 frame size, 512 hop size
+- MaxFreq method: 4 frequencies, 1024 frame size, 512 hop size
+
+INPUT INFORMATION:
+- Total WAV files: 100
+- Input directory size: 5.6G
+
+TESTS PERFORMED:
+
+=== clean SAMPLES ===
+
+clean/spectral METHOD:
+- Text format (.feat): 100 files, 444M total
+- Binary format (.featbin): 59 files, 173M total
+
+clean/maxfreq METHOD:
+- Text format (.feat): 100 files, 35M total
+- Binary format (.featbin): 100 files, 45M total
+
+=== white SAMPLES ===
+
+white/spectral METHOD:
+- Text format (.feat): 100 files, 446M total
+- Binary format (.featbin): 100 files, 355M total
+
+white/maxfreq METHOD:
+- Text format (.feat): 100 files, 37M total
+- Binary format (.featbin): 100 files, 45M total
+
+=== brown SAMPLES ===
+
+brown/spectral METHOD:
+- Text format (.feat): 100 files, 446M total
+- Binary format (.featbin): 100 files, 355M total
+
+brown/maxfreq METHOD:
+- Text format (.feat): 100 files, 34M total
+- Binary format (.featbin): 100 files, 45M total
+
+=== pink SAMPLES ===
+
+pink/spectral METHOD:
+- Text format (.feat): 100 files, 446M total
+- Binary format (.featbin): 100 files, 355M total
+
+pink/maxfreq METHOD:
+- Text format (.feat): 100 files, 35M total
+- Binary format (.featbin): 100 files, 45M total
+
+TEST COMPLETED: Tue Jun 10 07:50:58 PM WEST 2025
