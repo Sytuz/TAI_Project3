@@ -19,6 +19,7 @@ OUTPUT_BASE_DIR="tests/parameter_analysis"
 METHODS=("spectral" "maxfreq")
 FORMATS=("text" "binary")
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
+NOISE_TYPES=("clean" "white" "brown" "pink")  # Include noise types
 
 # Print colored output
 print_info() {
@@ -85,18 +86,25 @@ Analysis Date: $(date)
 DATASET: $DATASET
 METHODS ANALYZED: ${METHODS[*]}
 FORMATS ANALYZED: ${FORMATS[*]}
+NOISE TYPES ANALYZED: ${NOISE_TYPES[*]}
 
 EOF
 
-    # Analyze each method and format combination
-    for method in "${METHODS[@]}"; do
-        for format in "${FORMATS[@]}"; do
-            local features_dir="$FEATURES_BASE_DIR/${method}/${format}"
-            
-            if [ -d "$features_dir" ]; then
-                cat >> "$analysis_file" << EOF
+    # Analyze each noise type, method and format combination
+    for noise_type in "${NOISE_TYPES[@]}"; do
+        cat >> "$analysis_file" << EOF
 
-$method METHOD - $format FORMAT:
+=== $noise_type SAMPLES ===
+EOF
+        
+        for method in "${METHODS[@]}"; do
+            for format in "${FORMATS[@]}"; do
+                local features_dir="$FEATURES_BASE_DIR/${noise_type}/${method}/${format}"
+            
+                if [ -d "$features_dir" ]; then
+                    cat >> "$analysis_file" << EOF
+
+$noise_type/$method METHOD - $format FORMAT:
 EOF
                 
                 # Count files
@@ -135,13 +143,14 @@ EOF
 - Sample file characters: $char_count
 EOF
                 fi
-            else
-                cat >> "$analysis_file" << EOF
+                else
+                    cat >> "$analysis_file" << EOF
 
-$method METHOD - $format FORMAT:
+$noise_type/$method METHOD - $format FORMAT:
 - Status: NOT FOUND
 EOF
-            fi
+                fi
+            done
         done
     done
     
@@ -164,6 +173,7 @@ DATASET: $DATASET
 METHODS ANALYZED: ${METHODS[*]}
 FORMATS ANALYZED: ${FORMATS[*]}
 COMPRESSORS ANALYZED: ${COMPRESSORS[*]}
+NOISE TYPES ANALYZED: ${NOISE_TYPES[*]}
 
 PERFORMANCE SUMMARY:
 EOF
@@ -175,15 +185,21 @@ EOF
     local best_top5_config=""
     
     # Analyze each combination
-    for method in "${METHODS[@]}"; do
-        for format in "${FORMATS[@]}"; do
-            cat >> "$analysis_file" << EOF
+    for noise_type in "${NOISE_TYPES[@]}"; do
+        cat >> "$analysis_file" << EOF
 
-$method METHOD - $format FORMAT:
+=== $noise_type SAMPLES ===
 EOF
-            for compressor in "${COMPRESSORS[@]}"; do
-                local results_dir="$COMPRESSION_BASE_DIR/${method}/${format}/${compressor}"
-                local accuracy_file="$results_dir/accuracy_metrics_${compressor}.json"
+        
+        for method in "${METHODS[@]}"; do
+            for format in "${FORMATS[@]}"; do
+                cat >> "$analysis_file" << EOF
+
+$noise_type/$method METHOD - $format FORMAT:
+EOF
+                for compressor in "${COMPRESSORS[@]}"; do
+                    local results_dir="$COMPRESSION_BASE_DIR/${noise_type}/${method}/${format}/${compressor}"
+                    local accuracy_file="$results_dir/accuracy_metrics_${compressor}.json"
                 
                 if [ -f "$accuracy_file" ]; then
                     if command -v jq > /dev/null; then
@@ -198,12 +214,12 @@ EOF
                         # Track best performers
                         if (( $(echo "$top1_accuracy > $best_top1_accuracy" | bc -l 2>/dev/null || echo "0") )); then
                             best_top1_accuracy="$top1_accuracy"
-                            best_top1_config="$method/$format/$compressor"
+                            best_top1_config="$noise_type/$method/$format/$compressor"
                         fi
                         
                         if (( $(echo "$top5_accuracy > $best_top5_accuracy" | bc -l 2>/dev/null || echo "0") )); then
                             best_top5_accuracy="$top5_accuracy"
-                            best_top5_config="$method/$format/$compressor"
+                            best_top5_config="$noise_type/$method/$format/$compressor"
                         fi
                     else
                         cat >> "$analysis_file" << EOF
@@ -217,6 +233,7 @@ EOF
                 fi
             done
         done
+    done
     done
     
     # Add best performers summary

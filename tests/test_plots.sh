@@ -20,6 +20,7 @@ OUTPUT_BASE_DIR="tests/plots"
 METHODS=("spectral" "maxfreq")
 FORMATS=("text" "binary")
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
+NOISE_TYPES=("clean" "white" "brown" "pink")  # Include noise types
 
 # Print colored output
 print_info() {
@@ -129,6 +130,7 @@ output_dir = f"tests/plots/{dataset}"
 methods = ["spectral", "maxfreq"]
 formats = ["text", "binary"]
 compressors = ["gzip", "bzip2", "lzma", "zstd"]
+noise_types = ["clean", "white", "brown", "pink"]
 
 # Create output directory
 Path(output_dir).mkdir(parents=True, exist_ok=True)
@@ -137,28 +139,30 @@ def load_accuracy_data():
     """Load all accuracy data from JSON files"""
     data = []
     
-    for method in methods:
-        for format_type in formats:
-            for compressor in compressors:
-                json_file = Path(f"{compression_base}/{method}/{format_type}/{compressor}/accuracy_metrics_{compressor}.json")
-                
-                if json_file.exists():
-                    try:
-                        with open(json_file, 'r') as f:
-                            accuracy_data = json.load(f)
-                        
-                        data.append({
-                            'Method': method.capitalize(),
-                            'Format': format_type.capitalize(),
-                            'Compressor': compressor.upper(),
-                            'Top1_Accuracy': accuracy_data.get('top1_accuracy', 0),
-                            'Top5_Accuracy': accuracy_data.get('top5_accuracy', 0),
-                            'Top10_Accuracy': accuracy_data.get('top10_accuracy', 0),
-                            'Total_Queries': accuracy_data.get('total_queries', 0),
-                            'Configuration': f"{method}/{format_type}/{compressor}"
-                        })
-                    except Exception as e:
-                        print(f"Error loading {json_file}: {e}")
+    for noise_type in noise_types:
+        for method in methods:
+            for format_type in formats:
+                for compressor in compressors:
+                    json_file = Path(f"{compression_base}/{noise_type}/{method}/{format_type}/{compressor}/accuracy_metrics_{compressor}.json")
+                    
+                    if json_file.exists():
+                        try:
+                            with open(json_file, 'r') as f:
+                                accuracy_data = json.load(f)
+                            
+                            data.append({
+                                'Noise_Type': noise_type.capitalize(),
+                                'Method': method.capitalize(),
+                                'Format': format_type.capitalize(),
+                                'Compressor': compressor.upper(),
+                                'Top1_Accuracy': accuracy_data.get('top1_accuracy', 0),
+                                'Top5_Accuracy': accuracy_data.get('top5_accuracy', 0),
+                                'Top10_Accuracy': accuracy_data.get('top10_accuracy', 0),
+                                'Total_Queries': accuracy_data.get('total_queries', 0),
+                                'Configuration': f"{noise_type}/{method}/{format_type}/{compressor}"
+                            })
+                        except Exception as e:
+                            print(f"Error loading {json_file}: {e}")
     
     return pd.DataFrame(data)
 
@@ -166,20 +170,33 @@ def plot_accuracy_heatmap(df):
     """Create accuracy heatmap"""
     print("Generating accuracy heatmap...")
     
-    # Create pivot table for heatmap
-    pivot_data = df.pivot_table(
-        values='Top1_Accuracy', 
-        index=['Method', 'Format'], 
-        columns='Compressor', 
-        aggfunc='mean'
-    )
+    # Create separate heatmaps for each noise type
+    noise_types_list = df['Noise_Type'].unique()
     
-    plt.figure(figsize=(12, 8))
-    sns.heatmap(pivot_data, annot=True, fmt='.1f', cmap='YlOrRd', 
-                cbar_kws={'label': 'Top-1 Accuracy (%)'})
-    plt.title('Top-1 Accuracy by Method, Format, and Compressor')
-    plt.xlabel('Compressor')
-    plt.ylabel('Method / Format')
+    fig, axes = plt.subplots(2, 2, figsize=(20, 16))
+    fig.suptitle('Top-1 Accuracy by Method, Format, and Compressor (by Noise Type)', fontsize=16)
+    
+    for i, noise_type in enumerate(noise_types_list):
+        row = i // 2
+        col = i % 2
+        ax = axes[row, col]
+        
+        noise_data = df[df['Noise_Type'] == noise_type]
+        
+        # Create pivot table for heatmap
+        pivot_data = noise_data.pivot_table(
+            values='Top1_Accuracy', 
+            index=['Method', 'Format'], 
+            columns='Compressor', 
+            aggfunc='mean'
+        )
+        
+        sns.heatmap(pivot_data, annot=True, fmt='.1f', cmap='YlOrRd', 
+                    cbar_kws={'label': 'Top-1 Accuracy (%)'}, ax=ax)
+        ax.set_title(f'{noise_type} Samples')
+        ax.set_xlabel('Compressor')
+        ax.set_ylabel('Method / Format')
+    
     plt.tight_layout()
     plt.savefig(f'{output_dir}/accuracy_heatmap.png', dpi=300, bbox_inches='tight')
     plt.close()

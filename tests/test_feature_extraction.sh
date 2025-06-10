@@ -16,6 +16,8 @@ DATASET="small_samples"  # Change to: samples or full_tracks for larger datasets
 OUTPUT_BASE_DIR="tests/feature_extraction_results"
 TEST_METHODS=("spectral" "maxfreq")  # Both methods
 FORMATS=("text" "binary")            # Both formats
+NOISE_TYPES=("clean" "white" "brown" "pink")  # Include clean (no noise) plus noise types
+NOISE_LEVEL=0.1  # 10% noise level for testing
 
 # Print colored output
 print_info() {
@@ -70,11 +72,69 @@ fi
 print_success "Found $WAV_COUNT WAV files in $INPUT_DIR"
 print_info "Testing methods: ${TEST_METHODS[*]}"
 print_info "Testing formats: text and binary"
+print_info "Testing noise types: ${NOISE_TYPES[*]}"
 
 # Create output directories
 TEST_OUTPUT_DIR="$OUTPUT_BASE_DIR/$DATASET"
 
 print_info "Test output directory: $TEST_OUTPUT_DIR"
+
+# Function to generate noisy samples
+generate_noisy_samples() {
+    local noise_type=$1
+    local input_dir=$2
+    local output_dir=$3
+    
+    if [ "$noise_type" = "clean" ]; then
+        # For clean samples, just copy the original files
+        mkdir -p "$output_dir"
+        cp "$input_dir"/*.wav "$output_dir/"
+        return 0
+    fi
+    
+    print_info "Generating $noise_type noise samples..."
+    mkdir -p "$output_dir"
+    
+    # Check if sox is available
+    if ! command -v sox > /dev/null; then
+        print_error "sox is required for noise generation but not found"
+        return 1
+    fi
+    
+    for wav_file in "$input_dir"/*.wav; do
+        if [ -f "$wav_file" ]; then
+            base_name=$(basename "$wav_file" .wav)
+            output_file="$output_dir/${base_name}_${noise_type}_noise.wav"
+            
+            # Generate temporary noise file
+            temp_noise=$(mktemp --suffix=.wav)
+            
+            # Get audio properties
+            channels=$(soxi -c "$wav_file" 2>/dev/null || echo "2")
+            rate=$(soxi -r "$wav_file" 2>/dev/null || echo "44100")
+            duration=$(soxi -D "$wav_file" 2>/dev/null || echo "10")
+            
+            # Generate noise with same properties
+            sox -n -r "$rate" -c "$channels" "$temp_noise" synth "$duration" \
+                "$noise_type" vol "$NOISE_LEVEL" 2>/dev/null
+            
+            # Mix original with noise
+            sox -m "$wav_file" "$temp_noise" "$output_file" 2>/dev/null
+            
+            # Clean up
+            rm -f "$temp_noise"
+            
+            if [ -f "$output_file" ]; then
+                print_info "Created noisy sample: $(basename "$output_file")"
+            else
+                print_warning "Failed to create noisy sample for: $base_name"
+            fi
+        fi
+    done
+    
+    print_success "Generated $noise_type noise samples"
+    return 0
+}
 
 # Function to run feature extraction and measure performance
 run_feature_extraction() {
@@ -82,8 +142,10 @@ run_feature_extraction() {
     local format=$2
     local binary_flag=$3
     local output_dir=$4
+    local input_dir=$5
+    local noise_type=$6
     
-    print_step "2" "Feature extraction - $method method, $format format"
+    print_step "2" "Feature extraction - $method method, $format format, $noise_type samples"
     
     mkdir -p "$output_dir"
     
@@ -93,10 +155,10 @@ run_feature_extraction() {
     # Run feature extraction using default parameters (no config file needed)
     if [[ "$method" == "spectral" ]]; then
         # Default spectral parameters: 32 bins, 1024 frame size, 512 hop size
-        cmd="./apps/extract_features --method spectral --bins 32 --frame-size 1024 --hop-size 512 -i $INPUT_DIR -o $output_dir"
+        cmd="./apps/extract_features --method spectral --bins 32 --frame-size 1024 --hop-size 512 -i $input_dir -o $output_dir"
     else
         # Default maxfreq parameters: 4 frequencies, 1024 frame size, 512 hop size
-        cmd="./apps/extract_features --method maxfreq --frequencies 4 --frame-size 1024 --hop-size 512 -i $INPUT_DIR -o $output_dir"
+        cmd="./apps/extract_features --method maxfreq --frequencies 4 --frame-size 1024 --hop-size 512 -i $input_dir -o $output_dir"
     fi
     if [ "$binary_flag" = "true" ]; then
         cmd="$cmd --binary"
@@ -150,8 +212,10 @@ validate_features() {
     local format=$2
     local binary_flag=$3
     local output_dir=$4
+    local input_dir=$5
+    local noise_type=$6
     
-    print_step "3" "Validation - $method method, $format format"
+    print_step "3" "Validation - $method method, $format format, $noise_type samples"
     
     if [ "$binary_flag" = "true" ]; then
         extension="featbin"
@@ -161,10 +225,15 @@ validate_features() {
     
     # Check if all input files have corresponding feature files
     missing_count=0
-    for wav_file in "$INPUT_DIR"/*.wav; do
+    for wav_file in "$input_dir"/*.wav; do
         if [ -f "$wav_file" ]; then
             base_name=$(basename "$wav_file" .wav)
-            expected_feat="${output_dir}/${base_name}_${method}.${extension}"
+            # Handle noise suffix in filename
+            if [ "$noise_type" != "clean" ]; then
+                expected_feat="${output_dir}/${base_name}_${method}.${extension}"
+            else
+                expected_feat="${output_dir}/${base_name}_${method}.${extension}"
+            fi
             
             if [ ! -f "$expected_feat" ]; then
                 print_warning "Missing feature file for: $base_name"
@@ -197,33 +266,38 @@ validate_features() {
 
 # Function to compare text vs binary features
 compare_formats() {
-    print_step "4" "Comparing text vs binary formats"
+    print_step "4" "Comparing text vs binary formats across noise types"
     
-    for method in "${TEST_METHODS[@]}"; do
-        text_dir="$TEST_OUTPUT_DIR/${method}/text"
-        binary_dir="$TEST_OUTPUT_DIR/${method}/binary"
+    for noise_type in "${NOISE_TYPES[@]}"; do
+        print_info "=== Comparing formats for $noise_type samples ==="
         
-        if [ -d "$text_dir" ] && [ -d "$binary_dir" ]; then
-            text_size=$(du -s "$text_dir" | cut -f1)
-            binary_size=$(du -s "$binary_dir" | cut -f1)
+        for method in "${TEST_METHODS[@]}"; do
+            text_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/text"
+            binary_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/binary"
             
-            if [ "$binary_size" -lt "$text_size" ]; then
-                compression_ratio=$(echo "scale=2; $text_size / $binary_size" | bc)
-                print_success "$method: Binary format is ${compression_ratio}x smaller than text format"
-            else
-                expansion_ratio=$(echo "scale=2; $binary_size / $text_size" | bc)
-                print_info "$method: Binary format is ${expansion_ratio}x larger than text format"
+            if [ -d "$text_dir" ] && [ -d "$binary_dir" ]; then
+                text_size=$(du -s "$text_dir" | cut -f1)
+                binary_size=$(du -s "$binary_dir" | cut -f1)
+                
+                if [ "$binary_size" -lt "$text_size" ]; then
+                    compression_ratio=$(echo "scale=2; $text_size / $binary_size" | bc)
+                    print_success "$noise_type/$method: Binary format is ${compression_ratio}x smaller than text format"
+                else
+                    expansion_ratio=$(echo "scale=2; $binary_size / $text_size" | bc)
+                    print_info "$noise_type/$method: Binary format is ${expansion_ratio}x larger than text format"
+                fi
+                
+                text_count=$(find "$text_dir" -name "*.feat" | wc -l)
+                binary_count=$(find "$binary_dir" -name "*.featbin" | wc -l)
+                
+                if [ "$text_count" -eq "$binary_count" ]; then
+                    print_success "$noise_type/$method: Same number of files in both formats ($text_count)"
+                    print_success "$noise_type/$method: Same number of files in both formats ($text_count)"
+                else
+                    print_warning "$noise_type/$method: Different number of files: text=$text_count, binary=$binary_count"
+                fi
             fi
-            
-            text_count=$(find "$text_dir" -name "*.feat" | wc -l)
-            binary_count=$(find "$binary_dir" -name "*.featbin" | wc -l)
-            
-            if [ "$text_count" -eq "$binary_count" ]; then
-                print_success "$method: Same number of files in both formats ($text_count)"
-            else
-                print_warning "$method: Different number of files: text=$text_count, binary=$binary_count"
-            fi
-        fi
+        done
     done
 }
 
@@ -242,6 +316,8 @@ Test Date: $(date)
 CONFIGURATION:
 - Dataset: $DATASET
 - Methods Tested: ${TEST_METHODS[*]}
+- Noise Types: ${NOISE_TYPES[*]}
+- Noise Level: $NOISE_LEVEL
 - Input Directory: $INPUT_DIR
 - Output Directory: $TEST_OUTPUT_DIR
 
@@ -256,29 +332,36 @@ INPUT INFORMATION:
 TESTS PERFORMED:
 EOF
 
-    for method in "${TEST_METHODS[@]}"; do
+    for noise_type in "${NOISE_TYPES[@]}"; do
         cat >> "$report_file" << EOF
 
-$method METHOD:
+=== $noise_type SAMPLES ===
 EOF
         
-        text_dir="$TEST_OUTPUT_DIR/${method}/text"
-        if [ -d "$text_dir" ]; then
-            text_count=$(find "$text_dir" -name "*.feat" | wc -l)
-            text_size=$(du -sh "$text_dir" | cut -f1)
+        for method in "${TEST_METHODS[@]}"; do
             cat >> "$report_file" << EOF
+
+$noise_type/$method METHOD:
+EOF
+            
+            text_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/text"
+            if [ -d "$text_dir" ]; then
+                text_count=$(find "$text_dir" -name "*.feat" | wc -l)
+                text_size=$(du -sh "$text_dir" | cut -f1)
+                cat >> "$report_file" << EOF
 - Text format (.feat): $text_count files, $text_size total
 EOF
-        fi
+            fi
 
-        binary_dir="$TEST_OUTPUT_DIR/${method}/binary"
-        if [ -d "$binary_dir" ]; then
-            binary_count=$(find "$binary_dir" -name "*.featbin" | wc -l)
-            binary_size=$(du -sh "$binary_dir" | cut -f1)
-            cat >> "$report_file" << EOF
+            binary_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/binary"
+            if [ -d "$binary_dir" ]; then
+                binary_count=$(find "$binary_dir" -name "*.featbin" | wc -l)
+                binary_size=$(du -sh "$binary_dir" | cut -f1)
+                cat >> "$report_file" << EOF
 - Binary format (.featbin): $binary_count files, $binary_size total
 EOF
-        fi
+            fi
+        done
     done
 
     cat >> "$report_file" << EOF
@@ -296,23 +379,39 @@ EOF
 print_info "Starting feature extraction test for dataset: $DATASET"
 print_info "Testing methods: ${TEST_METHODS[*]}"
 print_info "Testing formats: text and binary"
+print_info "Testing noise types: ${NOISE_TYPES[*]}"
 
-# Loop through each method
-for method in "${TEST_METHODS[@]}"; do
-    print_info "Testing $method method..."
+# Loop through each noise type, method, and format combination
+for noise_type in "${NOISE_TYPES[@]}"; do
+    print_info "=== Testing with $noise_type samples ==="
     
-    # Test text format
-    text_output_dir="$TEST_OUTPUT_DIR/${method}/text"
-    if run_feature_extraction "$method" "text" "false" "$text_output_dir"; then
-        validate_features "$method" "text" "false" "$text_output_dir"
+    # Generate or prepare samples for this noise type
+    if [ "$noise_type" = "clean" ]; then
+        CURRENT_INPUT_DIR="$INPUT_DIR"
+    else
+        CURRENT_INPUT_DIR="$TEST_OUTPUT_DIR/noisy_samples/$noise_type"
+        generate_noisy_samples "$noise_type" "$INPUT_DIR" "$CURRENT_INPUT_DIR"
     fi
+    
+    for method in "${TEST_METHODS[@]}"; do
+        print_info "Testing $method method with $noise_type samples..."
+        
+        # Test text format
+        text_output_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/text"
+        if run_feature_extraction "$method" "text" "false" "$text_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"; then
+            validate_features "$method" "text" "false" "$text_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"
+        fi
 
-    # Test binary format
-    binary_output_dir="$TEST_OUTPUT_DIR/${method}/binary"
-    if run_feature_extraction "$method" "binary" "true" "$binary_output_dir"; then
-        validate_features "$method" "binary" "true" "$binary_output_dir"
-    fi
+        # Test binary format
+        binary_output_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/binary"
+        if run_feature_extraction "$method" "binary" "true" "$binary_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"; then
+            validate_features "$method" "binary" "true" "$binary_output_dir" "$CURRENT_INPUT_DIR" "$noise_type"
+        fi
+    done
 done
+
+# Compare formats across noise types
+compare_formats
 
 # Generate summary report
 generate_report

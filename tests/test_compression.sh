@@ -18,6 +18,7 @@ FEATURES_BASE_DIR="tests/feature_extraction_results/$DATASET"
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
 METHODS=("spectral" "maxfreq")
 FORMATS=("text" "binary")
+NOISE_TYPES=("clean" "white" "brown" "pink")  # Include noise types
 
 # Print colored output
 print_info() {
@@ -190,33 +191,40 @@ CONFIGURATION:
 - Compressors Tested: ${COMPRESSORS[*]}
 - Methods Tested: ${METHODS[*]}
 - Formats Tested: ${FORMATS[*]}
+- Noise Types: ${NOISE_TYPES[*]}
 - Features Directory: $FEATURES_BASE_DIR
 - Output Directory: $TEST_OUTPUT_DIR
 
 TESTS PERFORMED:
 EOF
 
-    for method in "${METHODS[@]}"; do
-        for format in "${FORMATS[@]}"; do
-            cat >> "$report_file" << EOF
+    for noise_type in "${NOISE_TYPES[@]}"; do
+        cat >> "$report_file" << EOF
 
-$method METHOD - $format FORMAT:
+=== $noise_type SAMPLES ===
 EOF
-            for compressor in "${COMPRESSORS[@]}"; do
-                results_dir="$TEST_OUTPUT_DIR/${method}/${format}/${compressor}"
-                if [ -d "$results_dir" ]; then
-                    results_count=$(find "$results_dir" -name "*.csv" | wc -l)
-                    accuracy_file="$results_dir/accuracy_metrics_${compressor}.json"
-                    
-                    if [ -f "$accuracy_file" ] && command -v jq > /dev/null; then
-                        top1_accuracy=$(jq -r '.top1_accuracy // "N/A"' "$accuracy_file" 2>/dev/null)
-                        top5_accuracy=$(jq -r '.top5_accuracy // "N/A"' "$accuracy_file" 2>/dev/null)
-                        total_queries=$(jq -r '.total_queries // "N/A"' "$accuracy_file" 2>/dev/null)
-                        cat >> "$report_file" << EOF
+        
+        for method in "${METHODS[@]}"; do
+            for format in "${FORMATS[@]}"; do
+                cat >> "$report_file" << EOF
+
+$noise_type/$method METHOD - $format FORMAT:
+EOF
+                for compressor in "${COMPRESSORS[@]}"; do
+                    results_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/${format}/${compressor}"
+                    if [ -d "$results_dir" ]; then
+                        results_count=$(find "$results_dir" -name "*.csv" | wc -l)
+                        accuracy_file="$results_dir/accuracy_metrics_${compressor}.json"
+                        
+                        if [ -f "$accuracy_file" ] && command -v jq > /dev/null; then
+                            top1_accuracy=$(jq -r '.top1_accuracy // "N/A"' "$accuracy_file" 2>/dev/null)
+                            top5_accuracy=$(jq -r '.top5_accuracy // "N/A"' "$accuracy_file" 2>/dev/null)
+                            total_queries=$(jq -r '.total_queries // "N/A"' "$accuracy_file" 2>/dev/null)
+                            cat >> "$report_file" << EOF
 - $compressor: $results_count result files, $total_queries queries, Top-1: $top1_accuracy%, Top-5: $top5_accuracy%
 EOF
-                    else
-                        cat >> "$report_file" << EOF
+                        else
+                            cat >> "$report_file" << EOF
 - $compressor: $results_count result files
 EOF
                     fi
@@ -242,29 +250,34 @@ EOF
 
 # Main execution
 print_info "Starting compression tests for dataset: $DATASET"
+print_info "Testing noise types: ${NOISE_TYPES[*]}"
 
-# Test each combination of method, format, and compressor
-for method in "${METHODS[@]}"; do
-    for format in "${FORMATS[@]}"; do
-        features_dir="$FEATURES_BASE_DIR/${method}/${format}"
-        
-        print_info "Testing $method method with $format format..."
-        
-        # Validate that features exist
-        if ! validate_features "$method" "$format" "$features_dir"; then
-            print_warning "Skipping $method/$format - no features found"
-            continue
-        fi
-        
-        # Test each compressor
-        for compressor in "${COMPRESSORS[@]}"; do
-            print_info "Testing $compressor compressor..."
+# Test each combination of noise type, method, format, and compressor
+for noise_type in "${NOISE_TYPES[@]}"; do
+    print_info "=== Testing with $noise_type samples ==="
+    
+    for method in "${METHODS[@]}"; do
+        for format in "${FORMATS[@]}"; do
+            features_dir="$FEATURES_BASE_DIR/${noise_type}/${method}/${format}"
             
-            output_dir="$TEST_OUTPUT_DIR/${method}/${format}/${compressor}"
+            print_info "Testing $method method with $format format ($noise_type samples)..."
             
-            if run_batch_identification "$method" "$format" "$compressor" "$features_dir" "$output_dir"; then
-                calculate_accuracy "$method" "$format" "$compressor" "$output_dir"
+            # Validate that features exist
+            if ! validate_features "$method" "$format" "$features_dir"; then
+                print_warning "Skipping $noise_type/$method/$format - no features found"
+                continue
             fi
+            
+            # Test each compressor
+            for compressor in "${COMPRESSORS[@]}"; do
+                print_info "Testing $compressor compressor..."
+                
+                output_dir="$TEST_OUTPUT_DIR/${noise_type}/${method}/${format}/${compressor}"
+                
+                if run_batch_identification "$method" "$format" "$compressor" "$features_dir" "$output_dir"; then
+                    calculate_accuracy "$method" "$format" "$compressor" "$output_dir"
+                fi
+            done
         done
     done
 done
