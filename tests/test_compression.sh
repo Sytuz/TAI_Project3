@@ -47,7 +47,7 @@ cd "$PROJECT_ROOT" || {
 }
 
 # Pre checks
-print_step "1" "Pre-flight checks"
+print_step "1" "Pre checks"
 
 if [ ! -f "scripts/batch_identify.sh" ]; then
     print_error "batch_identify.sh script not found"

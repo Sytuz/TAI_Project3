@@ -1,0 +1,17 @@
+========================================
+FORMAT COMPARISON ANALYSIS
+========================================
+Analysis Date: Tue Jun 10 12:05:11 PM WEST 2025
+
+Comparing TEXT vs BINARY formats across all methods and compressors:
+
+
+spectral METHOD COMPARISON:
+- Text format average Top-1 accuracy: 70.00% (4 tests)
+- Binary format average Top-1 accuracy: 70.00% (4 tests)
+- Result: TIE
+
+maxfreq METHOD COMPARISON:
+- Text format average Top-1 accuracy: 95.00% (4 tests)
+- Binary format average Top-1 accuracy: 100.00% (4 tests)
+- Winner: BINARY format

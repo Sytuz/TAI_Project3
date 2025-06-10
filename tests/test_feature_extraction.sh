@@ -45,7 +45,7 @@ cd "$PROJECT_ROOT" || {
 }
 
 # Check if required files exist
-print_step "1" "Pre-flight checks"
+print_step "1" "Pre checks"
 
 if [ ! -f "apps/extract_features" ]; then
     print_error "extract_features application not found. Please build the project first."

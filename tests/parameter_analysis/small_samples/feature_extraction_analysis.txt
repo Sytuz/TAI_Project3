@@ -1,0 +1,33 @@
+========================================
+FEATURE EXTRACTION PERFORMANCE ANALYSIS
+========================================
+Analysis Date: Tue Jun 10 12:05:10 PM WEST 2025
+
+DATASET: small_samples
+METHODS ANALYZED: spectral maxfreq
+FORMATS ANALYZED: text binary
+
+
+spectral METHOD - text FORMAT:
+- Feature files generated: 5
+- Total storage size: 6.7M
+- Average file size: 1.4MB
+- Sample file lines: 6449
+- Sample file characters: 1035446
+
+spectral METHOD - binary FORMAT:
+- Feature files generated: 5
+- Total storage size: 5.3M
+- Average file size: 1.1MB
+
+maxfreq METHOD - text FORMAT:
+- Feature files generated: 5
+- Total storage size: 624K
+- Average file size: 122KB
+- Sample file lines: 8962
+- Sample file characters: 111124
+
+maxfreq METHOD - binary FORMAT:
+- Feature files generated: 5
+- Total storage size: 692K
+- Average file size: 135KB
