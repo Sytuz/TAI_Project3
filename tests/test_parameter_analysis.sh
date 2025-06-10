@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 PROJECT_ROOT="$(dirname "$(realpath "$0")")/.."
-DATASET="small_samples"
+DATASET="small_samples"  # Change to: samples or full_tracks for larger datasets
 FEATURES_BASE_DIR="tests/feature_extraction_results/$DATASET"
 COMPRESSION_BASE_DIR="tests/compression_results/$DATASET"
 OUTPUT_BASE_DIR="tests/parameter_analysis"
