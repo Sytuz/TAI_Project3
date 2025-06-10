@@ -32,15 +32,3 @@ Makefile
 __pycache__/
 *.pyc
 
-# Ignore the tests outputs (keep just the plots)
-tests/results_small_dataset/binary_format_results/
-tests/results_small_dataset/data/
-tests/results_small_dataset/parameter_evaluation/
-tests/results_small_dataset/text_format_results/
-tests/results_small_dataset/test_log.txt
-tests/results_samples_dataset/binary_format_results/
-tests/results_samples_dataset/data/
-tests/results_samples_dataset/parameter_evaluation/
-tests/results_samples_dataset/text_format_results/
-tests/results_samples_dataset/test_log.txt
-tests/results_samples_dataset/individual_tests/
