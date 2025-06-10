@@ -70,6 +70,7 @@ print_success "Found feature extraction results in: $FEATURES_BASE_DIR"
 print_info "Testing compressors: ${COMPRESSORS[*]}"
 print_info "Testing methods: ${METHODS[*]}"
 print_info "Testing formats: ${FORMATS[*]}"
+print_info "Testing noise types: ${NOISE_TYPES[*]}"
 
 # Create output directory
 TEST_OUTPUT_DIR="$OUTPUT_BASE_DIR/$DATASET"
@@ -227,12 +228,13 @@ EOF
                             cat >> "$report_file" << EOF
 - $compressor: $results_count result files
 EOF
-                    fi
-                else
-                    cat >> "$report_file" << EOF
+                        fi
+                    else
+                        cat >> "$report_file" << EOF
 - $compressor: FAILED
 EOF
-                fi
+                    fi
+                done
             done
         done
     done
