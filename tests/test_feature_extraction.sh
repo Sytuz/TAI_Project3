@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 PROJECT_ROOT="$(dirname "$(realpath "$0")")/.."
-DATASET="samples"  # Change to: samples or full_tracks for larger datasets
+DATASET="full_tracks"  # Change to: samples or full_tracks for larger datasets
 OUTPUT_BASE_DIR="tests/feature_extraction_results"
 TEST_METHODS=("spectral" "maxfreq")  # Both methods
 FORMATS=("text" "binary")            # Both formats
