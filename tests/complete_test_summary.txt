@@ -26,7 +26,7 @@ PARAMETER ANALYSIS:
 - Output directory: tests/parameter_analysis/small_samples
 
 VISUALIZATIONS:
-- Generated plots: 5
+- Generated plots: 6
 - Output directory: tests/plots/small_samples
 - HTML summary: tests/plots/small_samples/plot_summary.html
 

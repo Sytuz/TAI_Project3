@@ -1,7 +1,7 @@
 ========================================
 PLOT GENERATION SUMMARY REPORT
 ========================================
-Generated: Tue Jun 10 02:48:43 PM WEST 2025
+Generated: Tue Jun 10 02:59:04 PM WEST 2025
 Dataset: small_samples
 
 PLOTS CREATED:
@@ -10,6 +10,7 @@ PLOTS CREATED:
    - method_comparison.png: Detailed comparison of Spectral vs MaxFreq methods
    - compressor_ranking.png: Ranking of compressors by average performance
    - format_comparison.png: Text vs Binary format performance analysis
+   - noise_comparison.png: Analysis of noise type impact on identification accuracy
    - performance_overview.png: Comprehensive dashboard with all key metrics
 
 2. Feature Analysis Plots:
@@ -48,6 +49,12 @@ Performance Overview:
 - Top 8 performing configurations
 - Heatmaps for method and format comparisons
 - Summary statistics and best configuration
+
+Noise Impact Analysis:
+- Average accuracy by noise type (clean, white, brown, pink)
+- Noise impact broken down by method and compressor
+- Configuration vs noise type heatmap
+- Helps understand system robustness to audio quality
 
 Feature File Analysis:
 - Storage size comparison between methods and formats

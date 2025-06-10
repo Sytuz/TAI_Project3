@@ -58,6 +58,10 @@ def plot_accuracy_heatmap(df):
     # Create separate heatmaps for each noise type
     noise_types_list = df['Noise_Type'].unique()
     
+    # Calculate global min/max for consistent color scale
+    vmin = df['Top1_Accuracy'].min()
+    vmax = df['Top1_Accuracy'].max()
+    
     fig, axes = plt.subplots(2, 2, figsize=(20, 16))
     fig.suptitle('Top-1 Accuracy by Method, Format, and Compressor (by Noise Type)', fontsize=16)
     
@@ -76,7 +80,9 @@ def plot_accuracy_heatmap(df):
             aggfunc='mean'
         )
         
+        # Use consistent color scale across all subplots
         sns.heatmap(pivot_data, annot=True, fmt='.1f', cmap='YlOrRd', 
+                    vmin=vmin, vmax=vmax,
                     cbar_kws={'label': 'Top-1 Accuracy (%)'}, ax=ax)
         ax.set_title(f'{noise_type} Samples')
         ax.set_xlabel('Compressor')
@@ -272,6 +278,68 @@ def plot_performance_overview(df):
     plt.savefig(f'{output_dir}/performance_overview.png', dpi=300, bbox_inches='tight')
     plt.close()
 
+def plot_noise_comparison(df):
+    """Compare performance across different noise types"""
+    print("Generating noise comparison plot...")
+    
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    fig.suptitle('Noise Type Impact Analysis', fontsize=16)
+    
+    # Overall noise impact on Top-1 accuracy
+    ax1 = axes[0, 0]
+    noise_means = df.groupby('Noise_Type')['Top1_Accuracy'].mean().sort_values(ascending=False)
+    noise_stds = df.groupby('Noise_Type')['Top1_Accuracy'].std()
+    
+    bars1 = ax1.bar(noise_means.index, noise_means.values, 
+                    yerr=noise_stds.values, capsize=5, alpha=0.7,
+                    color=['green', 'orange', 'red', 'purple'])
+    ax1.set_title('Average Top-1 Accuracy by Noise Type')
+    ax1.set_ylabel('Top-1 Accuracy (%)')
+    ax1.set_xlabel('Noise Type')
+    
+    # Add value labels on bars
+    for bar, mean_val in zip(bars1, noise_means.values):
+        ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
+                f'{mean_val:.1f}%', ha='center', va='bottom')
+    
+    # Noise impact by method
+    ax2 = axes[0, 1]
+    method_noise_pivot = df.pivot_table(values='Top1_Accuracy', index='Noise_Type', columns='Method', aggfunc='mean')
+    method_noise_pivot.plot(kind='bar', ax=ax2, width=0.8)
+    ax2.set_title('Noise Impact by Method')
+    ax2.set_ylabel('Top-1 Accuracy (%)')
+    ax2.set_xlabel('Noise Type')
+    ax2.legend(title='Method')
+    ax2.tick_params(axis='x', rotation=45)
+    
+    # Noise impact by compressor
+    ax3 = axes[1, 0]
+    comp_noise_pivot = df.pivot_table(values='Top1_Accuracy', index='Noise_Type', columns='Compressor', aggfunc='mean')
+    comp_noise_pivot.plot(kind='bar', ax=ax3, width=0.8)
+    ax3.set_title('Noise Impact by Compressor')
+    ax3.set_ylabel('Top-1 Accuracy (%)')
+    ax3.set_xlabel('Noise Type')
+    ax3.legend(title='Compressor', bbox_to_anchor=(1.05, 1), loc='upper left')
+    ax3.tick_params(axis='x', rotation=45)
+    
+    # Detailed heatmap: Noise vs Configuration
+    ax4 = axes[1, 1]
+    # Create a simplified configuration label
+    df_config = df.copy()
+    df_config['Config'] = df_config['Method'] + '/' + df_config['Format']
+    config_noise_pivot = df_config.pivot_table(values='Top1_Accuracy', index='Config', columns='Noise_Type', aggfunc='mean')
+    
+    sns.heatmap(config_noise_pivot, annot=True, fmt='.1f', cmap='RdYlGn', 
+                vmin=df['Top1_Accuracy'].min(), vmax=df['Top1_Accuracy'].max(),
+                ax=ax4)
+    ax4.set_title('Configuration vs Noise Type')
+    ax4.set_xlabel('Noise Type')
+    ax4.set_ylabel('Method/Format')
+    
+    plt.tight_layout()
+    plt.savefig(f'{output_dir}/noise_comparison.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
 def main():
     print("Loading accuracy data...")
     df = load_accuracy_data()
@@ -291,6 +359,7 @@ def main():
     plot_compressor_ranking(df)
     plot_format_comparison(df)
     plot_performance_overview(df)
+    plot_noise_comparison(df)
     
     print(f"\nAll plots saved to: {output_dir}/")
     return 0
