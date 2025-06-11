@@ -10,10 +10,6 @@ apps/compute_ncd
 apps/extract_features
 apps/music_id
 
-# Ignore downloaded songs
-getSongs/download_songs
-getSongs/downloads
-
 # Ignore all object files and static libraries
 *.o
 *.a
