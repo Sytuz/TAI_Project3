@@ -6,6 +6,7 @@ db_dir="data/features/db"
 output_dir="results"
 compressors=("gzip" "bzip2" "lzma" "zstd")
 parallel=false
+use_binary=false
 
 # Display usage information
 function show_help() {
@@ -16,6 +17,7 @@ function show_help() {
     echo "  -o, --output <dir>          Base output directory for results [default: results]"
     echo "  -c, --compressors <list>    Comma-separated list of compressors [default: gzip,bzip2,lzma,zstd]"
     echo "  -p, --parallel              Run compressor tests in parallel [default: false]"
+    echo "  --binary                    Use binary feature files (.featbin) instead of text (.feat)"
     echo "  -h, --help                  Show this help message"
     echo
     echo "Compares multiple compressors for music identification."
@@ -42,6 +44,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -p|--parallel)
             parallel=true
+            shift
+            ;;
+        --binary)
+            use_binary=true
             shift
             ;;
         -h|--help)
@@ -77,12 +83,20 @@ for comp in "${compressors[@]}"; do
     
     if [ "$parallel" = true ]; then
         # Run in background for parallel execution
-        ./scripts/batch_identify.sh -q "$query_dir" -d "$db_dir" -o "$comp_output_dir" -c "$comp" &
+        if [ "$use_binary" = true ]; then
+            ./scripts/batch_identify.sh -q "$query_dir" -d "$db_dir" -o "$comp_output_dir" -c "$comp" --binary &
+        else
+            ./scripts/batch_identify.sh -q "$query_dir" -d "$db_dir" -o "$comp_output_dir" -c "$comp" &
+        fi
         pids+=($!)
         echo "Started process $! for $comp"
     else
         # Run sequentially
-        ./scripts/batch_identify.sh -q "$query_dir" -d "$db_dir" -o "$comp_output_dir" -c "$comp"
+        if [ "$use_binary" = true ]; then
+            ./scripts/batch_identify.sh -q "$query_dir" -d "$db_dir" -o "$comp_output_dir" -c "$comp" --binary
+        else
+            ./scripts/batch_identify.sh -q "$query_dir" -d "$db_dir" -o "$comp_output_dir" -c "$comp"
+        fi
     fi
     
     echo ""
