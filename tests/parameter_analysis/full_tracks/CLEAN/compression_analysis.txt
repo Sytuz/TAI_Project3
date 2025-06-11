@@ -1,0 +1,42 @@
+========================================
+COMPRESSION PERFORMANCE ANALYSIS
+========================================
+Analysis Date: Wed Jun 11 02:39:47 PM WEST 2025
+
+DATASET: full_tracks
+METHODS ANALYZED: spectral maxfreq
+FORMATS ANALYZED: text binary
+COMPRESSORS ANALYZED: gzip bzip2 lzma zstd
+NOISE TYPES ANALYZED: clean
+
+PERFORMANCE SUMMARY:
+
+=== clean SAMPLES ===
+
+clean/spectral METHOD - text FORMAT:
+  gzip: Top-1: 6.0%, Top-5: 14.000000000000002%, Queries: 100
+  bzip2: Top-1: 2.0%, Top-5: 12.0%, Queries: 100
+  lzma: NO RESULTS
+  zstd: NO RESULTS
+
+clean/spectral METHOD - binary FORMAT:
+  gzip: Top-1: 1.694915254237288%, Top-5: 11.864406779661017%, Queries: 59
+  bzip2: Top-1: 3.389830508474576%, Top-5: 11.864406779661017%, Queries: 59
+  lzma: Top-1: 88.13559322033898%, Top-5: 88.13559322033898%, Queries: 59
+  zstd: Top-1: 88.13559322033898%, Top-5: 88.13559322033898%, Queries: 59
+
+clean/maxfreq METHOD - text FORMAT:
+  gzip: Top-1: 16.0%, Top-5: 32.0%, Queries: 100
+  bzip2: Top-1: 90.0%, Top-5: 90.0%, Queries: 100
+  lzma: Top-1: 92.0%, Top-5: 92.0%, Queries: 100
+  zstd: Top-1: 92.0%, Top-5: 92.0%, Queries: 100
+
+clean/maxfreq METHOD - binary FORMAT:
+  gzip: Top-1: 15.0%, Top-5: 37.0%, Queries: 100
+  bzip2: Top-1: 85.0%, Top-5: 86.0%, Queries: 100
+  lzma: Top-1: 92.0%, Top-5: 92.0%, Queries: 100
+  zstd: Top-1: 92.0%, Top-5: 92.0%, Queries: 100
+
+BEST PERFORMERS:
+- Best Top-1 Accuracy: 92.0% (clean/maxfreq/text/lzma)
+- Best Top-5 Accuracy: 92.0% (clean/maxfreq/text/lzma)

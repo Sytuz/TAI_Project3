@@ -1,0 +1,25 @@
+========================================
+COMPRESSION TEST REPORT
+========================================
+Test Date: Wed Jun 11 02:46:05 PM WEST 2025
+
+CONFIGURATION:
+- Dataset: full_tracks
+- Compressors Tested: gzip bzip2 lzma zstd
+- Methods Tested: maxfreq
+- Formats Tested: binary
+- Noise Types: white
+- Features Directory: ../tests/feature_extraction_results/full_tracks
+- Output Directory: ../tests/compression_results/full_tracks
+
+TESTS PERFORMED:
+
+=== white SAMPLES ===
+
+white/maxfreq METHOD - binary FORMAT:
+- gzip: 0 result files
+- bzip2: 0 result files
+- lzma: 0 result files
+- zstd: 0 result files
+
+TEST COMPLETED: Wed Jun 11 02:46:05 PM WEST 2025

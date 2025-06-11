@@ -1,0 +1,36 @@
+========================================
+FEATURE EXTRACTION PERFORMANCE ANALYSIS
+========================================
+Analysis Date: Wed Jun 11 02:39:47 PM WEST 2025
+
+DATASET: full_tracks
+METHODS ANALYZED: spectral maxfreq
+FORMATS ANALYZED: text binary
+NOISE TYPES ANALYZED: clean
+
+
+=== clean SAMPLES ===
+
+clean/spectral METHOD - text FORMAT:
+- Feature files generated: 100
+- Total storage size: 444M
+- Average file size: 4.5MB
+- Sample file lines: 34518
+- Sample file characters: 5539604
+
+clean/spectral METHOD - binary FORMAT:
+- Feature files generated: 59
+- Total storage size: 173M
+- Average file size: 3.0MB
+
+clean/maxfreq METHOD - text FORMAT:
+- Feature files generated: 100
+- Total storage size: 35M
+- Average file size: 350KB
+- Sample file lines: 14979
+- Sample file characters: 187488
+
+clean/maxfreq METHOD - binary FORMAT:
+- Feature files generated: 100
+- Total storage size: 45M
+- Average file size: 453KB
