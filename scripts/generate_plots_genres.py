@@ -831,9 +831,9 @@ class GenreAnalyzer:
             print(f"  - {file.name}")
 
 def main():
-    results_dir = Path("../results/")
+    results_dir = Path("results/")
     songs_genre_file = Path("songs_genre.txt")
-    output_dir = Path("../results/youtube_genre_analysis")
+    output_dir = Path("results/youtube_genre_analysis")
     
     if not results_dir.exists():
         print(f"Error: Results directory not found: {results_dir}")

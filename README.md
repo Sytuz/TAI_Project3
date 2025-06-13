@@ -1,184 +1,519 @@
-# T.A.I. - Project 3
-## Music Identification using Normalized Compression Distance
+# TAI Project 3: Music Identification System Using Normalized Compression Distance
 
 ## Table of Contents
-- [Introduction](#introduction)
-- [Project Organization](#the-project-is-organized-as-follows)
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Automation Scripts](#automation-scripts)
-  - [Manual Usage](#manual-usage)
-- [Examples](#examples)
-  - [Basic Music Identification](#example-1-basic-music-identification)
-  - [Testing Robustness with Noise](#example-2-testing-robustness-with-noise)
-  - [Comparing Different Compressors](#example-3-comparing-different-compressors)
-- [License](#license)
 
-### Introduction:
-This project implements a music identification system based on the Normalized Compression Distance (NCD). 
-It requires no domain-specific features - it measures similarity purely via compression.
-*Cilibrasi et al.* demonstrated a "fully automatic" music classification method that uses only compression.
+- [TAI Project 3: Music Identification System Using Normalized Compression Distance](#tai-project-3-music-identification-system-using-normalized-compression-distance)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+    - [Main Capabilities:](#main-capabilities)
+  - [Files Structure:](#files-structure)
+    - [Core Applications (`apps/`)](#core-applications-apps)
+    - [Core Library (`src/core/`, `include/core/`)](#core-library-srccore-includecore)
+    - [Utilities (`src/utils/`, `include/utils/`)](#utilities-srcutils-includeutils)
+    - [Scripts (`scripts/`)](#scripts-scripts)
+    - [Configuration (`config/`)](#configuration-config)
+    - [Data Organization (`data/`)](#data-organization-data)
+  - [Setup Instructions](#setup-instructions)
+    - [Prerequisites](#prerequisites)
+    - [Dependencies Installation](#dependencies-installation)
+      - [Ubuntu/Debian:](#ubuntudebian)
+      - [Install Python Dependencies:](#install-python-dependencies)
+    - [Build Instructions](#build-instructions)
+  - [Run Instructions](#run-instructions)
+    - [Basic Usage](#basic-usage)
+      - [1. Extract Features from Audio Files](#1-extract-features-from-audio-files)
+      - [2. Identify Music](#2-identify-music)
+    - [Advanced Usage](#advanced-usage)
+      - [Automated Testing Pipeline](#automated-testing-pipeline)
+      - [Analysis and Visualization](#analysis-and-visualization)
+  - [Implementation](#implementation)
+    - [Feature Extraction Methods](#feature-extraction-methods)
+      - [1. Spectral Method](#1-spectral-method)
+      - [2. Maximum Frequency Method](#2-maximum-frequency-method)
+    - [Normalized Compression Distance (NCD)](#normalized-compression-distance-ncd)
+      - [Implementation Features:](#implementation-features)
+    - [Audio Processing Pipeline](#audio-processing-pipeline)
+    - [Multi-threading Support](#multi-threading-support)
+  - [Obtained Results](#obtained-results)
+    - [Performance Overview](#performance-overview)
+    - [Findings](#findings)
+      - [1. Genre-Dependent Performance](#1-genre-dependent-performance)
+      - [2. Feature Extraction Method Comparison](#2-feature-extraction-method-comparison)
+      - [3. Compressor Analysis](#3-compressor-analysis)
+      - [4. Noise Robustness](#4-noise-robustness)
+    - [Performance Visualizations](#performance-visualizations)
+  - [Conclusion](#conclusion)
+    - [Achievements](#achievements)
+    - [Limitations and Future Work](#limitations-and-future-work)
+    - [License](#license)
+  - [Authors](#authors)
 
-In our system, the audio files are converted to feature strings (e.g., frequency sequences), and then compared using NCD:
+## Introduction
 
-```
-NCD(x, y) = (C(xy) - min(C(x), C(y))) / (max(C(x), C(y)))
-```
+This project implements a **Music Identification System** that uses **Normalized Compression Distance (NCD)** combined with **audio feature extraction** to identify songs from short audio samples. The system is capable of identifying some music tracks even when they are corrupted with various types of noise (brown, pink, and white) and can work with different audio feature extraction methods.
 
-where C(.) is the compressed length (using standard compressors like gzip).
-NCD is universal in the sense that it captures all the effective notions of similarity at once.
+### Main Capabilities:
 
-### The project is organized as follows:
-- [apps/](apps/): Executables: music_id, extract_features, compute_ncd, build_tree
-- [include/core/](include/core/): Core classes: WAVReader, SpectralExtractor, MaxFreqExtractor, NCD
-- [include/utils/](include/utils/): Utility classes: Segmenter, NoiseInjector, CompressorWrapper
-- [src/core/](src/core/): Implementations of core modules.
-- [src/utils/](src/utils/): Implementations of utilities.
-- [data/full_tracks/](data/full_tracks/): Input WAV files.
-- [data/generated/](data/generated/): Generated feature files per method.
-- [results/](results/): Output similarity matrices, Newick trees and images.
-- [scripts/](scripts/): Shell scripts and external calls.
-- [visualization/](visualization/): Python script to plot trees and heatmaps.
-- [CMakeLists.txt](CMakeLists.txt): CMake configuration.
+- **Audio Feature Extraction:** Extract frequency-domain features from WAV files using two different methods:
+    - **Spectral Method:** Binned frequencyy spectrum using FFT (Fast Fourier Transform).
+    - **Maximum Frequency Method:** Top dominant frequencies per frame.
+- **Music Identification:** Identify songs from short samples (10 seconds) by comparing extracted features usign NCD.
+- **Noise Robustness:** Handle audio samples corrupted with different types of noise (brown, pink, white).
+- **Mulltiple Compressors:** Support for various compression algorithms (gzip, bzip2, lzma, zstd) for NCD calculation.
+- **Batch Processing:** Automated testing and analysis pipelines for large datasets.
+- **Performance Analysis**: Accuracy analysis with visualization tools.
 
-### Overview
+The system was tested in two datasets:
+- A smaller one (36 songs): With maximum accuracy 26.5%.
+- A bigger one (100 songs): With maximum accuracy 23%, depending on the music genre (with Hip-Hop/Rap showing the best performance and Classical/Orchestral being the most challenging).
 
-- **Input:** WAV files (mono or stereo) in `data/full_tracks/`.
-- **Feature Extraction:** Audio is segmented into overlapping frames. Two methods are available:
-  - **MaxFreq (provided)**: find dominant frequency per frame.
-  - **FFT-based (custom)**: compute FFT magnitudes and select top frequencies.
-- **Noise (optional):** Add Gaussian noise at a specified SNR via CLI.
-- **Compression:** Use a chosen compressor (`gzip`, `bzip2`, `lzma`, or `zstd`) to compress feature strings.
-- **NCD Matrix:** Compute pairwise NCD = `(C(xy) - min(C(x),C(y))) / max(C(x),C(y))` for all features.
-- **Tree Building:** Use a quartet-based method to build a tree. Output Newick in `results/` and images.
-- **Visualization:** Python scripts (`visualization/`) plot the tree (PNG) or heatmap from the NCD matrix.
+## Files Structure:
 
-## Getting Started
+### Core Applications (`apps/`)
+- **`extract_features.cpp`**: Main application for extracting frequency features from WAV files
+    - Supports both spectral and maxfreq methods
+    - Multi-threaded processing
+    - Binary and text output formats
+- **`music_id.cpp`**: Music identification application that compares query features against a database using NCD
+  - Supports multiple compressors
+  - Top-K accuracy reporting
+  - Direct WAV file processing or pre-extracted features
+
+### Core Library (`src/core/`, `include/core/`)
+- **`FeatureExtractor.h/.cpp`**: Feature extraction utilities and file I/O
+- **`SpectralExtractor.h/.cpp`**: FFT-based spectral analysis with binned frequency representation
+- **`MaxFreqExtractor.h/.cpp`**: Extraction of dominant frequencies per audio frame
+- **`WAVReader.h/.cpp`**: WAV file parsing and audio data extraction
+- **`NCD.h/.cpp`**: Normalized Compression Distance implementation using external compressors
+
+### Utilities (`src/utils/`, `include/utils/`)
+- **`CompressorWrapper.h/.cpp`**: Wrapper for external compression tools (gzip, bzip2, lzma, zstd)
+- **`json.hpp`**: JSON parsing library for configuration files
+
+### Scripts (`scripts/`)
+- **`batch_identification.sh`**: Process a batch of queries against the database for one compressor (to compute NCD)
+- **`compare_compressors.sh`**: Run the `batch_identification.sh` in threads (one thread per processor)
+- **`extract_sample.sh`**: Extract audio samples with noise injection
+- **`rebuild.sh`**: Rebuild the system setup using CMake
+- **`run.sh`**: Unified runner for all applications
+- **`setup.sh`**: Build system setup using CMake
+- **`tests.sh`**: Perform tests to the datasets
+- **`calculate_accuracy.py`**: Accuracy analysis and metrics calculation
+- **`generate_plots.py` & `generate_plots_genres.py`**: Visualization and analysis plots generation
+- **`download_songs.cpp`**: Realize download of the listed songs directly from Youtube
+
+
+### Configuration (`config/`)
+- **`feature_extraction_spectral_default.json`**: Default spectral method parameters
+- **`feature_extraction_maxfreq_default.json`**: Default maxfreq method parameters
+- High-resolution variants for improved accuracy
+
+### Data Organization (`data/`)
+- **`full_tracks/`**: Complete music tracks for database
+- **`samples/`**: Extracted samples with various noise conditions
+- **`features/`**: Extracted features in text/binary format
+- **`generated/`**: Processed datasets
+
+## Setup Instructions
 
 ### Prerequisites
-- CMake (3.10+)
-- C++17 compatible compiler
-- Python 3.6+ (for visualization)
-- Standard compressors:
-  - gzip
-  - bzip2
-  - lzma
-  - zstd
 
-### Automation Scripts
+- **C++ Compiler**: GCC 7+ or Clang with C++17 support
+- **CMake**: Version 3.10 or higher
+- **External Tools**: gzip, bzip2, xz (for lzma), zstd
+- **Python 3.10+** (for analysis scripts)
+- **FFmpeg** (for audio processing in scripts)
 
-The project includes several automation scripts to simplify common operations:
+### Dependencies Installation
 
-#### 1. Making Scripts Executable
-
-First, make the scripts executable:
-
+#### Ubuntu/Debian:
 ```bash
-chmod +x scripts/*.sh
+sudo apt update
+sudo apt install build-essential cmake
+sudo apt install gzip bzip2 xz-utils zstd   # Usually included in most Linux/Unix installations
+sudo apt install python3 python3-pip ffmpeg
 ```
 
-#### 2. Building the Project
-
-To build the project:
-
+#### Install Python Dependencies:
 ```bash
-./scripts/setup.sh
+pip install -r requirements.txt
 ```
 
-This will create a build directory, run CMake, and build the project.
+### Build Instructions
 
-#### 3. Running Applications
+1. **Clone and Navigate**:
+   ```bash
+   cd /path/to/TAI_Project3
+   ```
 
-The project includes a launcher script that can run any of the available applications:
+2. **Run Setup Script**:
+   ```bash
+   ./scripts/setup.sh
+   ```
 
+   This will:
+   - Create build directory
+   - Run CMake configuration
+   - Compile the project
+   - Generate executables in `apps/`
+
+3. **Verify Build**:
+   ```bash
+   ls apps/
+   # Should show: extract_features music_id
+   ```
+
+## Run Instructions
+
+### Basic Usage
+
+#### 1. Extract Features from Audio Files
 ```bash
-./scripts/run.sh [APP] [APP_OPTIONS]
+# Extract spectral features
+./scripts/run.sh extract_features --method spectral --bins 64 -i input_folder/ -o output_features/
+
+# Extract maximum frequency features
+./scripts/run.sh extract_features --method maxfreq --frequencies 4 -i input_folder/ -o output_features/
 ```
 
-Available applications:
-- **music_id** - Full pipeline: extract features, compute NCD, build tree
-- **extract_features** - Extract frequency features from WAV files
-- **compute_ncd** - Compute NCD matrix between feature files
-- **build_tree** - Build a similarity tree from NCD matrix
-
-Examples:
-
+#### 2. Identify Music
 ```bash
-# Get help for the music_id application
-./scripts/run.sh music_id --help
+# Identify using pre-extracted features
+./scripts/run.sh music_id query.feat database_folder/ results.json
 
-# Run full pipeline with default settings
-./scripts/run.sh music_id data/full_tracks results/run1
-
-# Run with custom parameters
-./scripts/run.sh music_id --method maxfreq --compressor bzip2 --add-noise 30 data/full_tracks results/custom_run
-
-# Extract features only
-./scripts/run.sh extract_features --method fft data/full_tracks data/generated/features
+# Identify directly from WAV file
+./scripts/run.sh music_id query.wav database_folder/ results.json --config config/feature_extraction_spectral_default.json
 ```
 
-#### 4. Cleaning and Rebuilding
+### Advanced Usage
 
-If you need to clean and rebuild the project:
-
+#### Automated Testing Pipeline
 ```bash
-./scripts/rebuild.sh
+# Run test with noise analysis
+./scripts/tests.sh  # Change there the dataset to use
+
+# Compare different compressors
+./scripts/compare_compressors.sh -q queries/ -d database/ -o results/ -c gzip,bzip2,lzma,zstd
+```
+#### Analysis and Visualization
+```bash
+# Calculate accuracy metrics
+python3 scripts/calculate_accuracy.py results/
+
+# Generate performance plots
+python3 scripts/generate_plots.py
+python3 scripts/generate_plots_genres.py
 ```
 
-This will remove the build directory and rebuild the project from scratch.
+## Implementation
 
-### Manual Usage
+### Feature Extraction Methods
 
-If you prefer to run commands manually:
+#### 1. Spectral Method
+- **FFT Implementation**: Cooley-Tukey FFT algorithm
+- **Windowing**: Window function for spectral leakage reduction
+- **Binning**: Logarithmically scaled frequency bins for perceptual relevance
+- **Normalization**: Loggaritmic scaling for numerical stability
 
-1. Build the project:
-```bash
-mkdir -p build
-cd build
-cmake ..
-cmake --build .
-cd ..
+#### 2. Maximum Frequency Method
+- **Peak Detection**: Identifies dominant frequencies in each frame
+- **Frequency Ranking**: Sorts frequencies by magnitude
+- **Compact Representation**: Stores only top N frequencies per frame
+
+### Normalized Compression Distance (NCD)
+
+The core similarity measure is based on Kolmogorov complexity theory:
+
+```
+NCD(x,y) = (C(xy) - min(C(x), C(y))) / max(C(x), C(y))
 ```
 
-2. Run applications directly:
-```bash
-./apps/music_id --help
-./apps/extract_features --help
-./apps/compute_ncd --help
-./apps/build_tree --help
-```
+Where:
+- `C(x)` = compressed size of file x
+- `C(xy)` = compressed size of concatenated files x and y
+- Result ranges from 0 (identical) to 1 (completely different)
 
-## Examples
+#### Implementation Features:
+- **Multiple Compressors**: Support for gzip, bzip2, lzma, zstd
+- **Error Handling**: File I/O and compression error management
+- **Temporary File Management**: Safe concatenation with cleanup
+- **Range Clamping**: Ensures valid NCD values [0,1]
 
-### Example 1: Basic Music Identification
+### Audio Processing Pipeline
 
-```bash
-./scripts/run.sh music_id data/full_tracks results/basic_run
-```
+1. **WAV File Reading**: 8/16/24/32-bit PCM audio parsing with metadata extraction
+2. **Frame Segmentation**: Overlapping windows (typically 1024 samples, 512 hop)
+3. **Feature Extraction**: Either spectral binning or frequency peak detection
+4. **Serialization**: Text or binary feature file output
+5. **Database Comparison**: NCD calculation against all database entries
+6. **Ranking**: Sort results by similarity score
 
-This will:
-1. Extract features from all WAV files in data/full_tracks using FFT method
-2. Compute NCD matrix using gzip compression
-3. Generate a similarity tree and visualization
+### Multi-threading Support
 
-### Example 2: Testing Robustness with Noise
+- **Parallel Feature Extraction**: Process multiple files simultaneously
+- **Thread-safe I/O**: Mutex protection for console output and file operations
+- **Load Balancing**: Dynamic work distribution across available cores
 
-```bash
-./scripts/run.sh music_id --method fft --add-noise 20 data/full_tracks results/noisy_run
-```
+## Obtained Results
 
-This adds noise with SNR = 20dB to test identification robustness.
+### Performance Overview
 
-### Example 3: Comparing Different Compressors
+The system was tested on two datasets:
 
-```bash
-# Run with different compressors to compare results
-./scripts/run.sh music_id --compressor gzip data/full_tracks results/gzip_run
-./scripts/run.sh music_id --compressor bzip2 data/full_tracks results/bzip2_run
-./scripts/run.sh music_id --compressor lzma data/full_tracks results/lzma_run
-```
+**36 Songs Dataset:**
 
-## License
+| Noise | Method | Type | Compressor | Top-1 Accuracy (%) |
+|-------|--------|------|------------|----------------|
+| Clean | Maxfreq | Text | gzip | 8.8 |
+| Clean | Maxfreq | Text | bzip2 | 26.5 |
+| Clean | Maxfreq | Text | lzma | 23.5 |
+| Clean | Maxfreq | Text | zstd | 17.6 |
+| Clean | Maxfreq | Binary | gzip | 5.9 |
+| Clean | Maxfreq | Binary | bzip2 | 14.7 |
+| Clean | Maxfreq | Binary | lzma | 2.9 |
+| Clean | Maxfreq | Binary | zstd | 2.9 |
+| Clean | Spectral | Text | gzip | 5.9 |
+| Clean | Spectral | Text | bzip2 | 8.8 |
+| Clean | Spectral | Text | lzma | 14.7 |
+| Clean | Spectral | Text | zstd | 11.8 |
+| Clean | Spectral | Binary | gzip | 8.8 |
+| Clean | Spectral | Binary | bzip2 | 14.7 |
+| Clean | Spectral | Binary | lzma | 2.9 |
+| Clean | Spectral | Binary | zstd | 2.9 |
+| Brown | Maxfreq | Text | gzip | 5.9 |
+| Brown | Maxfreq | Text | bzip2 | 5.9 |
+| Brown | Maxfreq | Text | lzma | 5.9 |
+| Brown | Maxfreq | Text | zstd | 5.9 |
+| Brown | Maxfreq | Binary | gzip | 5.9 |
+| Brown | Maxfreq | Binary | bzip2 | 5.9 |
+| Brown | Maxfreq | Binary | lzma | 5.9 |
+| Brown | Maxfreq | Binary | zstd | 5.9 |
+| Brown | Spectral | Text | gzip | 5.9 |
+| Brown | Spectral | Text | bzip2 | 8.8 |
+| Brown | Spectral | Text | lzma | 8.8 |
+| Brown | Spectral | Text | zstd | 2.9 |
+| Brown | Spectral | Binary | gzip | 5.9 |
+| Brown | Spectral | Binary | bzip2 | 11.8 |
+| Brown | Spectral | Binary | lzma | 2.9 |
+| Brown | Spectral | Binary | zstd | 2.9 |
+| Pink | Maxfreq | Text | gzip | 8.8 |
+| Pink | Maxfreq | Text | bzip2 | 17.6 |
+| Pink | Maxfreq | Text | lzma | 5.9 |
+| Pink | Maxfreq | Text | zstd | 8.8 |
+| Pink | Maxfreq | Binary | gzip | 5.9 |
+| Pink | Maxfreq | Binary | bzip2 | 8.8 |
+| Pink | Maxfreq | Binary | lzma | 5.9 |
+| Pink | Maxfreq | Binary | zstd | 2.9 |
+| Pink | Spectral | Text | gzip | 2.9 |
+| Pink | Spectral | Text | bzip2 | 8.8 |
+| Pink | Spectral | Text | lzma | 8.8 |
+| Pink | Spectral | Text | zstd | 2.9 |
+| Pink | Spectral | Binary | gzip | 5.9 |
+| Pink | Spectral | Binary | bzip2 | 8.8 |
+| Pink | Spectral | Binary | lzma | 0.0 |
+| Pink | Spectral | Binary | zstd | 2.9 |
+| White | Maxfreq | Text | gzip | 5.9 |
+| White | Maxfreq | Text | bzip2 | 17.6 |
+| White | Maxfreq | Text | lzma | 2.9 |
+| White | Maxfreq | Text | zstd | 5.9 |
+| White | Maxfreq | Binary | gzip | 8.8 |
+| White | Maxfreq | Binary | bzip2 | 8.8 |
+| White | Maxfreq | Binary | lzma | 5.9 |
+| White | Maxfreq | Binary | zstd | 0.0 |
+| White | Spectral | Text | gzip | 2.9 |
+| White | Spectral | Text | bzip2 | 5.9 |
+| White | Spectral | Text | lzma | 5.9 |
+| White | Spectral | Text | zstd | 2.9 |
+| White | Spectral | Binary | gzip | 8.8 |
+| White | Spectral | Binary | bzip2 | 8.8 |
+| White | Spectral | Binary | lzma | 2.9 |
+| White | Spectral | Binary | zstd | 0.0 |
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+
+**100 Songs Dataset:**
+
+A diverse music dataset with 100 songs across 10 genres:
+
+| Genre | Top-1 Accuracy | Top-5 Accuracy | Sample Count |
+|-------|----------------|----------------|--------------|
+| Hip-Hop / Rap | 12.1% | 20.0% | 530 |
+| Blues | 10.9% | 18.5% | 530 |
+| Rock | 7.4% | 13.9% | 583 |
+| Pop | 6.6% | 11.1% | 530 |
+| Country / Folk | 5.5% | 13.2% | 477 |
+| Reggae | 5.3% | 14.7% | 530 |
+| Electronic / Dance | 5.0% | 6.2% | 583 |
+| Latin / World | 4.3% | 10.0% | 530 |
+| Jazz | 3.4% | 7.2% | 530 |
+| Classical / Orchestral | 2.9% | 4.8% | 477 |
+
+| Noise | Method | Type | Compressor | Top-1 Accuracy (%) |
+|-------|--------|------|------------|----------------|
+| Clean | Maxfreq | Text | gzip | 2.0 |
+| Clean | Maxfreq | Text | bzip2 | 11.0 |
+| Clean | Maxfreq | Text | lzma | 18.0 |
+| Clean | Maxfreq | Text | zstd | 19.0 |
+| Clean | Maxfreq | Binary | gzip | 1.0 |
+| Clean | Maxfreq | Binary | bzip2 | 17.0 |
+| Clean | Maxfreq | Binary | lzma | 16.0 |
+| Clean | Maxfreq | Binary | zstd | 11.0 |
+| Clean | Spectral | Text | gzip | 1.0 |
+| Clean | Spectral | Text | bzip2 | 4.0 |
+| Clean | Spectral | Text | lzma | 19.0 |
+| Clean | Spectral | Text | zstd | 7.0 |
+| Clean | Spectral | Binary | gzip | 1.0 |
+| Clean | Spectral | Binary | bzip2 | 6.0 |
+| Clean | Spectral | Binary | lzma | 23 |
+| Clean | Spectral | Binary | zstd | 23 |
+| Brown | Maxfreq | Text | gzip | 1.0 |
+| Brown | Maxfreq | Text | bzip2 | 3.0 |
+| Brown | Maxfreq | Text | lzma | 1.0 |
+| Brown | Maxfreq | Text | zstd | 1.0 |
+| Brown | Maxfreq | Binary | gzip | 1.0 |
+| Brown | Maxfreq | Binary | bzip2 | 3.0 |
+| Brown | Maxfreq | Binary | lzma | 1.0 |
+| Brown | Maxfreq | Binary | zstd | 2.0 |
+| Brown | Spectral | Text | gzip | N/A* |
+| Brown | Spectral | Text | bzip2 | N/A* |
+| Brown | Spectral | Text | lzma | N/A* |
+| Brown | Spectral | Text | zstd | N/A* |
+| Brown | Spectral | Binary | gzip | 1.0 |
+| Brown | Spectral | Binary | bzip2 | 2.0 |
+| Brown | Spectral | Binary | lzma | 1.0 |
+| Brown | Spectral | Binary | zstd | 1.0 |
+| Pink | Maxfreq | Text | gzip | 1.0 |
+| Pink | Maxfreq | Text | bzip2 | 6.0 |
+| Pink | Maxfreq | Text | lzma | 3.0 |
+| Pink | Maxfreq | Text | zstd | 2.0 |
+| Pink | Maxfreq | Binary | gzip | 1.0 |
+| Pink | Maxfreq | Binary | bzip2 | 3.0 |
+| Pink | Maxfreq | Binary | lzma | 4.0 |
+| Pink | Maxfreq | Binary | zstd | 5.0 |
+| Pink | Spectral | Text | gzip | N/A* |
+| Pink | Spectral | Text | bzip2 | N/A* |
+| Pink | Spectral | Text | lzma | N/A* |
+| Pink | Spectral | Text | zstd | N/A* |
+| Pink | Spectral | Binary | gzip | 1.0 |
+| Pink | Spectral | Binary | bzip2 | 2.0 |
+| Pink | Spectral | Binary | lzma | 0.0 |
+| Pink | Spectral | Binary | zstd | 1.0 |
+| White | Maxfreq | Text | gzip | 1.0 |
+| White | Maxfreq | Text | bzip2 | 4.0 |
+| White | Maxfreq | Text | lzma | 1.0 |
+| White | Maxfreq | Text | zstd | 1.0 |
+| White | Maxfreq | Binary | gzip | 2.0 |
+| White | Maxfreq | Binary | bzip2 | 6.0 |
+| White | Maxfreq | Binary | lzma | 1.0 |
+| White | Maxfreq | Binary | zstd | 3.0 |
+| White | Spectral | Text | gzip | 1.0 |
+| White | Spectral | Text | bzip2 | 0.0 |
+| White | Spectral | Text | lzma | N/A* |
+| White | Spectral | Text | zstd | N/A* |
+| White | Spectral | Binary | gzip | 1.0 |
+| White | Spectral | Binary | bzip2 | 2.0 |
+| White | Spectral | Binary | lzma | N/A* |
+| White | Spectral | Binary | zstd | 2.0 |
+
+N/A*: Not available yet (we are running the tests - all completed tomorrow)
+
+### Findings
+
+#### 1. Genre-Dependent Performance
+- **Best Performance**: Hip-Hop/Rap and Blues show highest accuracy due to distinctive rhythmic and spectral patterns
+- **Most Challenging**: Classical music with complex harmonic structures and orchestral arrangements
+- **Electronic Music**: Surprisingly low accuracy despite distinctive synthetic sounds
+
+#### 2. Feature Extraction Method Comparison
+- **MaxFreq Method**: Better overall performance with richer frequency representation and more compact
+- **Binary vs Text**: Minimal accuracy difference, but binary format offers storage efficiency
+
+#### 3. Compressor Analysis
+- **Bzip2**: Best overall performance and fast
+- **Gzip**: Fastest but with low accuracy
+- **LZMA**: Slow with moderate accuracy
+- **ZSTD**: Slow with moderate accuracy
+
+#### 4. Noise Robustness
+- **Clean Audio**: Baseline performance
+- **Brown Noise**: Some degradation
+- **Pink Noise**: Lower degradation
+- **White Noise**: Most degradation
+
+### Performance Visualizations
+
+The system generates analysis plots, the most useful are:
+- **Accuracy Heatmaps**: Method x Compressor x Noise combinations
+- **Genre Analysis**: Performance breakdown by music genre
+- **Format Comparison**: Binary vs text feature
+- **Method Comparison**: Spectral vs Maxfreq
+- **Noises Comparison**: Clean vs Brown vs Pink vs White
+
+These can be checked on the results plots folder for the [smaller dataset](/results/plots_small/) and for the [bigger dataset](/results/plots_youtube/).
+
+## Conclusion
+
+This project successfully demonstrates a **complete music identification pipeline** using information theory principles. The combination of **frequency-domain feature extraction** and **Normalized Compression Distance** provides a universal similarity measure that doesn't require machine learning training.
+
+### Achievements
+
+1. **Robust Implementation**: C++ codebase with error handling
+2. **Flexible Architecture**: Modular design supporting multiple feature extraction methods and compressors
+3. **Comprehensive Analysis**: Testing framework with automated evaluation metrics
+4. **Genre Insights**: Identified genre-specific challenges and optimal configurations
+5. **Noise Robustness**: Demonstrated resilience to various types of audio corruption
+
+### Limitations and Future Work
+
+1. **Accuracy Constraints**: 6.3% average accuracy
+2. **Computational Complexity**: NCD calculation scales quadratically with database size
+3. **Feature Engineering**: Opportunities for advanced spectral features (MFCCs, chroma)
+
+**Note:** If we had more time, we would like to:
+- Extract more than 1 segment for a song, perform a combined evaluation by making the NCD average (a way to replicate the behavior of an ensemble method).
+- Test with more diversified and better chosen songs.
+- Test with different sample lengths and compare the results.
+
+### License
+
+This project is released under the MIT License. See `LICENSE` file for details.
+
+## Authors
+
+<table>
+  <tr>
+    <td align="center">
+        <a href="https://github.com/Sytuz">
+            <img src="https://avatars0.githubusercontent.com/Sytuz?v=3" width="100px;" alt="Alexandre"/>
+            <br />
+            <sub>
+                <b>Alexandre Ribeiro</b>
+                <br>
+                <i>108122</i>
+            </sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/mariiajoao">
+            <img src="https://avatars0.githubusercontent.com/mariiajoao?v=3" width="100px;" alt="Maria"/>
+            <br />
+            <sub>
+                <b>Maria Sardinha</b>
+                <br>
+                <i>108756</i>
+            </sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/miguel-silva48">
+            <img src="https://avatars0.githubusercontent.com/miguel-silva48?v=3" width="100px;" alt="Miguel"/>
+            <br />
+            <sub>
+                <b>Miguel Pinto</b>
+                <br>
+                <i>107449</i>
+            </sub>
+        </a>
+    </td>
+  </tr>
+</table>

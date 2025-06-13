@@ -758,7 +758,7 @@ class ResultsAnalyzer:
         
         def generate_all_plots(self):
             """Generate all requested visualizations."""
-            print(f"Generating comprehensive visualization plots for {self.dataset} dataset(s)...")
+            print(f"Generating visualization plots for {self.dataset} dataset(s)...")
             
             self.create_accuracy_heatmap()
             self.create_compressor_ranking()
@@ -774,7 +774,7 @@ class ResultsAnalyzer:
 
     def generate_all_plots(self):
         """Generate all requested visualizations."""
-        print(f"Generating comprehensive visualization plots for {self.dataset} dataset(s)...")
+        print(f"Generating visualization plots for {self.dataset} dataset(s)...")
         
         self.create_accuracy_heatmap()
         self.create_compressor_ranking()
@@ -790,7 +790,7 @@ class ResultsAnalyzer:
 
 def main():    
     # Choose which dataset to analyze: 'youtube', 'small', or 'both'
-    dataset = 'small'  # Change this to 'small' or 'both' as needed
+    dataset = 'both'  # Change this to 'small' or 'both' as needed
     
     results_dir = Path("results/")
     output = Path(f"results/plots_{dataset}/")
