@@ -1,3 +1,6 @@
-numpy
-seaborn
-pandas
+numpy==2.3.0
+seaborn ==0.13.2
+pandas ==2.3.0
+matplotlib ==3.10.0
+pathlib==1.0.1
+

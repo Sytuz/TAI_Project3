@@ -29,4 +29,4 @@ __pycache__/
 *.pyc
 
 # Ignore results by now 
-results/
+results/compressors
