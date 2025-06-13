@@ -5,7 +5,6 @@ venv/
 output/
 
 # Ignore executables in apps/
-apps/build_tree
 apps/compute_ncd
 apps/extract_features
 apps/music_id

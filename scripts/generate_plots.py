@@ -791,10 +791,10 @@ class ResultsAnalyzer:
 
 def main():    
     # Choose which dataset to analyze: 'youtube', 'small', or 'both'
-    dataset = 'youtube'  # Change this to 'small' or 'both' as needed
+    dataset = 'small'  # Change this to 'small' or 'both' as needed
     
-    results_dir = Path("../results/")
-    output = Path(f"../results/plots_{dataset}/")
+    results_dir = Path("results/")
+    output = Path(f"results/plots_{dataset}/")
 
     if not os.path.exists(results_dir):
         print(f"Error: Results directory does not exist: {results_dir}")

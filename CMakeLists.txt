@@ -18,7 +18,6 @@ add_library(core
     src/core/SpectralExtractor.cpp
     src/core/MaxFreqExtractor.cpp
     src/core/NCD.cpp
-    src/core/TreeBuilder.cpp
     src/core/FeatureExtractor.cpp
 )
 
@@ -33,16 +32,6 @@ target_link_libraries(utils core)
 add_executable(extract_features apps/extract_features.cpp)
 target_link_libraries(extract_features core utils)  # Link to both libraries explicitly
 set_target_properties(extract_features PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
-
-# add_executable(compute_ncd apps/compute_ncd.cpp)
-# target_link_libraries(compute_ncd core utils)  # Link to both libraries explicitly
-# set_target_properties(compute_ncd PROPERTIES
-#     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
-
-add_executable(build_tree apps/build_tree.cpp)
-target_link_libraries(build_tree core utils)  # Link to both libraries explicitly
-set_target_properties(build_tree PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
 add_executable(music_id apps/music_id.cpp)
