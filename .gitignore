@@ -1,62 +1,31 @@
-# Ignore test model
-test_model.json
-
-# Build files
-build/
-
-# CMake files
-CMakeFiles/
-CMakeCache.txt
-CMakeLists.txt.user
-CMakeScripts
-Testing
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-_deps
-
-# Python environment
-venv/
-
-# Python cache
-__pycache__/
-
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-tests
-MetaClass
-
-# VSCode files
 .vscode/
+data/
+build/
+venv/
+output/
+
+# Ignore executables in apps/
+apps/compute_ncd
+apps/extract_features
+apps/music_id
+
+# Ignore all object files and static libraries
+*.o
+*.a
+
+# Ignore CMake build files and folders
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Ignore temporary files (optional)
+*.log
+*.tmp
+
+# Ignore Python cache and pyc files
+__pycache__/
+*.pyc
+
+# Ignore results by now 
+results/compressors

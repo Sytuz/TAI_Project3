@@ -1,0 +1,7 @@
+{
+  "method": "maxfreq",
+  "frequencies": 8,
+  "frameSize": 2048,
+  "input": "data/samples/clean",
+  "output": "data/features/queries/clean/maxfreq_highres"
+}
