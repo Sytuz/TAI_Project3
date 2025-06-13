@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
 """
-Comprehensive Music Identification Results Visualization
+Music Identification Results Visualization
 Generates multiple types of plots for analyzing accuracy across different configurations.
 """
 
