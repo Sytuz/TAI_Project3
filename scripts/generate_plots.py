@@ -790,7 +790,7 @@ class ResultsAnalyzer:
 
 def main():    
     # Choose which dataset to analyze: 'youtube', 'small', or 'both'
-    dataset = 'both'  # Change this to 'small' or 'both' as needed
+    dataset = 'youtube'  # Change this to 'small' or 'both' as needed
     
     results_dir = Path("results/")
     output = Path(f"results/plots_{dataset}/")
