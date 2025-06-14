@@ -1,5 +1,4 @@
 .vscode/
-data/features/db
 data/full_tracks
 data/samples
 build/
