@@ -1,5 +1,12 @@
 # TAI Project 3: Music Identification System Using Normalized Compression Distance
 
+> **Note:**  
+> Due to the large size of the `data/` folder, it is not included in this repository.  
+> You can download all necessary data and results from OneDrive:  
+> [OneDrive Data Link](https://uapt33090-my.sharepoint.com/:f:/g/personal/miguel_silva48_ua_pt/EtIouc9ouu9NvwaldgWkJtkB0gpc0nuHcEp-W24OWsZEOA?e=J7YqAl)
+>
+> The most relevant files for reproducibility are the feature signatures, located in `data/features/`.
+
 ## Table of Contents
 
 - [TAI Project 3: Music Identification System Using Normalized Compression Distance](#tai-project-3-music-identification-system-using-normalized-compression-distance)
@@ -36,6 +43,8 @@
     - [Multi-threading Support](#multi-threading-support)
   - [Obtained Results](#obtained-results)
     - [Performance Overview](#performance-overview)
+      - [36 Songs Dataset:](#36-songs-dataset)
+      - [100 Songs Dataset:](#100-songs-dataset)
     - [Findings](#findings)
       - [1. Genre-Dependent Performance](#1-genre-dependent-performance)
       - [2. Feature Extraction Method Comparison](#2-feature-extraction-method-comparison)
@@ -260,7 +269,9 @@ Where:
 
 The system was tested on two datasets:
 
-**36 Songs Dataset:**
+#### 36 Songs Dataset:
+
+**V1**: 10 seconds samples, avoiding the first and last 5 seconds of each song
 
 | Noise | Method | Type | Compressor | Top-1 Accuracy (%) |
 |-------|--------|------|------------|----------------|
@@ -329,24 +340,91 @@ The system was tested on two datasets:
 | White | Spectral | Binary | lzma | 2.9 |
 | White | Spectral | Binary | zstd | 0.0 |
 
+**V2**: Everything doubled, so 20 seconds samples, avoiding the first and last 10 seconds of each song
 
+| Noise | Method | Type | Compressor | Top-1 Accuracy (%) |
+|-------|--------|------|------------|----------------|
+| Clean | Maxfreq | Text | gzip | 8.8 |
+| Clean | Maxfreq | Text | bzip2 | 32.4 |
+| Clean | Maxfreq | Text | lzma | 23.5 |
+| Clean | Maxfreq | Text | zstd | 23.5 |
+| Clean | Maxfreq | Binary | gzip | 11.8 |
+| Clean | Maxfreq | Binary | bzip2 | 29.4 |
+| Clean | Maxfreq | Binary | lzma | 14.7 |
+| Clean | Maxfreq | Binary | zstd | 8.8 |
+| Clean | Spectral | Text | gzip | 2.9 |
+| Clean | Spectral | Text | bzip2 | 14.7 |
+| Clean | Spectral | Text | lzma | 14.7 |
+| Clean | Spectral | Text | zstd | 11.8 |
+| Clean | Spectral | Binary | gzip | 2.9 |
+| Clean | Spectral | Binary | bzip2 | 8.8 |
+| Clean | Spectral | Binary | lzma | 8.8 |
+| Clean | Spectral | Binary | zstd | 5.9 |
+| Brown | Maxfreq | Text | gzip | 5.9 |
+| Brown | Maxfreq | Text | bzip2 | 11.8 |
+| Brown | Maxfreq | Text | lzma | 2.9 |
+| Brown | Maxfreq | Text | zstd | 5.9 |
+| Brown | Maxfreq | Binary | gzip | 8.8 |
+| Brown | Maxfreq | Binary | bzip2 | 8.8 |
+| Brown | Maxfreq | Binary | lzma | 2.9 |
+| Brown | Maxfreq | Binary | zstd | 8.8 |
+| Brown | Spectral | Text | gzip | 2.9 |
+| Brown | Spectral | Text | bzip2 | 11.8 |
+| Brown | Spectral | Text | lzma | 5.9 |
+| Brown | Spectral | Text | zstd | 5.9 |
+| Brown | Spectral | Binary | gzip | 2.9 |
+| Brown | Spectral | Binary | bzip2 | 5.9 |
+| Brown | Spectral | Binary | lzma | 0.0 |
+| Brown | Spectral | Binary | zstd | 5.9 |
+| Pink | Maxfreq | Text | gzip | 5.9 |
+| Pink | Maxfreq | Text | bzip2 | 14.7 |
+| Pink | Maxfreq | Text | lzma | 2.9 |
+| Pink | Maxfreq | Text | zstd | 5.9 |
+| Pink | Maxfreq | Binary | gzip | 11.8 |
+| Pink | Maxfreq | Binary | bzip2 | 14.7 |
+| Pink | Maxfreq | Binary | lzma | 11.8 |
+| Pink | Maxfreq | Binary | zstd | 2.9 |
+| Pink | Spectral | Text | gzip | 2.9 |
+| Pink | Spectral | Text | bzip2 | 14.7 |
+| Pink | Spectral | Text | lzma | 5.9 |
+| Pink | Spectral | Text | zstd | 2.9 |
+| Pink | Spectral | Binary | gzip | 2.9 |
+| Pink | Spectral | Binary | bzip2 | 5.9 |
+| Pink | Spectral | Binary | lzma | 2.9 |
+| Pink | Spectral | Binary | zstd | 5.9 |
+| White | Maxfreq | Text | gzip | 5.9 |
+| White | Maxfreq | Text | bzip2 | 32.4 |
+| White | Maxfreq | Text | lzma | 2.9 |
+| White | Maxfreq | Text | zstd | 5.9 |
+| White | Maxfreq | Binary | gzip | 11.8 |
+| White | Maxfreq | Binary | bzip2 | 32.4 |
+| White | Maxfreq | Binary | lzma | 5.9 |
+| White | Maxfreq | Binary | zstd | 5.9 |
+| White | Spectral | Text | gzip | 2.9 |
+| White | Spectral | Text | bzip2 | 5.9 |
+| White | Spectral | Text | lzma | 5.9 |
+| White | Spectral | Text | zstd | 2.9 |
+| White | Spectral | Binary | gzip | 2.9 |
+| White | Spectral | Binary | bzip2 | 5.9 |
+| White | Spectral | Binary | lzma | 2.9 |
+| White | Spectral | Binary | zstd | 2.9 |
 
-**100 Songs Dataset:**
+#### 100 Songs Dataset:
 
 A diverse music dataset with 100 songs across 10 genres:
 
 | Genre | Top-1 Accuracy | Top-5 Accuracy | Sample Count |
 |-------|----------------|----------------|--------------|
-| Hip-Hop / Rap | 12.1% | 20.0% | 530 |
-| Blues | 10.9% | 18.5% | 530 |
-| Rock | 7.4% | 13.9% | 583 |
-| Pop | 6.6% | 11.1% | 530 |
-| Country / Folk | 5.5% | 13.2% | 477 |
-| Reggae | 5.3% | 14.7% | 530 |
-| Electronic / Dance | 5.0% | 6.2% | 583 |
-| Latin / World | 4.3% | 10.0% | 530 |
-| Jazz | 3.4% | 7.2% | 530 |
-| Classical / Orchestral | 2.9% | 4.8% | 477 |
+| Blues | 10.2% | 17.2% | 640 |
+| Hip-Hop / Rap | 10.0% | 16.7% | 640 |
+| Rock | 6.4% | 12.2% | 704 |
+| Pop | 5.5% | 9.5% | 640 |
+| Country / Folk | 4.7% | 12.3% | 576 |
+| Reggae | 4.5% | 13.1% | 640 |
+| Electronic / Dance | 4.1% | 5.7% | 704 |
+| Latin / World | 4.1% | 9.5% | 640 |
+| Jazz | 3.1% | 7.2% | 640 |
+| Classical / Orchestral | 2.4% | 4.5% | 576 |
 
 | Noise | Method | Type | Compressor | Top-1 Accuracy (%) |
 |-------|--------|------|------------|----------------|
@@ -374,10 +452,10 @@ A diverse music dataset with 100 songs across 10 genres:
 | Brown | Maxfreq | Binary | bzip2 | 3.0 |
 | Brown | Maxfreq | Binary | lzma | 1.0 |
 | Brown | Maxfreq | Binary | zstd | 2.0 |
-| Brown | Spectral | Text | gzip | N/A* |
-| Brown | Spectral | Text | bzip2 | N/A* |
-| Brown | Spectral | Text | lzma | N/A* |
-| Brown | Spectral | Text | zstd | N/A* |
+| Brown | Spectral | Text | gzip | 1.0 |
+| Brown | Spectral | Text | bzip2 | 0.0 |
+| Brown | Spectral | Text | lzma | 0.0 |
+| Brown | Spectral | Text | zstd | 2.0 |
 | Brown | Spectral | Binary | gzip | 1.0 |
 | Brown | Spectral | Binary | bzip2 | 2.0 |
 | Brown | Spectral | Binary | lzma | 1.0 |
@@ -390,10 +468,10 @@ A diverse music dataset with 100 songs across 10 genres:
 | Pink | Maxfreq | Binary | bzip2 | 3.0 |
 | Pink | Maxfreq | Binary | lzma | 4.0 |
 | Pink | Maxfreq | Binary | zstd | 5.0 |
-| Pink | Spectral | Text | gzip | N/A* |
-| Pink | Spectral | Text | bzip2 | N/A* |
-| Pink | Spectral | Text | lzma | N/A* |
-| Pink | Spectral | Text | zstd | N/A* |
+| Pink | Spectral | Text | gzip | 1.0 |
+| Pink | Spectral | Text | bzip2 | 0.0 |
+| Pink | Spectral | Text | lzma | 0.0 |
+| Pink | Spectral | Text | zstd | 0.0 |
 | Pink | Spectral | Binary | gzip | 1.0 |
 | Pink | Spectral | Binary | bzip2 | 2.0 |
 | Pink | Spectral | Binary | lzma | 0.0 |
@@ -408,14 +486,12 @@ A diverse music dataset with 100 songs across 10 genres:
 | White | Maxfreq | Binary | zstd | 3.0 |
 | White | Spectral | Text | gzip | 1.0 |
 | White | Spectral | Text | bzip2 | 0.0 |
-| White | Spectral | Text | lzma | N/A* |
-| White | Spectral | Text | zstd | N/A* |
+| White | Spectral | Text | lzma | 0.0 |
+| White | Spectral | Text | zstd | 2.0 |
 | White | Spectral | Binary | gzip | 1.0 |
-| White | Spectral | Binary | bzip2 | 2.0 |
-| White | Spectral | Binary | lzma | N/A* |
+| White | Spectral | Binary | bzip2 | 1.0 |
+| White | Spectral | Binary | lzma | 0.0 |
 | White | Spectral | Binary | zstd | 2.0 |
-
-N/A*: Not available yet (we are running the tests - all completed tomorrow)
 
 ### Findings
 

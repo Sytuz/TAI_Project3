@@ -3,17 +3,17 @@ GENRE ANALYSIS REPORT
 
 Genre                     Top-1%   Top-5%   Samples 
 -------------------------------------------------------
-Hip-Hop / Rap               12.1%   20.0%    530
-Blues                       10.9%   18.5%    530
-Rock                         7.4%   13.9%    583
-Pop                          6.6%   11.1%    530
-Country / Folk               5.5%   13.2%    477
-Reggae                       5.3%   14.7%    530
-Electronic / Dance           5.0%    6.2%    583
-Latin / World                4.3%   10.0%    530
-Jazz                         3.4%    7.2%    530
-Classical / Orchestral       2.9%    4.8%    477
+Blues                       10.2%   17.2%    640
+Hip-Hop / Rap               10.0%   16.7%    640
+Rock                         6.4%   12.2%    704
+Pop                          5.5%    9.5%    640
+Country / Folk               4.7%   12.3%    576
+Reggae                       4.5%   13.1%    640
+Electronic / Dance           4.1%    5.7%    704
+Latin / World                4.1%    9.5%    640
+Jazz                         3.1%    7.2%    640
+Classical / Orchestral       2.4%    4.5%    576
 
-Average accuracy: 6.3%
-Best genre: Hip-Hop / Rap (12.1%)
-Most challenging: Classical / Orchestral (2.9%)
+Average accuracy: 5.5%
+Best genre: Blues (10.2%)
+Most challenging: Classical / Orchestral (2.4%)
