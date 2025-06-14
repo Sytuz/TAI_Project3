@@ -1,5 +1,12 @@
 # TAI Project 3: Music Identification System Using Normalized Compression Distance
 
+> **Note:**  
+> Due to the large size of the `data/` folder, it is not included in this repository.  
+> You can download all necessary data and results from OneDrive:  
+> [OneDrive Data Link](https://uapt33090-my.sharepoint.com/:f:/g/personal/miguel_silva48_ua_pt/EtIouc9ouu9NvwaldgWkJtkB0gpc0nuHcEp-W24OWsZEOA?e=J7YqAl)
+>
+> The most relevant files for reproducibility are the feature signatures, located in `data/features/`.
+
 ## Table of Contents
 
 - [TAI Project 3: Music Identification System Using Normalized Compression Distance](#tai-project-3-music-identification-system-using-normalized-compression-distance)

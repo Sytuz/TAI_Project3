@@ -1,6 +1,5 @@
 .vscode/
-data/full_tracks
-data/samples
+data/
 build/
 venv/
 output/

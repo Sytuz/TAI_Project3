@@ -1,9 +1,0 @@
-Feature Extraction Configuration
-===============================
-Date: 2025-06-12 07:19:20
-Method: maxfreq
-Format: text
-Frame size: 1024 samples
-Hop size: 512 samples
-Frequencies per frame: 4
-Files processed: 100
