@@ -28,6 +28,7 @@ add_library(core
     src/core/MaxFreqExtractor.cpp
     src/core/NCD.cpp
     src/core/FeatureExtractor.cpp
+    src/core/GetMaxFreqs.cpp
 )
 
 # Utils library - depends on core
@@ -36,13 +37,8 @@ add_library(utils
 )
 # Add dependency - utils needs core
 target_link_libraries(utils core)
-
-# Executables with output placed in apps/ folder
-add_executable(GetMaxFreqs apps/GetMaxFreqs.cpp)
 # Link all required libraries for GetMaxFreqs (audio formats + FFT + math)
-target_link_libraries(GetMaxFreqs sndfile FLAC vorbisfile vorbis ogg vorbisenc fftw3 m)
-set_target_properties(GetMaxFreqs PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
+target_link_libraries(core sndfile FLAC vorbisfile vorbis ogg vorbisenc fftw3 m)
 
 add_executable(music_id apps/music_id.cpp)
 target_link_libraries(music_id core utils)  # Link to both libraries explicitly
