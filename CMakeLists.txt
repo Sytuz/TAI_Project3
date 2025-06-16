@@ -5,6 +5,15 @@ project(TAI_Project3 VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Add compiler flags similar to the original GetMaxFreqs
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W")
+set(CMAKE_C_FLAGS_RELEASE "-O3")
+set(CMAKE_C_FLAGS_DEBUG "-g3")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -std=c++11")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_DEBUG "-g3")
+
 # Keep library output at root
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -30,7 +39,8 @@ target_link_libraries(utils core)
 
 # Executables with output placed in apps/ folder
 add_executable(GetMaxFreqs apps/GetMaxFreqs.cpp)
-target_link_libraries(GetMaxFreqs sndfile fftw3)  # GetMaxFreqs needs sndfile and fftw3
+# Link all required libraries for GetMaxFreqs (audio formats + FFT + math)
+target_link_libraries(GetMaxFreqs sndfile FLAC vorbisfile vorbis ogg vorbisenc fftw3 m)
 set_target_properties(GetMaxFreqs PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
