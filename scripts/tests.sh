@@ -72,7 +72,7 @@ check_prerequisites() {
     fi
     
     # Check if applications exist
-    for app in extract_features music_id; do
+    for app in GetMaxFreqs music_id; do
         if [ ! -f "./apps/$app" ]; then
             print_error "Application not found: ./apps/$app"
             exit 1
@@ -110,10 +110,9 @@ extract_db_features() {
         print_warning "Database features already exist for $method/$format, skipping"
         return 0
     fi
+      log "Command: ./apps/GetMaxFreqs -w $output_dir/features.freqs $FULL_TRACKS_DIR/*.wav"
     
-    log "Command: ./apps/extract_features --method $method $binary_flag -i $FULL_TRACKS_DIR -o $output_dir"
-    
-    if ./apps/extract_features --method "$method" $binary_flag -i "$FULL_TRACKS_DIR" -o "$output_dir"; then
+    if ./apps/GetMaxFreqs -w "$output_dir/features.freqs" "$FULL_TRACKS_DIR"/*.wav; then
         touch "$output_dir/.extraction_complete"
         print_success "Database features extracted: $method/$format"
     else
@@ -183,10 +182,9 @@ extract_query_features() {
     if [ "$format" = "binary" ]; then
         binary_flag="--binary"
     fi
+      log "Command: ./apps/GetMaxFreqs -w $output_dir/features.freqs $input_dir/*.wav"
     
-    log "Command: ./apps/extract_features --method $method $binary_flag -i $input_dir -o $output_dir"
-    
-    if ./apps/extract_features --method "$method" $binary_flag -i "$input_dir" -o "$output_dir"; then
+    if ./apps/GetMaxFreqs -w "$output_dir/features.freqs" "$input_dir"/*.wav; then
         touch "$output_dir/.extraction_complete"
         print_success "Query features extracted: $method/$format/$noise"
     else
@@ -439,9 +437,8 @@ dry_run() {
             if [ "$format" = "binary" ]; then
                 binary_flag="--binary"
             fi
-            
-            echo "# Database features for $method/$format"
-            echo "./apps/extract_features --method $method $binary_flag -i $FULL_TRACKS_DIR -o ${FEATURES_DIR}/db/${DATASET_NAME}/${method}/${format}"
+              echo "# Database features for $method/$format"
+            echo "./apps/GetMaxFreqs -w ${FEATURES_DIR}/db/${DATASET_NAME}/${method}/${format}/features.freqs $FULL_TRACKS_DIR/*.wav"
             echo ""
             
             for noise in "${NOISES[@]}"; do
@@ -453,9 +450,8 @@ dry_run() {
                 echo "# Samples for $method/$format/$noise"
                 echo "./scripts/extract_sample.sh -i $FULL_TRACKS_DIR -o ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} $noise_flags"
                 echo ""
-                
-                echo "# Query features for $method/$format/$noise"
-                echo "./apps/extract_features --method $method $binary_flag -i ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} -o ${QUERIES_DIR}/${DATASET_NAME}/${method}/${format}/${noise}"
+                  echo "# Query features for $method/$format/$noise"
+                echo "./apps/GetMaxFreqs -w ${QUERIES_DIR}/${DATASET_NAME}/${method}/${format}/${noise}/features.freqs ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise}/*.wav"
                 echo ""
                 
                 local compressor_list=$(IFS=,; echo "${COMPRESSORS[*]}")

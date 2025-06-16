@@ -84,10 +84,10 @@ The system was tested in two datasets:
 ## Files Structure:
 
 ### Core Applications (`apps/`)
-- **`extract_features.cpp`**: Main application for extracting frequency features from WAV files
-    - Supports both spectral and maxfreq methods
-    - Multi-threaded processing
-    - Binary and text output formats
+- **`GetMaxFreqs.cpp`**: Main application for extracting frequency signatures from WAV files
+    - Extracts maximum frequency components using FFT
+    - Supports configurable window size, shift, down-sampling, and number of frequencies
+    - Outputs binary signature files (.freqs)
 - **`music_id.cpp`**: Music identification application that compares query features against a database using NCD
   - Supports multiple compressors
   - Top-K accuracy reporting
@@ -171,10 +171,9 @@ pip install -r requirements.txt
    - Compile the project
    - Generate executables in `apps/`
 
-3. **Verify Build**:
-   ```bash
+3. **Verify Build**:   ```bash
    ls apps/
-   # Should show: extract_features music_id
+   # Should show: GetMaxFreqs music_id
    ```
 
 ## Run Instructions
@@ -183,11 +182,11 @@ pip install -r requirements.txt
 
 #### 1. Extract Features from Audio Files
 ```bash
-# Extract spectral features
-./scripts/run.sh extract_features --method spectral --bins 64 -i input_folder/ -o output_features/
+# Extract frequency signatures from audio files
+./scripts/run.sh GetMaxFreqs -w output.freqs input.wav
 
-# Extract maximum frequency features
-./scripts/run.sh extract_features --method maxfreq --frequencies 4 -i input_folder/ -o output_features/
+# Extract with custom parameters
+./scripts/run.sh GetMaxFreqs -ws 2048 -sh 512 -nf 8 -w output.freqs input.wav
 ```
 
 #### 2. Identify Music

@@ -6,7 +6,7 @@ output/
 
 # Ignore executables in apps/
 apps/compute_ncd
-apps/extract_features
+apps/GetMaxFreqs
 apps/music_id
 
 # Ignore all object files and static libraries

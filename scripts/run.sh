@@ -13,17 +13,15 @@ fi
 # Function to print usage
 print_usage() {
     echo "Usage: ./scripts/run.sh [APP] [APP_OPTIONS]"
-    echo ""
-    echo "Available applications:"
+    echo ""    echo "Available applications:"
     echo "  music_id         Full pipeline: extract features, compute NCD, build tree"
-    echo "  extract_features Extract frequency features from WAV files"
+    echo "  GetMaxFreqs      Extract frequency features from WAV files"
     echo "  compute_ncd      Compute NCD matrix between feature files"
     echo "  build_tree       Build a similarity tree from NCD matrix"
-    echo ""
-    echo "Examples:"
+    echo ""    echo "Examples:"
     echo "  ./scripts/run.sh music_id --help"
     echo "  ./scripts/run.sh music_id --method fft --compressor gzip data/samples results/run1"
-    echo "  ./scripts/run.sh extract_features --method maxfreq data/samples output/features"
+    echo "  ./scripts/run.sh GetMaxFreqs -w output.freqs input.wav"
     echo ""
     echo "For app-specific options, run: ./scripts/run.sh [APP] --help"
 }
@@ -39,7 +37,7 @@ shift  # Remove the app name from arguments
 
 # Validate app name
 case "$APP" in
-    music_id|extract_features|compute_ncd|build_tree)
+    music_id|GetMaxFreqs|compute_ncd|build_tree)
         # Valid app name
         ;;
     *)

@@ -29,9 +29,9 @@ add_library(utils
 target_link_libraries(utils core)
 
 # Executables with output placed in apps/ folder
-add_executable(extract_features apps/extract_features.cpp)
-target_link_libraries(extract_features core utils)  # Link to both libraries explicitly
-set_target_properties(extract_features PROPERTIES
+add_executable(GetMaxFreqs apps/GetMaxFreqs.cpp)
+target_link_libraries(GetMaxFreqs sndfile fftw3)  # GetMaxFreqs needs sndfile and fftw3
+set_target_properties(GetMaxFreqs PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/apps)
 
 add_executable(music_id apps/music_id.cpp)
