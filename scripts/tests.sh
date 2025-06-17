@@ -6,10 +6,11 @@
 # set -e  # Exit on any error
 
 # Configuration
-DATASET_NAME="youtube_small"
-METHODS=("profmaxfreq")
+DATASET_NAME="small"
+#METHODS=("maxfreq" "maxfreq_improved" "profmaxfreq" "spectral")
+METHODS=("maxfreq_improved" "profmaxfreq")
 FORMATS=("binary" "text")
-NOISES=("clear" "brown" "pink" "white")
+NOISES=("clean" "brown" "pink" "white")
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
 THREADS=3
 
@@ -310,6 +311,19 @@ EOF
     print_success "Summary report generated: $summary_file"
 }
 
+# Helper function to check if method supports format
+is_method_format_compatible() {
+    local method="$1"
+    local format="$2"
+    
+    # profmaxfreq only supports binary format
+    if [ "$method" = "profmaxfreq" ] && [ "$format" = "text" ]; then
+        return 1  # Not compatible
+    fi
+    
+    return 0  # Compatible
+}
+
 # Main execution function
 main() {
     log "Starting automated music identification testing at $(date)"
@@ -326,8 +340,20 @@ main() {
     local completed_combinations=0
     local failed_combinations=0
     
-    # Calculate total combinations
-    total_combinations=$((${#METHODS[@]} * ${#FORMATS[@]} * ${#NOISES[@]}))
+    # Calculate total combinations (accounting for method/format compatibility)
+    local total_possible_combinations=$((${#METHODS[@]} * ${#FORMATS[@]} * ${#NOISES[@]}))
+    local incompatible_combinations=0
+    
+    # Count incompatible combinations
+    for method in "${METHODS[@]}"; do
+        for format in "${FORMATS[@]}"; do
+            if ! is_method_format_compatible "$method" "$format"; then
+                incompatible_combinations=$((incompatible_combinations + ${#NOISES[@]}))
+            fi
+        done
+    done
+    
+    total_combinations=$((total_possible_combinations - incompatible_combinations))
     
     log "\n=========================================="
     log "Starting main testing loop"
@@ -339,6 +365,16 @@ main() {
         log "\n>>> Starting method: $method"
         for format in "${FORMATS[@]}"; do
             log "\n>> Starting format: $format for method: $method"
+            
+            # Check if method supports this format
+            if ! is_method_format_compatible "$method" "$format"; then
+                print_warning "Method $method does not support $format format, skipping this combination"
+                # Skip all noise combinations for this incompatible method/format
+                for noise in "${NOISES[@]}"; do
+                    ((failed_combinations++))
+                done
+                continue
+            fi
             
             # Step 1: Extract database features (once per method/format combination)
             if ! extract_db_features "$method" "$format"; then

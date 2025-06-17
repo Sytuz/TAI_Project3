@@ -32,7 +32,7 @@ using std::list;
 void printUsage() {
     cout << "Usage: extract_features [OPTIONS] <input_path> <output_folder>\n";
     cout << "Options:\n";
-    cout << "  --method <method>      Feature extraction method (spectral, maxfreq, profmaxfreq) [default: spectral]\n";
+    cout << "  --method <method>      Feature extraction method (spectral, maxfreq, maxfreq_improved, profmaxfreq) [default: spectral]\n";
     cout << "  --frequencies <n>      Number of frequencies per frame (maxfreq, profmaxfreq) [default: 4]\n";
     cout << "  --bins <n>             Number of frequency bins (spectral) [default: 32]\n";
     cout << "  --frame-size <n>       Frame size in samples [default: 1024]\n";
@@ -68,7 +68,7 @@ void processDirectory(
     cout << "Starting feature extraction using method: " << method << endl;
     cout << "Frame size: " << frameSize << ", Hop size: " << hopSize << endl;
     
-    if (method == "maxfreq") {
+    if (method == "maxfreq" || method == "maxfreq_improved") {
         cout << "Extracting " << numFrequencies << " peak frequencies per frame" << endl;
     } else {
         cout << "Using " << numBins << " frequency bins" << endl;
@@ -271,10 +271,11 @@ int main(int argc, char* argv[]) {
     std::list<std::string> validMethods;
     validMethods.push_back("spectral");
     validMethods.push_back("maxfreq");
+    validMethods.push_back("maxfreq_improved");
     validMethods.push_back("profmaxfreq");
     if (std::find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
         std::cerr << "Error: Invalid method: " << method << std::endl;
-        std::cerr << "Valid options: spectral, maxfreq, profmaxfreq" << std::endl;
+        std::cerr << "Valid options: spectral, maxfreq, maxfreq_improved, profmaxfreq" << std::endl;
         return 1;
     }
 

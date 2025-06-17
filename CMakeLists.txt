@@ -26,6 +26,7 @@ add_library(core
     src/core/WAVReader.cpp
     src/core/SpectralExtractor.cpp
     src/core/MaxFreqExtractor.cpp
+    src/core/MaxFreqImprovedExtractor.cpp
     src/core/ProfMaxFreqExtractor.cpp
     src/core/NCD.cpp
     src/core/FeatureExtractor.cpp
