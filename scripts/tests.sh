@@ -8,8 +8,8 @@
 # Configuration
 DATASET_NAME="youtube_small"
 METHODS=("profmaxfreq")
-FORMATS=("binary")
-NOISES=("brown")
+FORMATS=("binary" "text")
+NOISES=("clear" "brown" "pink" "white")
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
 THREADS=3
 
