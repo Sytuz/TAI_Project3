@@ -38,6 +38,7 @@
     - [Feature Extraction Methods](#feature-extraction-methods)
       - [1. Spectral Method](#1-spectral-method)
       - [2. Maximum Frequency Method](#2-maximum-frequency-method)
+      - [3. Professor's Maximum Frequency Method (ProfMaxFreq)](#3-professors-maximum-frequency-method-profmaxfreq)
     - [Normalized Compression Distance (NCD)](#normalized-compression-distance-ncd)
       - [Implementation Features:](#implementation-features)
     - [Audio Processing Pipeline](#audio-processing-pipeline)
@@ -55,6 +56,10 @@
   - [Conclusion](#conclusion)
     - [Achievements](#achievements)
     - [Limitations and Future Work](#limitations-and-future-work)
+    - [Maximum Frequency Method Comparison: Custom vs. Professor's Implementation](#maximum-frequency-method-comparison-custom-vs-professors-implementation)
+      - [Key Algorithmic Differences](#key-algorithmic-differences)
+      - [Performance Impact](#performance-impact)
+      - [Lessons Learned](#lessons-learned)
     - [License](#license)
   - [Authors](#authors)
 
@@ -232,6 +237,11 @@ python3 scripts/generate_plots_genres.py
 - **Peak Detection**: Identifies dominant frequencies in each frame
 - **Frequency Ranking**: Sorts frequencies by magnitude
 - **Compact Representation**: Stores only top N frequencies per frame
+
+#### 3. Professor's Maximum Frequency Method (ProfMaxFreq)
+- **Reference Implementation**: Based on the original GetMaxFreqs.cpp algorithm provided by professors
+- **Optimized Parameters**: Uses empirically validated parameters for music identification
+- **Domain-Specific Design**: Tailored specifically for audio fingerprinting applications
 
 ### Normalized Compression Distance (NCD)
 
@@ -553,6 +563,51 @@ This project successfully demonstrates a **complete music identification pipelin
 - Extract more than 1 segment for a song, perform a combined evaluation by making the NCD average (a way to replicate the behavior of an ensemble method).
 - Test with more diversified and better chosen songs.
 - Test with different sample lengths and compare the results.
+
+### Maximum Frequency Method Comparison: Custom vs. Professor's Implementation
+
+After our presentation, we learned that our results were far from our colleagues' implementations, and we were asked by the professors to compare our maximum frequency extraction method with theirs. As such, we implemented the professor's version of the maximum frequency extraction method, which is based on the original `GetMaxFreqs.cpp` algorithm provided by the professors. This section summarizes the key differences between our custom implementation and the professor's version, along with the performance impact and lessons learned.
+
+#### Key Algorithmic Differences
+
+**1. Down-sampling Strategy**
+- **Professor's Approach**: Applies 4x down-sampling during preprocessing, reducing computational complexity while focusing on lower frequencies where most musical information resides
+- **Custom Approach**: Processes all samples without down-sampling, maintaining full frequency resolution but increasing noise sensitivity
+
+**2. Window Parameters and Overlap**
+- **Professor's Approach**: Fixed 1024-sample window with 256-sample shift (75% overlap), providing optimal temporal resolution for music analysis
+- **Custom Approach**: User-configurable parameters that may not be optimized for the specific domain
+
+**3. Frequency Range Focus**
+- **Professor's Approach**: Limits frequency indices to 255 bins, focusing on the perceptually most relevant range (0-5.5kHz at 44.1kHz sampling)
+- **Custom Approach**: Uses full frequency range, potentially including less informative high-frequency content
+
+**4. Normalization Strategy**
+- **Professor's Approach**: Preserves raw power spectrum relationships without normalization, maintaining natural energy distribution
+- **Custom Approach**: Normalizes FFT magnitudes by window size, potentially losing important relative energy information
+
+**5. Stereo Processing**
+- **Professor's Approach**: Direct channel summation during FFT preparation, preserving energy and avoiding precision loss
+- **Custom Approach**: Pre-conversion to mono by averaging, which may reduce signal energy
+
+#### Performance Impact
+
+The professor's implementation consistently outperforms the custom implementation:
+
+TODO : Meter dados empíricos sobre a performance do professor vs. o nosso
+
+#### Lessons Learned
+
+TODO : Metemos 'lessons learned'? Ou apenas uma comparação final?
+
+This comparison highlights the importance of domain knowledge in algorithm design. While the custom implementation is more general-purpose and flexible, the professor's version demonstrates that:
+
+1. **Empirical validation** of parameters is crucial for real-world performance
+2. **Domain constraints** can be leveraged as optimization opportunities
+3. **Simplicity and focus** often outperform complex, general solutions
+4. **Energy relationships** in audio signals are more important than absolute values for similarity tasks
+
+The superior performance of the professor's implementation (achieving up to 70.6% accuracy vs. the custom implementation's lower performance) validates the importance of domain-specific algorithm design and empirical parameter tuning in audio processing applications.
 
 ### License
 
