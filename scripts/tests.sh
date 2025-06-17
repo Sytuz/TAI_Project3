@@ -6,18 +6,17 @@
 # set -e  # Exit on any error
 
 # Configuration
-DATASET_NAME="supersmall"
+DATASET_NAME="youtube_small"
 METHODS=("profmaxfreq")
 FORMATS=("binary")
-NOISES=("clean" "brown" "pink" "white")
+NOISES=("brown")
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
 THREADS=3
 
 # Base directories
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-#FULL_TRACKS_DIR="${DATA_DIR}/full_tracks/${DATASET_NAME}"
 DATA_DIR="data"
-FULL_TRACKS_DIR="${DATA_DIR}/${DATASET_NAME}"
+FULL_TRACKS_DIR="${DATA_DIR}/full_tracks/${DATASET_NAME}"
 FEATURES_DIR="${DATA_DIR}/features"
 SAMPLES_DIR="${DATA_DIR}/samples"
 QUERIES_DIR="${FEATURES_DIR}/queries"

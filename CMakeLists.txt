@@ -30,6 +30,7 @@ add_library(core
     src/core/NCD.cpp
     src/core/FeatureExtractor.cpp
     src/core/GetMaxFreqs.cpp
+    src/core/Resampler.cpp
 )
 
 # Utils library - depends on core

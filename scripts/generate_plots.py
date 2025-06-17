@@ -26,7 +26,7 @@ class ResultsAnalyzer:
         self.dataset = dataset  # 'youtube', 'small', or 'both'
         
         # Configuration
-        self.methods = ["maxfreq", "spectral"]
+        self.methods = ["profmaxfreq", "maxfreq", "spectral"]
         self.formats = ["text", "binary"]
         self.noises = ["clean", "brown", "pink", "white"]
         self.compressors = ["gzip", "bzip2", "lzma", "zstd"]
@@ -790,7 +790,7 @@ class ResultsAnalyzer:
 
 def main():    
     # Choose which dataset to analyze: 'youtube', 'small', or 'both'
-    dataset = 'youtube'  # Change this to 'small' or 'both' as needed
+    dataset = 'youtube_small'  # Change this to 'small' or 'both' as needed
     
     results_dir = Path("results/")
     output = Path(f"results/plots_{dataset}/")

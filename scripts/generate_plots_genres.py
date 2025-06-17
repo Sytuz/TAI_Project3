@@ -26,7 +26,7 @@ class GenreAnalyzer:
         self.songs_genre_file = Path(songs_genre_file)
         
         # Configuration
-        self.methods = ["maxfreq", "spectral"]
+        self.methods = ["profmaxfreq", "maxfreq", "spectral"]
         self.formats = ["text", "binary"]
         self.noises = ["clean", "brown", "pink", "white"]
         self.compressors = ["gzip", "bzip2", "lzma", "zstd"]
@@ -150,7 +150,7 @@ class GenreAnalyzer:
             for format_type in self.formats:
                 for noise in self.noises:
                     for compressor in self.compressors:
-                        metrics_file = (self.results_dir / "compressors" / "youtube" / method / 
+                        metrics_file = (self.results_dir / "compressors" / "youtube_small" / method / 
                                        format_type / f"{noise}_{compressor}" / 
                                        f"accuracy_metrics_{compressor}.json")
                         
@@ -833,7 +833,7 @@ class GenreAnalyzer:
 def main():
     results_dir = Path("results/")
     songs_genre_file = Path("songs_genre.txt")
-    output_dir = Path("results/youtube_genre_analysis")
+    output_dir = Path("results/youtube_small_genre_analysis")
     
     if not results_dir.exists():
         print(f"Error: Results directory not found: {results_dir}")
