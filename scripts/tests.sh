@@ -7,15 +7,17 @@
 
 # Configuration
 DATASET_NAME="supersmall"
-METHODS=("maxfreq" "spectral")
-FORMATS=("text" "binary")
+METHODS=("profmaxfreq")
+FORMATS=("binary")
 NOISES=("clean" "brown" "pink" "white")
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
+THREADS=3
 
 # Base directories
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+#FULL_TRACKS_DIR="${DATA_DIR}/full_tracks/${DATASET_NAME}"
 DATA_DIR="data"
-FULL_TRACKS_DIR="${DATA_DIR}/full_tracks/${DATASET_NAME}"
+FULL_TRACKS_DIR="${DATA_DIR}/${DATASET_NAME}"
 FEATURES_DIR="${DATA_DIR}/features"
 SAMPLES_DIR="${DATA_DIR}/samples"
 QUERIES_DIR="${FEATURES_DIR}/queries"
@@ -110,9 +112,9 @@ extract_db_features() {
         print_warning "Database features already exist for $method/$format, skipping"
         return 0
     fi
-    log "Command: ./apps/extract_features --method $method $binary_flag -i $FULL_TRACKS_DIR -o $output_dir"
+    log "Command: ./apps/extract_features --method $method $binary_flag --threads $THREADS -i $FULL_TRACKS_DIR -o $output_dir"
     
-    if ./apps/extract_features --method "$method" $binary_flag -i "$FULL_TRACKS_DIR" -o "$output_dir"; then
+    if ./apps/extract_features --method "$method" $binary_flag --threads $THREADS -i "$FULL_TRACKS_DIR" -o "$output_dir"; then
         touch "$output_dir/.extraction_complete"
         print_success "Database features extracted: $method/$format"
     else
@@ -182,9 +184,9 @@ extract_query_features() {
     if [ "$format" = "binary" ]; then
         binary_flag="--binary"
     fi
-    log "Command: ./apps/extract_features --method $method $binary_flag -i $input_dir -o $output_dir"
+    log "Command: ./apps/extract_features --method $method $binary_flag --threads $THREADS -i $input_dir -o $output_dir"
     
-    if ./apps/extract_features --method "$method" $binary_flag -i "$input_dir" -o "$output_dir"; then
+    if ./apps/extract_features --method "$method" $binary_flag --threads $THREADS -i "$input_dir" -o "$output_dir"; then
         touch "$output_dir/.extraction_complete"
         print_success "Query features extracted: $method/$format/$noise"
     else
@@ -276,7 +278,18 @@ results/compressors/${DATASET_NAME}/
 │       ├── brown/
 │       ├── pink/
 │       └── white/
-└── spectral/
+├── spectral/
+│   ├── text/
+│   │   ├── clean/
+│   │   ├── brown/
+│   │   ├── pink/
+│   │   └── white/
+│   └── binary/
+│       ├── clean/
+│       ├── brown/
+│       ├── pink/
+│       └── white/
+└── profmaxfreq/
     ├── text/
     │   ├── clean/
     │   ├── brown/
@@ -424,6 +437,11 @@ show_help() {
     echo "  --dry-run     Show what would be executed without running"
     echo ""
     echo "The script will create a complete directory structure and run all tests automatically."
+    echo ""
+    echo "Methods supported:"
+    echo "  maxfreq      - Maximum frequency extractor (custom implementation)"
+    echo "  spectral     - Spectral extractor with frequency bins"
+    echo "  profmaxfreq  - Professor's original GetMaxFreqs algorithm"
 }
 
 # Dry run function
@@ -439,7 +457,7 @@ dry_run() {
             fi
 
             echo "# Database features for $method/$format"
-            echo "./apps/extract_features --method $method $binary_flag -i $FULL_TRACKS_DIR -o ${FEATURES_DIR}/db/${DATASET_NAME}/${method}/${format}"
+            echo "./apps/extract_features --method $method $binary_flag --threads $THREADS -i $FULL_TRACKS_DIR -o ${FEATURES_DIR}/db/${DATASET_NAME}/${method}/${format}"
             echo ""
             
             for noise in "${NOISES[@]}"; do
@@ -452,7 +470,7 @@ dry_run() {
                 echo "./scripts/extract_sample.sh -i $FULL_TRACKS_DIR -o ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} $noise_flags"
                 echo ""
                 echo "# Query features for $method/$format/$noise"
-                echo "./apps/extract_features --method $method $binary_flag -i ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} -o ${QUERIES_DIR}/${DATASET_NAME}/${method}/${format}/${noise}"
+                echo "./apps/extract_features --method $method $binary_flag --threads $THREADS -i ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} -o ${QUERIES_DIR}/${DATASET_NAME}/${method}/${format}/${noise}"
                 echo ""
 
                 local compressor_list=$(IFS=,; echo "${COMPRESSORS[*]}")

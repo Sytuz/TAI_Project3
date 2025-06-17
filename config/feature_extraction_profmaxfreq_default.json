@@ -1,0 +1,21 @@
+{
+    "method": "profmaxfreq",
+    "frequencies": 4,
+    "frameSize": 1024,
+    "hopSize": 256,
+    "windowSize": 1024,
+    "shift": 256,
+    "downSampling": 4,
+    "description": "Professor's original maximum frequency extraction method",
+    "notes": [
+        "This method implements the exact algorithm from the original GetMaxFreqs.cpp",
+        "Requires stereo input (2 channels) at 44100 Hz sample rate",
+        "Uses FFTW3 for FFT computation with down-sampling",
+        "Outputs binary frequency indices (0-255) for top N frequencies per frame"
+    ],
+    "compatibility": {
+        "channels": 2,
+        "sampleRate": 44100,
+        "outputFormat": "binary"
+    }
+}

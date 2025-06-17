@@ -1,6 +1,7 @@
 #include "../../include/core/FeatureExtractor.h"
 #include "../../include/core/SpectralExtractor.h"
 #include "../../include/core/MaxFreqExtractor.h"
+#include "../../include/core/ProfMaxFreqExtractor.h"
 #include "../../include/core/WAVReader.h"
 
 #include <iostream>
@@ -33,8 +34,7 @@ void saveConfig(
         txtConfig << "Format: text" << endl;
         txtConfig << "Frame size: " << frameSize << " samples" << endl;
         txtConfig << "Hop size: " << hopSize << " samples" << endl;
-        
-        if (method == "maxfreq") {
+          if (method == "maxfreq" || method == "profmaxfreq") {
             txtConfig << "Frequencies per frame: " << numFrequencies << endl;
         } else {
             txtConfig << "Frequency bins: " << numBins << endl;
@@ -86,6 +86,7 @@ bool extractFeaturesFromFile(
     WAVReader reader;
     SpectralExtractor specExt(numBins);
     MaxFreqExtractor mfExt(numFrequencies);
+    ProfMaxFreqExtractor profExt(numFrequencies);
     
     {
         lock_guard<mutex> lock(coutMutex);
@@ -125,6 +126,12 @@ bool extractFeaturesFromFile(
             featDataBin = mfExt.extractFeaturesBinary(samples16bit, channels, frameSize, hopSize, sampleRate);
         } else {
             featData = mfExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
+        }
+    } else if (method == "profmaxfreq") {
+        if (useBinary) {
+            featDataBin = profExt.extractFeaturesBinary(samples16bit, channels, frameSize, hopSize, sampleRate);
+        } else {
+            featData = profExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
         }
     }
     

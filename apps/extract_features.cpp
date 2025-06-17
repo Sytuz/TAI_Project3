@@ -32,8 +32,8 @@ using std::list;
 void printUsage() {
     cout << "Usage: extract_features [OPTIONS] <input_path> <output_folder>\n";
     cout << "Options:\n";
-    cout << "  --method <method>      Feature extraction method (spectral, maxfreq) [default: spectral]\n";
-    cout << "  --frequencies <n>      Number of frequencies per frame (maxfreq) [default: 4]\n";
+    cout << "  --method <method>      Feature extraction method (spectral, maxfreq, profmaxfreq) [default: spectral]\n";
+    cout << "  --frequencies <n>      Number of frequencies per frame (maxfreq, profmaxfreq) [default: 4]\n";
     cout << "  --bins <n>             Number of frequency bins (spectral) [default: 32]\n";
     cout << "  --frame-size <n>       Frame size in samples [default: 1024]\n";
     cout << "  --hop-size <n>         Hop size in samples [default: 512]\n";
@@ -271,9 +271,10 @@ int main(int argc, char* argv[]) {
     std::list<std::string> validMethods;
     validMethods.push_back("spectral");
     validMethods.push_back("maxfreq");
+    validMethods.push_back("profmaxfreq");
     if (std::find(validMethods.begin(), validMethods.end(), method) == validMethods.end()) {
         std::cerr << "Error: Invalid method: " << method << std::endl;
-        std::cerr << "Valid options: spectral, maxfreq" << std::endl;
+        std::cerr << "Valid options: spectral, maxfreq, profmaxfreq" << std::endl;
         return 1;
     }
 
