@@ -180,10 +180,11 @@ pip install -r requirements.txt
    - Compile the project
    - Generate executables in `apps/`
 
-3. **Verify Build**:   ```bash
-   ls apps/
-   \# Should show: extract_features music_id
-   ```
+3. **Verify Build**:   
+    ```bash
+    ls apps/
+    # Should show the binaries: extract_features music_id
+    ```
 
 ## Run Instructions
 
