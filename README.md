@@ -56,11 +56,16 @@
   - [Conclusion](#conclusion)
     - [Achievements](#achievements)
     - [Limitations and Future Work](#limitations-and-future-work)
+    - [License](#license)
+  - [Changes after the Presentation](#changes-after-the-presentation)
     - [Maximum Frequency Method Comparison: Custom vs. Professor's Implementation](#maximum-frequency-method-comparison-custom-vs-professors-implementation)
       - [Key Algorithmic Differences](#key-algorithmic-differences)
-      - [Performance Impact](#performance-impact)
-      - [Lessons Learned](#lessons-learned)
-    - [License](#license)
+    - [Improved Maximum Frequency Extractor](#improved-maximum-frequency-extractor)
+      - [Improvements in MaxFreqImproved](#improvements-in-maxfreqimproved)
+      - [Comparison Table](#comparison-table)
+    - [Performance Impact](#performance-impact)
+      - [36 Songs Dataset](#36-songs-dataset-1)
+      - [100 Songs Dataset, reduced to 32 songs for lower computational cost](#100-songs-dataset-reduced-to-32-songs-for-lower-computational-cost)
   - [Authors](#authors)
 
 ## Documentation
@@ -178,7 +183,7 @@ pip install -r requirements.txt
 
 3. **Verify Build**:   ```bash
    ls apps/
-   # Should show: extract_features music_id
+   \# Should show: extract_features music_id
    ```
 
 ## Run Instructions
@@ -564,9 +569,13 @@ This project successfully demonstrates a **complete music identification pipelin
 - Test with more diversified and better chosen songs.
 - Test with different sample lengths and compare the results.
 
-### Maximum Frequency Method Comparison: Custom vs. Professor's Implementation
+## Changes after the Presentation
 
-After our presentation, we learned that our results were far from our colleagues' implementations, and we were asked by the professors to compare our maximum frequency extraction method with theirs. As such, we implemented the professor's version of the maximum frequency extraction method, which is based on the original `GetMaxFreqs.cpp` algorithm provided by the professors. This section summarizes the key differences between our custom implementation and the professor's version, along with the performance impact and lessons learned.
+After our presentation, we learned that our results were far from our colleagues' implementations, and we were asked by the professors to compare our maximum frequency extraction method with theirs. As such, we implemented the professor's version of the maximum frequency extraction method, which is based on the original `GetMaxFreqs.cpp` algorithm provided by the professors, and we also revisited our own implementation, making changes
+
+This section summarizes the key differences between our custom implementation, the professor's version and our improved version, along with the performance impact.
+
+### Maximum Frequency Method Comparison: Custom vs. Professor's Implementation
 
 #### Key Algorithmic Differences
 
@@ -590,24 +599,280 @@ After our presentation, we learned that our results were far from our colleagues
 - **Professor's Approach**: Direct channel summation during FFT preparation, preserving energy and avoiding precision loss
 - **Custom Approach**: Pre-conversion to mono by averaging, which may reduce signal energy
 
-#### Performance Impact
+### Improved Maximum Frequency Extractor
 
-The professor's implementation consistently outperforms the custom implementation:
+After running the professor's implementation, we decided to enhance our original `MaxFreqExtractor` based on the feedback and insights gained. The new version, `MaxFreqImproved`, incorporates down-sampling and uses the FFTW3 library for optimized performance, aligning with the professor's approach while maintaining our custom features.
 
-TODO : Meter dados empíricos sobre a performance do professor vs. o nosso
+#### Improvements in MaxFreqImproved
 
-#### Lessons Learned
+- **FFTW3 Integration**: Replaced custom FFT with industry-standard optimized library
+- **Down-sampling Support**: Configurable sample reduction (default 4x) for faster processing
+- **Memory Efficiency**: Lower memory footprint through intelligent sample reduction
+- **Byte Compatibility**: Frequency indices truncated to 255 for compact storage
+- **Unified Processing**: Combines mono conversion with down-sampling in single operation
 
-TODO : Metemos 'lessons learned'? Ou apenas uma comparação final?
+#### Comparison Table
 
-This comparison highlights the importance of domain knowledge in algorithm design. While the custom implementation is more general-purpose and flexible, the professor's version demonstrates that:
+| Feature | MaxFreqExtractor (Original) | MaxFreqImproved | ProfMaxFreqExtractor |
+|---------|----------------------------|-----------------|---------------------|
+| **FFT Library** | Custom Cooley-Tukey | FFTW3 | FFTW3 |
+| **Down-sampling** | None | 4x configurable | 4x fixed |
+| **Performance** | Baseline | Improved (FFTW3 + down-sampling) | Improved (FFTW3 + down-sampling) |
+| **Window Function** | Hann window | No windowing (matches professor) | No windowing |
+| **Frequency Truncation** | None | To 255 (byte compatible) | To 255 |
+| **Output Formats** | Text and binary | Text and binary | Binary only |
+| **Channel Support** | Mono/Stereo | Mono/Stereo | Stereo only (44.1kHz) |
 
-1. **Empirical validation** of parameters is crucial for real-world performance
-2. **Domain constraints** can be leveraged as optimization opportunities
-3. **Simplicity and focus** often outperform complex, general solutions
-4. **Energy relationships** in audio signals are more important than absolute values for similarity tasks
+### Performance Impact
+Both the professor's implementation and our improved version show significant performance improvements over the original `MaxFreqExtractor`. The new implementations achieve higher accuracy and lower computational overhead, making them more suitable for real-world music identification tasks.
 
-The superior performance of the professor's implementation (achieving up to 70.6% accuracy vs. the custom implementation's lower performance) validates the importance of domain-specific algorithm design and empirical parameter tuning in audio processing applications.
+#### 36 Songs Dataset
+
+20 seconds samples, avoiding the first and last 10 seconds of each song
+
+| Noise | Method | Type | Compressor | Top-1 Accuracy (%) |
+|-------|--------|------|------------|----------------|
+| Clean | ProfMaxfreq | Text | gzip | N/A |
+| Clean | ProfMaxfreq | Text | bzip2 | N/A |
+| Clean | ProfMaxfreq | Text | lzma | N/A |
+| Clean | ProfMaxfreq | Text | zstd | N/A |
+| Clean | ProfMaxfreq | Binary | gzip | 55.9 |
+| Clean | ProfMaxfreq | Binary | bzip2 | 64.7 |
+| Clean | ProfMaxfreq | Binary | lzma | 52.9 |
+| Clean | ProfMaxfreq | Binary | zstd | 64.7 |
+| Clean | Maxfreq | Text | gzip | 5.9 |
+| Clean | Maxfreq | Text | bzip2 | 32.4 |
+| Clean | Maxfreq | Text | lzma | 14.7 |
+| Clean | Maxfreq | Text | zstd | 20.6 |
+| Clean | Maxfreq | Binary | gzip | 8.8 |
+| Clean | Maxfreq | Binary | bzip2 | 29.4 |
+| Clean | Maxfreq | Binary | lzma | 8.8 |
+| Clean | Maxfreq | Binary | zstd | 0.0 |
+| Clean | Maxfreq Improved | Text | gzip | 50.0 |
+| Clean | Maxfreq Improved | Text | bzip2 | 61.8 |
+| Clean | Maxfreq Improved | Text | lzma | 55.9 |
+| Clean | Maxfreq Improved | Text | zstd | 61.8 |
+| Clean | Maxfreq Improved | Binary | gzip | 61.8 |
+| Clean | Maxfreq Improved | Binary | bzip2 | 64.7 |
+| Clean | Maxfreq Improved | Binary | lzma | 55.9 |
+| Clean | Maxfreq Improved | Binary | zstd | 58.8 |
+| Clean | Spectral | Text | gzip | 2.9 |
+| Clean | Spectral | Text | bzip2 | 11.8 |
+| Clean | Spectral | Text | lzma | 8.8 |
+| Clean | Spectral | Text | zstd | 11.8 |
+| Clean | Spectral | Binary | gzip | 5.9 |
+| Clean | Spectral | Binary | bzip2 | 5.9 |
+| Clean | Spectral | Binary | lzma | 8.8 |
+| Clean | Spectral | Binary | zstd | 8.8 |
+| Brown | ProfMaxfreq | Text | gzip | N/A |
+| Brown | ProfMaxfreq | Text | bzip2 | N/A |
+| Brown | ProfMaxfreq | Text | lzma | N/A |
+| Brown | ProfMaxfreq | Text | zstd | N/A |
+| Brown | ProfMaxfreq | Binary | gzip | 44.1 |
+| Brown | ProfMaxfreq | Binary | bzip2 | 38.2 |
+| Brown | ProfMaxfreq | Binary | lzma | 5.9 |
+| Brown | ProfMaxfreq | Binary | zstd | 26.5 |
+| Brown | Maxfreq | Text | gzip | 5.9 |
+| Brown | Maxfreq | Text | bzip2 | 11.8 |
+| Brown | Maxfreq | Text | lzma | 8.8 |
+| Brown | Maxfreq | Text | zstd | 8.8 |
+| Brown | Maxfreq | Binary | gzip | 5.9 |
+| Brown | Maxfreq | Binary | bzip2 | 14.7 |
+| Brown | Maxfreq | Binary | lzma | 2.9 |
+| Brown | Maxfreq | Binary | zstd | 2.9 |
+| Brown | Maxfreq Improved | Text | gzip | 5.9 |
+| Brown | Maxfreq Improved | Text | bzip2 | 58.8 |
+| Brown | Maxfreq Improved | Text | lzma | 17.6 |
+| Brown | Maxfreq Improved | Text | zstd | 38.2 |
+| Brown | Maxfreq Improved | Binary | gzip | 35.3 |
+| Brown | Maxfreq Improved | Binary | bzip2 | 50.0 |
+| Brown | Maxfreq Improved | Binary | lzma | 23.5 |
+| Brown | Maxfreq Improved | Binary | zstd | 20.6 |
+| Brown | Spectral | Text | gzip | 2.9 |
+| Brown | Spectral | Text | bzip2 | 8.8 |
+| Brown | Spectral | Text | lzma | 8.8 |
+| Brown | Spectral | Text | zstd | 2.9 |
+| Brown | Spectral | Binary | gzip | 5.9 |
+| Brown | Spectral | Binary | bzip2 | 8.8 |
+| Brown | Spectral | Binary | lzma | 2.9 |
+| Brown | Spectral | Binary | zstd | 8.8 |
+| Pink | ProfMaxfreq | Text | gzip | N/A |
+| Pink | ProfMaxfreq | Text | bzip2 | N/A |
+| Pink | ProfMaxfreq | Text | lzma | N/A |
+| Pink | ProfMaxfreq | Text | zstd | N/A |
+| Pink | ProfMaxfreq | Binary | gzip | 55.9 |
+| Pink | ProfMaxfreq | Binary | bzip2 | 61.8 |
+| Pink | ProfMaxfreq | Binary | lzma | 44.1 |
+| Pink | ProfMaxfreq | Binary | zstd | 58.8 |
+| Pink | Maxfreq | Text | gzip | 5.9 |
+| Pink | Maxfreq | Text | bzip2 | 20.6 |
+| Pink | Maxfreq | Text | lzma | 11.8 |
+| Pink | Maxfreq | Text | zstd | 11.8 |
+| Pink | Maxfreq | Binary | gzip | 11.8 |
+| Pink | Maxfreq | Binary | bzip2 | 26.5 |
+| Pink | Maxfreq | Binary | lzma | 8.8 |
+| Pink | Maxfreq | Binary | zstd | 8.8 |
+| Pink | Maxfreq Improved | Text | gzip | 38.2 |
+| Pink | Maxfreq Improved | Text | bzip2 | 61.8 |
+| Pink | Maxfreq Improved | Text | lzma | 47.1 |
+| Pink | Maxfreq Improved | Text | zstd | 55.9 |
+| Pink | Maxfreq Improved | Binary | gzip | 50.0 |
+| Pink | Maxfreq Improved | Binary | bzip2 | 61.8 |
+| Pink | Maxfreq Improved | Binary | lzma | 44.1 |
+| Pink | Maxfreq Improved | Binary | zstd | 55.9 |
+| Pink | Spectral | Text | gzip | 2.9 |
+| Pink | Spectral | Text | bzip2 | 11.8 |
+| Pink | Spectral | Text | lzma | 11.8 |
+| Pink | Spectral | Text | zstd | 2.9 |
+| Pink | Spectral | Binary | gzip | 8.8 |
+| Pink | Spectral | Binary | bzip2 | 5.9 |
+| Pink | Spectral | Binary | lzma | 8.8 |
+| Pink | Spectral | Binary | zstd | 5.9 |
+| White | ProfMaxfreq | Text | gzip | N/A |
+| White | ProfMaxfreq | Text | bzip2 | N/A |
+| White | ProfMaxfreq | Text | lzma | N/A |
+| White | ProfMaxfreq | Text | zstd | N/A |
+| White | ProfMaxfreq | Binary | gzip | 55.9 |
+| White | ProfMaxfreq | Binary | bzip2 | 61.8 |
+| White | ProfMaxfreq | Binary | lzma | 50.0 |
+| White | ProfMaxfreq | Binary | zstd | 58.8 |
+| White | Maxfreq | Text | gzip | 5.9 |
+| White | Maxfreq | Text | bzip2 | 32.4 |
+| White | Maxfreq | Text | lzma | 8.8 |
+| White | Maxfreq | Text | zstd | 11.8 |
+| White | Maxfreq | Binary | gzip | 5.9 |
+| White | Maxfreq | Binary | bzip2 | 38.2 |
+| White | Maxfreq | Binary | lzma | 2.9 |
+| White | Maxfreq | Binary | zstd | 2.9 |
+| White | Maxfreq Improved | Text | gzip | 38.2 |
+| White | Maxfreq Improved | Text | bzip2 | 61.8 |
+| White | Maxfreq Improved | Text | lzma | 50.0 |
+| White | Maxfreq Improved | Text | zstd | 55.9 |
+| White | Maxfreq Improved | Binary | gzip | 64.7 |
+| White | Maxfreq Improved | Binary | bzip2 | 61.8 |
+| White | Maxfreq Improved | Binary | lzma | 58.8 |
+| White | Maxfreq Improved | Binary | zstd | 52.9 |
+| White | Spectral | Text | gzip | 2.9 |
+| White | Spectral | Text | bzip2 | 11.8 |
+| White | Spectral | Text | lzma | 5.9 |
+| White | Spectral | Text | zstd | 8.8 |
+| White | Spectral | Binary | gzip | 5.9 |
+| White | Spectral | Binary | bzip2 | 5.9 |
+| White | Spectral | Binary | lzma | 5.9 |
+| White | Spectral | Binary | zstd | 8.8 |
+
+
+#### 100 Songs Dataset, reduced to 32 songs for lower computational cost
+
+20 seconds samples, avoiding the first and last 10 seconds of each song
+The spectral method was not used in this dataset, because of high running time.
+Only 4 genres were used, to reduce the computational cost.
+
+| Genre | Top-1 Accuracy | Top-5 Accuracy | Sample Count |
+|-------|----------------|----------------|--------------|
+| Hip-Hop / Rap | 45.2% | 63.0% | 640 |
+| Pop | 39.1% | 63.0% | 640 |
+| Blues | 34.1% | 57.5% | 640 |
+| Rock | 32.5% | 49.8% | 640 |
+
+| Noise | Method | Type | Compressor | Top-1 Accuracy (%) |
+|-------|--------|------|------------|------------------|
+| Clean | ProfMaxfreq | Text | gzip | N/A |
+| Clean | ProfMaxfreq | Text | bzip2 | N/A |
+| Clean | ProfMaxfreq | Text | lzma | N/A |
+| Clean | ProfMaxfreq | Text | zstd | N/A |
+| Clean | ProfMaxfreq | Binary | gzip | 46.9 |
+| Clean | ProfMaxfreq | Binary | bzip2 | 93.8 |
+| Clean | ProfMaxfreq | Binary | lzma | 31.2 |
+| Clean | ProfMaxfreq | Binary | zstd | 84.4 |
+| Clean | Maxfreq | Text | gzip | 9.4 |
+| Clean | Maxfreq | Text | bzip2 | 34.4 |
+| Clean | Maxfreq | Text | lzma | 34.4 |
+| Clean | Maxfreq | Text | zstd | 37.5 |
+| Clean | Maxfreq | Binary | gzip | 12.5 |
+| Clean | Maxfreq | Binary | bzip2 | 25.0 |
+| Clean | Maxfreq | Binary | lzma | 18.8 |
+| Clean | Maxfreq | Binary | zstd | 12.5 |
+| Clean | Maxfreq Improved | Text | gzip | 43.8 |
+| Clean | Maxfreq Improved | Text | bzip2 | 87.5 |
+| Clean | Maxfreq Improved | Text | lzma | 50.0 |
+| Clean | Maxfreq Improved | Text | zstd | 56.2 |
+| Clean | Maxfreq Improved | Binary | gzip | 46.9 |
+| Clean | Maxfreq Improved | Binary | bzip2 | 93.8 |
+| Clean | Maxfreq Improved | Binary | lzma | 43.8 |
+| Clean | Maxfreq Improved | Binary | zstd | 15.6 |
+| Brown | ProfMaxfreq | Text | gzip | N/A |
+| Brown | ProfMaxfreq | Text | bzip2 | N/A |
+| Brown | ProfMaxfreq | Text | lzma | N/A |
+| Brown | ProfMaxfreq | Text | zstd | N/A |
+| Brown | ProfMaxfreq | Binary | gzip | 28.1 |
+| Brown | ProfMaxfreq | Binary | bzip2 | 56.2 |
+| Brown | ProfMaxfreq | Binary | lzma | 9.4 |
+| Brown | ProfMaxfreq | Binary | zstd | 46.9 |
+| Brown | Maxfreq | Text | gzip | 6.2 |
+| Brown | Maxfreq | Text | bzip2 | 25.0 |
+| Brown | Maxfreq | Text | lzma | 21.9 |
+| Brown | Maxfreq | Text | zstd | 21.9 |
+| Brown | Maxfreq | Binary | gzip | 12.5 |
+| Brown | Maxfreq | Binary | bzip2 | 15.6 |
+| Brown | Maxfreq | Binary | lzma | 15.6 |
+| Brown | Maxfreq | Binary | zstd | 3.1 |
+| Brown | Maxfreq Improved | Text | gzip | 15.6 |
+| Brown | Maxfreq Improved | Text | bzip2 | 65.6 |
+| Brown | Maxfreq Improved | Text | lzma | 15.6 |
+| Brown | Maxfreq Improved | Text | zstd | 18.8 |
+| Brown | Maxfreq Improved | Binary | gzip | 18.8 |
+| Brown | Maxfreq Improved | Binary | bzip2 | 50.0 |
+| Brown | Maxfreq Improved | Binary | lzma | 21.9 |
+| Brown | Maxfreq Improved | Binary | zstd | 9.4 |
+| Pink | ProfMaxfreq | Text | gzip | N/A |
+| Pink | ProfMaxfreq | Text | bzip2 | N/A |
+| Pink | ProfMaxfreq | Text | lzma | N/A |
+| Pink | ProfMaxfreq | Text | zstd | N/A |
+| Pink | ProfMaxfreq | Binary | gzip | 34.4 |
+| Pink | ProfMaxfreq | Binary | bzip2 | 93.8 |
+| Pink | ProfMaxfreq | Binary | lzma | 28.1 |
+| Pink | ProfMaxfreq | Binary | zstd | 81.2 |
+| Pink | Maxfreq | Text | gzip | 12.5 |
+| Pink | Maxfreq | Text | bzip2 | 34.4 |
+| Pink | Maxfreq | Text | lzma | 25.0 |
+| Pink | Maxfreq | Text | zstd | 25.0 |
+| Pink | Maxfreq | Binary | gzip | 9.4 |
+| Pink | Maxfreq | Binary | bzip2 | 25.0 |
+| Pink | Maxfreq | Binary | lzma | 21.9 |
+| Pink | Maxfreq | Binary | zstd | 12.5 |
+| Pink | Maxfreq Improved | Text | gzip | 34.4 |
+| Pink | Maxfreq Improved | Text | bzip2 | 90.6 |
+| Pink | Maxfreq Improved | Text | lzma | 43.8 |
+| Pink | Maxfreq Improved | Text | zstd | 53.1 |
+| Pink | Maxfreq Improved | Binary | gzip | 28.1 |
+| Pink | Maxfreq Improved | Binary | bzip2 | 87.5 |
+| Pink | Maxfreq Improved | Binary | lzma | 50.0 |
+| Pink | Maxfreq Improved | Binary | zstd | 25.0 |
+| White | ProfMaxfreq | Text | gzip | N/A |
+| White | ProfMaxfreq | Text | bzip2 | N/A |
+| White | ProfMaxfreq | Text | lzma | N/A |
+| White | ProfMaxfreq | Text | zstd | N/A |
+| White | ProfMaxfreq | Binary | gzip | 50.0 |
+| White | ProfMaxfreq | Binary | bzip2 | 93.8 |
+| White | ProfMaxfreq | Binary | lzma | 40.6 |
+| White | ProfMaxfreq | Binary | zstd | 93.8 |
+| White | Maxfreq | Text | gzip | 6.2 |
+| White | Maxfreq | Text | bzip2 | 21.9 |
+| White | Maxfreq | Text | lzma | 15.6 |
+| White | Maxfreq | Text | zstd | 15.6 |
+| White | Maxfreq | Binary | gzip | 6.2 |
+| White | Maxfreq | Binary | bzip2 | 21.9 |
+| White | Maxfreq | Binary | lzma | 15.6 |
+| White | Maxfreq | Binary | zstd | 12.5 |
+| White | Maxfreq Improved | Text | gzip | 25.0 |
+| White | Maxfreq Improved | Text | bzip2 | 87.5 |
+| White | Maxfreq Improved | Text | lzma | 50.0 |
+| White | Maxfreq Improved | Text | zstd | 56.2 |
+| White | Maxfreq Improved | Binary | gzip | 40.6 |
+| White | Maxfreq Improved | Binary | bzip2 | 93.8 |
+| White | Maxfreq Improved | Binary | lzma | 46.9 |
+| White | Maxfreq Improved | Binary | zstd | 18.8 |
 
 ### License
 
