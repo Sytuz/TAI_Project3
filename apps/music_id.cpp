@@ -72,7 +72,7 @@ string extractFeaturesFromWAV(const string& wavFile, const string& configFile, b
     cout << "Extracting features from WAV file using method: " << method << endl;
     cout << "Frame size: " << frameSize << ", Hop size: " << hopSize << endl;
     
-    if (method == "maxfreq") {
+    if (method == "maxfreq" || method == "maxfreq_improved") {
         cout << "Extracting " << numFrequencies << " peak frequencies per frame" << endl;
     } else {
         cout << "Using " << numBins << " frequency bins" << endl;

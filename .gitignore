@@ -5,9 +5,8 @@ venv/
 output/
 
 # Ignore executables in apps/
-apps/compute_ncd
-apps/extract_features
-apps/music_id
+apps/*
+!apps/*.cpp
 
 # Ignore all object files and static libraries
 *.o

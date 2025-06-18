@@ -26,7 +26,7 @@ class GenreAnalyzer:
         self.songs_genre_file = Path(songs_genre_file)
         
         # Configuration
-        self.methods = ["maxfreq", "spectral"]
+        self.methods = ["profmaxfreq", "maxfreq", "maxfreq_improved", "spectral"]
         self.formats = ["text", "binary"]
         self.noises = ["clean", "brown", "pink", "white"]
         self.compressors = ["gzip", "bzip2", "lzma", "zstd"]
@@ -101,7 +101,7 @@ class GenreAnalyzer:
         if name.startswith('sample_'):
             name = name[7:]
         
-        name = re.sub(r'_(spectral|maxfreq)$', '', name)
+        name = re.sub(r'_(spectral|maxfreq|maxfreq_improved|profmaxfreq)$', '', name)
         name = re.sub(r'_(white|pink|brown|clean)_noise$', '', name)
         name = re.sub(r'_t\d+s$', '', name)
         name = name.strip('_-')
@@ -150,7 +150,7 @@ class GenreAnalyzer:
             for format_type in self.formats:
                 for noise in self.noises:
                     for compressor in self.compressors:
-                        metrics_file = (self.results_dir / "compressors" / "youtube" / method / 
+                        metrics_file = (self.results_dir / "compressors" / "youtube_small" / method / 
                                        format_type / f"{noise}_{compressor}" / 
                                        f"accuracy_metrics_{compressor}.json")
                         
@@ -385,10 +385,17 @@ class GenreAnalyzer:
         
         # Get all genres and sort them
         all_genres = sorted(set().union(*[method_data.keys() for method_data in method_genre_data.values()]))
-        methods = ['maxfreq', 'spectral']
+        methods = ['maxfreq', 'maxfreq_improved', 'spectral']
         
         x = np.arange(len(all_genres))
-        width = 0.35
+        width = 0.25  # Adjust width for three methods
+        
+        colors = ['#2E8B57', '#4169E1', '#FF6347']  # Green, Blue, Red
+        method_labels = {
+            'maxfreq': 'MaxFreq (Original)',
+            'maxfreq_improved': 'MaxFreq (Improved)', 
+            'spectral': 'Spectral'
+        }
         
         for i, method in enumerate(methods):
             accuracies = []
@@ -399,12 +406,13 @@ class GenreAnalyzer:
                     acc = 0
                 accuracies.append(acc)
             
-            ax.bar(x + i*width, accuracies, width, label=method.title(), alpha=0.8)
+            ax.bar(x + i*width, accuracies, width, 
+                   label=method_labels[method], alpha=0.8, color=colors[i])
         
         ax.set_xlabel('Genre')
         ax.set_ylabel('Top-1 Accuracy (%)')
         ax.set_title('Method Performance by Genre')
-        ax.set_xticks(x + width/2)
+        ax.set_xticks(x + width)  # Center the tick marks
         ax.set_xticklabels([g[:12] + '...' if len(g) > 12 else g for g in all_genres], rotation=45, ha='right')
         ax.legend()
         ax.grid(True, alpha=0.3)
@@ -833,7 +841,7 @@ class GenreAnalyzer:
 def main():
     results_dir = Path("results/")
     songs_genre_file = Path("songs_genre.txt")
-    output_dir = Path("results/youtube_genre_analysis")
+    output_dir = Path("results/youtube_small_genre_analysis")
     
     if not results_dir.exists():
         print(f"Error: Results directory not found: {results_dir}")

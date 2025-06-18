@@ -26,14 +26,29 @@ class ResultsAnalyzer:
         self.dataset = dataset  # 'youtube', 'small', or 'both'
         
         # Configuration
-        self.methods = ["maxfreq", "spectral"]
+        self.methods = ["profmaxfreq", "maxfreq", "maxfreq_improved", "spectral"]
         self.formats = ["text", "binary"]
         self.noises = ["clean", "brown", "pink", "white"]
         self.compressors = ["gzip", "bzip2", "lzma", "zstd"]
         
         # Load all data
         self.data = self.load_all_data()
+    
+    def parse_method_format_combo(self, combo):
+        """
+        Parse a method_format combination string, handling methods with underscores.
         
+        Args:
+            combo: String like "maxfreq_improved_text" or "spectral_binary"
+            
+        Returns:
+            tuple: (method, format_type)
+        """
+        parts = combo.split('_')
+        format_type = parts[-1]  # Last part is always format (text/binary)
+        method = '_'.join(parts[:-1])  # Everything before last underscore is method
+        return method, format_type
+
     def load_all_data(self):
         """Load all accuracy data from result files."""
         data = {}
@@ -133,7 +148,11 @@ class ResultsAnalyzer:
             total_possible = len(combinations) * len(self.compressors)
             
             for i, combo in enumerate(combinations):
-                method, format_type = combo.split('_')
+                # Handle methods with underscores (like maxfreq_improved)
+                # The format is always the last part after the last underscore
+                parts = combo.split('_')
+                format_type = parts[-1]  # Last part is format (text/binary)
+                method = '_'.join(parts[:-1])  # Everything before last underscore is method
                 for j, compressor in enumerate(self.compressors):
                     acc = self.get_accuracy(method, format_type, noise, compressor)
                     if acc is not None:
@@ -267,14 +286,17 @@ class ResultsAnalyzer:
         print("Created compressor_ranking.png")
     
     def create_format_comparison(self):
-        """Create 4 plots comparing text vs binary for each method and metric."""
-        fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+        """Create plots comparing text vs binary for different methods and metrics."""
+        # Create a 3x2 grid to accommodate more methods
+        fig, axes = plt.subplots(3, 2, figsize=(16, 18))
         
         plot_configs = [
             ('spectral', 'top1_accuracy', 'Spectral - Top-1 Accuracy'),
             ('spectral', 'top5_accuracy', 'Spectral - Top-5 Accuracy'),
-            ('maxfreq', 'top1_accuracy', 'MaxFreq - Top-1 Accuracy'),
-            ('maxfreq', 'top5_accuracy', 'MaxFreq - Top-5 Accuracy')
+            ('maxfreq', 'top1_accuracy', 'MaxFreq (Original) - Top-1 Accuracy'),
+            ('maxfreq', 'top5_accuracy', 'MaxFreq (Original) - Top-5 Accuracy'),
+            ('maxfreq_improved', 'top1_accuracy', 'MaxFreq (Improved) - Top-1 Accuracy'),
+            ('maxfreq_improved', 'top5_accuracy', 'MaxFreq (Improved) - Top-5 Accuracy')
         ]
         
         for idx, (method, metric, title) in enumerate(plot_configs):
@@ -359,8 +381,8 @@ class ResultsAnalyzer:
         print("Created format_comparison.png")
     
     def create_method_comparison(self):
-        """Create 4 plots comparing maxfreq vs spectral for each format and metric."""
-        fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+        """Create 4 plots comparing all available methods for each format and metric."""
+        fig, axes = plt.subplots(2, 2, figsize=(20, 12))
         
         plot_configs = [
             ('text', 'top1_accuracy', 'Text - Top-1 Accuracy'),
@@ -369,77 +391,77 @@ class ResultsAnalyzer:
             ('binary', 'top5_accuracy', 'Binary - Top-5 Accuracy')
         ]
         
+        # Methods to compare
+        methods_to_compare = ['maxfreq', 'maxfreq_improved', 'spectral', 'profmaxfreq']
+        colors = ['#2E8B57', '#4169E1', '#FF6347', '#9932CC']  # Green, Blue, Red, Purple
+        method_labels = {
+            'maxfreq': 'MaxFreq (Original)',
+            'maxfreq_improved': 'MaxFreq (Improved)',
+            'spectral': 'Spectral',
+            'profmaxfreq': 'ProfMaxFreq'
+        }
+        
         for idx, (format_type, metric, title) in enumerate(plot_configs):
             ax = axes[idx // 2, idx % 2]
             
-            # Collect data for maxfreq vs spectral
-            maxfreq_data = defaultdict(list)
-            spectral_data = defaultdict(list)
-            total_possible_per_method = len(self.noises)
+            # Collect data for all methods
+            method_data = {}
+            for method in methods_to_compare:
+                method_data[method] = defaultdict(list)
+                
+                for noise in self.noises:
+                    for compressor in self.compressors:
+                        acc = self.get_accuracy(method, format_type, noise, compressor, metric)
+                        if acc is not None:
+                            method_data[method][compressor].append(acc)
             
-            for noise in self.noises:
-                for compressor in self.compressors:
-                    maxfreq_acc = self.get_accuracy('maxfreq', format_type, noise, compressor, metric)
-                    spectral_acc = self.get_accuracy('spectral', format_type, noise, compressor, metric)
+            # Check if we have any data
+            has_any_data = any(any(method_data[method].values()) for method in methods_to_compare)
+            
+            if has_any_data:
+                x_pos = np.arange(len(self.compressors))
+                bar_width = 0.2
+                
+                for method_idx, method in enumerate(methods_to_compare):
+                    means = []
+                    stds = []
+                    counts = []
                     
-                    if maxfreq_acc is not None:
-                        maxfreq_data[compressor].append(maxfreq_acc)
-                    if spectral_acc is not None:
-                        spectral_data[compressor].append(spectral_acc)
-            
-            # Create plot if we have any data
-            has_maxfreq_data = any(maxfreq_data.values())
-            has_spectral_data = any(spectral_data.values())
-            
-            if has_maxfreq_data or has_spectral_data:
-                x = np.arange(len(self.compressors))
-                width = 0.35
-                
-                maxfreq_means = []
-                spectral_means = []
-                maxfreq_counts = []
-                spectral_counts = []
-                
-                for compressor in self.compressors:
-                    maxfreq_mean = np.mean(maxfreq_data[compressor]) if maxfreq_data[compressor] else 0
-                    spectral_mean = np.mean(spectral_data[compressor]) if spectral_data[compressor] else 0
-                    maxfreq_means.append(maxfreq_mean)
-                    spectral_means.append(spectral_mean)
-                    maxfreq_counts.append(len(maxfreq_data[compressor]))
-                    spectral_counts.append(len(spectral_data[compressor]))
-                
-                # Only plot bars for methods that have data
-                if has_maxfreq_data:
-                    ax.bar(x - width/2, maxfreq_means, width, label='MaxFreq', alpha=0.8)
-                if has_spectral_data:
-                    ax.bar(x + width/2, spectral_means, width, label='Spectral', alpha=0.8)
-                
-                # Add value labels
-                for i, (maxfreq, spectral, maxfreq_c, spectral_c) in enumerate(zip(maxfreq_means, spectral_means, maxfreq_counts, spectral_counts)):
-                    if maxfreq > 0 and has_maxfreq_data:
-                        ax.text(i - width/2, maxfreq + 1, f'{maxfreq:.1f}%\n(n={maxfreq_c})', 
-                               ha='center', va='bottom', fontsize=7)
-                    if spectral > 0 and has_spectral_data:
-                        ax.text(i + width/2, spectral + 1, f'{spectral:.1f}%\n(n={spectral_c})', 
-                               ha='center', va='bottom', fontsize=7)
+                    for compressor in self.compressors:
+                        if method_data[method][compressor]:
+                            mean_acc = np.mean(method_data[method][compressor]) * 100  # Convert to percentage
+                            std_acc = np.std(method_data[method][compressor]) * 100
+                            count = len(method_data[method][compressor])
+                        else:
+                            mean_acc = 0
+                            std_acc = 0
+                            count = 0
+                        
+                        means.append(mean_acc)
+                        stds.append(std_acc)
+                        counts.append(count)
+                    
+                    # Only plot if method has data
+                    if any(counts):
+                        bars = ax.bar(x_pos + method_idx * bar_width, means, bar_width,
+                                     yerr=stds, capsize=3, alpha=0.8,
+                                     color=colors[method_idx], 
+                                     label=f'{method_labels[method]} (n={sum(counts)})')
+                        
+                        # Add value labels on bars
+                        for bar, mean_val, count in zip(bars, means, counts):
+                            if count > 0 and mean_val > 0:
+                                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+                                       f'{mean_val:.1f}%', ha='center', va='bottom', fontsize=7)
                 
                 ax.set_xlabel('Compressor')
                 ax.set_ylabel('Accuracy (%)')
-                ax.set_xticks(x)
+                ax.set_title(title)
+                ax.set_xticks(x_pos + bar_width * 1.5)
                 ax.set_xticklabels(self.compressors)
-                ax.legend()
+                ax.legend(fontsize=8)
                 ax.grid(True, alpha=0.3)
-                ax.set_ylim(0, 100)
-                
-                # Add missing data info
-                total_maxfreq = sum(maxfreq_counts)
-                total_spectral = sum(spectral_counts)
-                total_possible = len(self.compressors) * total_possible_per_method * 2
-                total_available = total_maxfreq + total_spectral
-                missing_msg = self.get_missing_data_message(total_available, total_possible)
-                if missing_msg:
-                    title += f'\n({missing_msg})'
-                ax.set_title(title, fontsize=10)
+                ax.set_ylim(0, 105)
             else:
                 ax.text(0.5, 0.5, f'No data available\nfor {title}', 
                        ha='center', va='center', transform=ax.transAxes, fontsize=12)
@@ -490,8 +512,8 @@ class ResultsAnalyzer:
             # Add min-max lines
             for i, (mean, min_val, max_val) in enumerate(zip(means, mins, maxs)):
                 ax1.plot([i, i], [min_val, max_val], 'k-', alpha=0.7, linewidth=2)
-                ax1.plot([i-0.1, i+0.1], [min_val, min_val], 'k-', alpha=0.7)
-                ax1.plot([i-0.1, i+0.1], [max_val, max_val], 'k-', alpha=0.7)
+                ax1.plot([i-0.1, i+0.1], [min_val, min_val], 'k-', alpha=0.7, linewidth=2)
+                ax1.plot([i-0.1, i+0.1], [max_val, max_val], 'k-', alpha=0.7, linewidth=2)
             
             # Position labels above the max line
             for i, (mean, count, max_val) in enumerate(zip(means, counts, maxs)):
@@ -666,7 +688,7 @@ class ResultsAnalyzer:
         total_possible = len(combinations) * len(self.noises)
         
         for i, combo in enumerate(combinations):
-            method, format_type = combo.split('_')
+            method, format_type = self.parse_method_format_combo(combo)
             for j, noise in enumerate(self.noises):
                 scores = []
                 for compressor in self.compressors:
@@ -790,7 +812,7 @@ class ResultsAnalyzer:
 
 def main():    
     # Choose which dataset to analyze: 'youtube', 'small', or 'both'
-    dataset = 'youtube'  # Change this to 'small' or 'both' as needed
+    dataset = 'small'  # Change this to 'small' or 'both' as needed
     
     results_dir = Path("results/")
     output = Path(f"results/plots_{dataset}/")

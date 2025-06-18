@@ -1,0 +1,6 @@
+{
+  "method": "maxfreq_improved",
+  "frequencies": 4,
+  "input": "data/samples/clean",
+  "output": "data/features/queries/clean/maxfreq_improved_default"
+}

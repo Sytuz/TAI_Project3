@@ -1,7 +1,10 @@
 #include "../../include/core/FeatureExtractor.h"
 #include "../../include/core/SpectralExtractor.h"
 #include "../../include/core/MaxFreqExtractor.h"
+#include "../../include/core/MaxFreqImprovedExtractor.h"
+#include "../../include/core/ProfMaxFreqExtractor.h"
 #include "../../include/core/WAVReader.h"
+#include "../../include/core/Resampler.h"
 
 #include <iostream>
 #include <fstream>
@@ -33,8 +36,7 @@ void saveConfig(
         txtConfig << "Format: text" << endl;
         txtConfig << "Frame size: " << frameSize << " samples" << endl;
         txtConfig << "Hop size: " << hopSize << " samples" << endl;
-        
-        if (method == "maxfreq") {
+          if (method == "maxfreq" || method == "profmaxfreq" || method == "maxfreq_improved") {
             txtConfig << "Frequencies per frame: " << numFrequencies << endl;
         } else {
             txtConfig << "Frequency bins: " << numBins << endl;
@@ -86,6 +88,8 @@ bool extractFeaturesFromFile(
     WAVReader reader;
     SpectralExtractor specExt(numBins);
     MaxFreqExtractor mfExt(numFrequencies);
+    MaxFreqImprovedExtractor mfImpExt(numFrequencies);
+    ProfMaxFreqExtractor profExt(numFrequencies);
     
     {
         lock_guard<mutex> lock(coutMutex);
@@ -109,6 +113,40 @@ bool extractFeaturesFromFile(
         samples16bit[j] = static_cast<int16_t>(samples[j]);
     }
     
+    // For profmaxfreq -> need to resample to 44.1kHz if necessary
+    vector<int16_t> finalSamples = samples16bit;
+    int finalSampleRate = sampleRate;
+    
+    if (method == "profmaxfreq" && sampleRate != 44100) {
+        {
+            lock_guard<mutex> lock(coutMutex);
+            cout << "  Resampling from " << sampleRate << " Hz to 44100 Hz for profmaxfreq" << endl;
+        }
+        
+        // Convert samples to int32_t for resampling
+        vector<int32_t> samples32bit(samples16bit.begin(), samples16bit.end());
+        
+        // Resample to 44.1kHz
+        vector<int32_t> resampledSamples32 = Resampler::resample(samples32bit, sampleRate, 44100);
+        
+        // Convert back to int16_t
+        finalSamples.resize(resampledSamples32.size());
+        for (size_t j = 0; j < resampledSamples32.size(); j++) {
+            // Clamp to int16_t range
+            int32_t sample = resampledSamples32[j];
+            if (sample > INT16_MAX) sample = INT16_MAX;
+            if (sample < INT16_MIN) sample = INT16_MIN;
+            finalSamples[j] = static_cast<int16_t>(sample);
+        }
+        
+        finalSampleRate = 44100;
+        
+        {
+            lock_guard<mutex> lock(coutMutex);
+            cout << "  Resampling complete: " << finalSamples.size() << " samples at 44100 Hz" << endl;
+        }
+    }
+    
     // Extract features
     string featData;
     std::vector<std::vector<float>> featDataBin; // changed from vector<float>
@@ -116,15 +154,27 @@ bool extractFeaturesFromFile(
     
     if (method == "spectral") {
         if (useBinary) {
-            featDataBin = specExt.extractFeaturesBinary(samples16bit, channels, frameSize, hopSize, sampleRate);
+            featDataBin = specExt.extractFeaturesBinary(finalSamples, channels, frameSize, hopSize, finalSampleRate);
         } else {
-            featData = specExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
+            featData = specExt.extractFeatures(finalSamples, channels, frameSize, hopSize, finalSampleRate);
         }
     } else if (method == "maxfreq") {
         if (useBinary) {
-            featDataBin = mfExt.extractFeaturesBinary(samples16bit, channels, frameSize, hopSize, sampleRate);
+            featDataBin = mfExt.extractFeaturesBinary(finalSamples, channels, frameSize, hopSize, finalSampleRate);
         } else {
-            featData = mfExt.extractFeatures(samples16bit, channels, frameSize, hopSize, sampleRate);
+            featData = mfExt.extractFeatures(finalSamples, channels, frameSize, hopSize, finalSampleRate);
+        }
+    } else if (method == "maxfreq_improved") {
+        if (useBinary) {
+            featDataBin = mfImpExt.extractFeaturesBinary(finalSamples, channels, frameSize, hopSize, finalSampleRate);
+        } else {
+            featData = mfImpExt.extractFeatures(finalSamples, channels, frameSize, hopSize, finalSampleRate);
+        }
+    } else if (method == "profmaxfreq") {
+        if (useBinary) {
+            featDataBin = profExt.extractFeaturesBinary(finalSamples, channels, frameSize, hopSize, finalSampleRate);
+        } else {
+            featData = profExt.extractFeatures(finalSamples, channels, frameSize, hopSize, finalSampleRate);
         }
     }
     
@@ -147,8 +197,25 @@ bool extractFeaturesFromFile(
         for (const auto& frame : featDataBin) {
             flatFeatDataBin.insert(flatFeatDataBin.end(), frame.begin(), frame.end());
         }
+        
+        // Check if we have valid binary data
+        if (flatFeatDataBin.empty()) {
+            lock_guard<mutex> lock(coutMutex);
+            cout << "  Warning: No binary feature data generated for " << method << ", skipping" << endl;
+            filesSkipped++;
+            return false;
+        }
+        
         saveSuccess = saveFeaturesBinary(outFile, flatFeatDataBin);
     } else {
+        // Check if we have valid text data (profmaxfreq returns empty string for text)
+        if (featData.empty() || featData.find_first_not_of(" \t\n\r") == string::npos) {
+            lock_guard<mutex> lock(coutMutex);
+            cout << "  Warning: No text feature data generated for " << method << " (method may only support binary format), skipping" << endl;
+            filesSkipped++;
+            return false;
+        }
+        
         saveSuccess = saveFeaturesText(outFile, featData);
     }
     if (!saveSuccess) {

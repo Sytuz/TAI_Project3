@@ -6,11 +6,13 @@
 # set -e  # Exit on any error
 
 # Configuration
-DATASET_NAME="supersmall"
-METHODS=("maxfreq" "spectral")
-FORMATS=("text" "binary")
+DATASET_NAME="small"
+#METHODS=("maxfreq" "maxfreq_improved" "profmaxfreq" "spectral")
+METHODS=("maxfreq_improved" "profmaxfreq")
+FORMATS=("binary" "text")
 NOISES=("clean" "brown" "pink" "white")
 COMPRESSORS=("gzip" "bzip2" "lzma" "zstd")
+THREADS=3
 
 # Base directories
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -110,10 +112,9 @@ extract_db_features() {
         print_warning "Database features already exist for $method/$format, skipping"
         return 0
     fi
+    log "Command: ./apps/extract_features --method $method $binary_flag --threads $THREADS -i $FULL_TRACKS_DIR -o $output_dir"
     
-    log "Command: ./apps/extract_features --method $method $binary_flag -i $FULL_TRACKS_DIR -o $output_dir"
-    
-    if ./apps/extract_features --method "$method" $binary_flag -i "$FULL_TRACKS_DIR" -o "$output_dir"; then
+    if ./apps/extract_features --method "$method" $binary_flag --threads $THREADS -i "$FULL_TRACKS_DIR" -o "$output_dir"; then
         touch "$output_dir/.extraction_complete"
         print_success "Database features extracted: $method/$format"
     else
@@ -183,10 +184,9 @@ extract_query_features() {
     if [ "$format" = "binary" ]; then
         binary_flag="--binary"
     fi
+    log "Command: ./apps/extract_features --method $method $binary_flag --threads $THREADS -i $input_dir -o $output_dir"
     
-    log "Command: ./apps/extract_features --method $method $binary_flag -i $input_dir -o $output_dir"
-    
-    if ./apps/extract_features --method "$method" $binary_flag -i "$input_dir" -o "$output_dir"; then
+    if ./apps/extract_features --method "$method" $binary_flag --threads $THREADS -i "$input_dir" -o "$output_dir"; then
         touch "$output_dir/.extraction_complete"
         print_success "Query features extracted: $method/$format/$noise"
     else
@@ -278,7 +278,18 @@ results/compressors/${DATASET_NAME}/
 │       ├── brown/
 │       ├── pink/
 │       └── white/
-└── spectral/
+├── spectral/
+│   ├── text/
+│   │   ├── clean/
+│   │   ├── brown/
+│   │   ├── pink/
+│   │   └── white/
+│   └── binary/
+│       ├── clean/
+│       ├── brown/
+│       ├── pink/
+│       └── white/
+└── profmaxfreq/
     ├── text/
     │   ├── clean/
     │   ├── brown/
@@ -300,6 +311,19 @@ EOF
     print_success "Summary report generated: $summary_file"
 }
 
+# Helper function to check if method supports format
+is_method_format_compatible() {
+    local method="$1"
+    local format="$2"
+    
+    # profmaxfreq only supports binary format
+    if [ "$method" = "profmaxfreq" ] && [ "$format" = "text" ]; then
+        return 1  # Not compatible
+    fi
+    
+    return 0  # Compatible
+}
+
 # Main execution function
 main() {
     log "Starting automated music identification testing at $(date)"
@@ -316,8 +340,20 @@ main() {
     local completed_combinations=0
     local failed_combinations=0
     
-    # Calculate total combinations
-    total_combinations=$((${#METHODS[@]} * ${#FORMATS[@]} * ${#NOISES[@]}))
+    # Calculate total combinations (accounting for method/format compatibility)
+    local total_possible_combinations=$((${#METHODS[@]} * ${#FORMATS[@]} * ${#NOISES[@]}))
+    local incompatible_combinations=0
+    
+    # Count incompatible combinations
+    for method in "${METHODS[@]}"; do
+        for format in "${FORMATS[@]}"; do
+            if ! is_method_format_compatible "$method" "$format"; then
+                incompatible_combinations=$((incompatible_combinations + ${#NOISES[@]}))
+            fi
+        done
+    done
+    
+    total_combinations=$((total_possible_combinations - incompatible_combinations))
     
     log "\n=========================================="
     log "Starting main testing loop"
@@ -329,6 +365,16 @@ main() {
         log "\n>>> Starting method: $method"
         for format in "${FORMATS[@]}"; do
             log "\n>> Starting format: $format for method: $method"
+            
+            # Check if method supports this format
+            if ! is_method_format_compatible "$method" "$format"; then
+                print_warning "Method $method does not support $format format, skipping this combination"
+                # Skip all noise combinations for this incompatible method/format
+                for noise in "${NOISES[@]}"; do
+                    ((failed_combinations++))
+                done
+                continue
+            fi
             
             # Step 1: Extract database features (once per method/format combination)
             if ! extract_db_features "$method" "$format"; then
@@ -426,6 +472,11 @@ show_help() {
     echo "  --dry-run     Show what would be executed without running"
     echo ""
     echo "The script will create a complete directory structure and run all tests automatically."
+    echo ""
+    echo "Methods supported:"
+    echo "  maxfreq      - Maximum frequency extractor (custom implementation)"
+    echo "  spectral     - Spectral extractor with frequency bins"
+    echo "  profmaxfreq  - Professor's original GetMaxFreqs algorithm"
 }
 
 # Dry run function
@@ -439,9 +490,9 @@ dry_run() {
             if [ "$format" = "binary" ]; then
                 binary_flag="--binary"
             fi
-            
+
             echo "# Database features for $method/$format"
-            echo "./apps/extract_features --method $method $binary_flag -i $FULL_TRACKS_DIR -o ${FEATURES_DIR}/db/${DATASET_NAME}/${method}/${format}"
+            echo "./apps/extract_features --method $method $binary_flag --threads $THREADS -i $FULL_TRACKS_DIR -o ${FEATURES_DIR}/db/${DATASET_NAME}/${method}/${format}"
             echo ""
             
             for noise in "${NOISES[@]}"; do
@@ -453,11 +504,10 @@ dry_run() {
                 echo "# Samples for $method/$format/$noise"
                 echo "./scripts/extract_sample.sh -i $FULL_TRACKS_DIR -o ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} $noise_flags"
                 echo ""
-                
                 echo "# Query features for $method/$format/$noise"
-                echo "./apps/extract_features --method $method $binary_flag -i ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} -o ${QUERIES_DIR}/${DATASET_NAME}/${method}/${format}/${noise}"
+                echo "./apps/extract_features --method $method $binary_flag --threads $THREADS -i ${SAMPLES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} -o ${QUERIES_DIR}/${DATASET_NAME}/${method}/${format}/${noise}"
                 echo ""
-                
+
                 local compressor_list=$(IFS=,; echo "${COMPRESSORS[*]}")
                 echo "# Compressor comparison for $method/$format/$noise"
                 echo "./scripts/compare_compressors.sh -q ${QUERIES_DIR}/${DATASET_NAME}/${method}/${format}/${noise} -d ${FEATURES_DIR}/db/${DATASET_NAME}/${method}/${format} -o ${RESULTS_DIR}/compressors/${DATASET_NAME}/${method}/${format}/${noise} -c $compressor_list -p $binary_flag"

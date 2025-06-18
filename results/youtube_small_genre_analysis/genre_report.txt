@@ -1,0 +1,13 @@
+GENRE ANALYSIS REPORT
+==============================
+
+Genre                     Top-1%   Top-5%   Samples 
+-------------------------------------------------------
+Hip-Hop / Rap               45.2%   63.0%    640
+Pop                         39.1%   63.0%    640
+Blues                       34.1%   57.5%    640
+Rock                        32.5%   49.8%    640
+
+Average accuracy: 37.7%
+Best genre: Hip-Hop / Rap (45.2%)
+Most challenging: Rock (32.5%)

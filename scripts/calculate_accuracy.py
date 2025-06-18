@@ -26,7 +26,7 @@ def extract_song_name(filename):
         name = name[7:]  # Remove 'sample_'
     
     # Remove feature extraction method suffixes FIRST (before other processing)
-    name = re.sub(r'_(spectral|maxfreq)$', '', name, flags=re.IGNORECASE)
+    name = re.sub(r'_(spectral|maxfreq|maxfreq_improved|profmaxfreq)$', '', name, flags=re.IGNORECASE)
     
     # Remove noise indicators
     name = re.sub(r'_(white|pink|brown)_noise$', '', name, flags=re.IGNORECASE)
