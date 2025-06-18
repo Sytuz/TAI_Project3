@@ -27,9 +27,6 @@
       - [Ubuntu/Debian:](#ubuntudebian)
       - [Install Python Dependencies:](#install-python-dependencies)
     - [Build Instructions](#build-instructions)
-  - [Run Instructions](#run-instructions)
-    - [Basic Usage](#basic-usage)
-      - [1. Extract Features from Audio Files](#1-extract-features-from-audio-files)
       - [2. Identify Music](#2-identify-music)
     - [Advanced Usage](#advanced-usage)
       - [Automated Testing Pipeline](#automated-testing-pipeline)
@@ -56,7 +53,6 @@
   - [Conclusion](#conclusion)
     - [Achievements](#achievements)
     - [Limitations and Future Work](#limitations-and-future-work)
-    - [License](#license)
   - [Changes after the Presentation](#changes-after-the-presentation)
     - [Maximum Frequency Method Comparison: Custom vs. Professor's Implementation](#maximum-frequency-method-comparison-custom-vs-professors-implementation)
       - [Key Algorithmic Differences](#key-algorithmic-differences)
@@ -66,6 +62,8 @@
     - [Performance Impact](#performance-impact)
       - [36 Songs Dataset](#36-songs-dataset-1)
       - [100 Songs Dataset, reduced to 32 songs for lower computational cost](#100-songs-dataset-reduced-to-32-songs-for-lower-computational-cost)
+    - [Conclusion](#conclusion-1)
+    - [License](#license)
   - [Authors](#authors)
 
 ## Documentation
@@ -761,6 +759,11 @@ Both the professor's implementation and our improved version show significant pe
 | White | Spectral | Binary | lzma | 5.9 |
 | White | Spectral | Binary | zstd | 8.8 |
 
+- **Accuracy heatmap:**
+![Accuracy heatmap](/results/plots_small_prof/accuracy_heatmap_small_prof.png)
+
+(other plots for this dataset can be seen [here](/results/plots_small_prof/)).
+
 
 #### 100 Songs Dataset, reduced to 32 songs for lower computational cost
 
@@ -873,6 +876,18 @@ Only 4 genres were used, to reduce the computational cost.
 | White | Maxfreq Improved | Binary | bzip2 | 93.8 |
 | White | Maxfreq Improved | Binary | lzma | 46.9 |
 | White | Maxfreq Improved | Binary | zstd | 18.8 |
+
+- **Accuracy heatmap:**
+![Accuracy heatmap](/results/plots_youtube_small/accuracy_heatmap_youtube_small.png)
+
+(other plots for this dataset can be seen [here](/results/plots_youtube_small/)).
+
+
+### Conclusion
+
+Now, after these changes, we can conclude that the best compressor is **bzip2**.
+Regarding the best method, both the teacher's implementation ("profmaxfreq") and our improved version ("maxfreq_improved") were successfully implemented.
+As for the noise, brown noise is producing the worst results.
 
 ### License
 
