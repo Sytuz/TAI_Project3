@@ -153,6 +153,7 @@ The system was tested in two datasets:
 sudo apt update
 sudo apt install build-essential cmake
 sudo apt install gzip bzip2 xz-utils zstd   # Usually included in most Linux/Unix installations
+sudo apt install libopus-dev libfftw3-dev libsndfile1-dev
 sudo apt install python3 python3-pip ffmpeg
 ```
 
